@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.4.4
+// @version 0.4.5
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/b/*
@@ -20,8 +20,10 @@ var EMOJI = '⭕';
 var STYLING = 'margin-top: 1em; font-size: 0.8em; line-height: 1.2em; color: #4476d6;';
 
 function getFirstIncompleteItem(checklists) {
-  var checkItems = checklists.reduce((a, b) => a.concat(b.checkItems), []);
-  checkItems.sort((a, b) => a.pos > b.pos); // take order into account
+  var byPos = (a, b) => a.pos > b.pos; // take order into account
+  var checkItems = checklists
+    .sort(byPos)
+    .reduce((a, b) => a.concat(b.checkItems.sort(byPos)), []);
   return checkItems.filter((item) => item.state === 'incomplete')[0];
 }
 
