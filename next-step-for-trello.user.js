@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.4.2
+// @version 0.4.3
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/b/*
