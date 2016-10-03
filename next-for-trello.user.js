@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.2.0
-// @homepage (( TBD ))
+// @version 0.4.0
+// @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/b/*
 // @match http://trello.com/b/*
@@ -12,6 +12,8 @@
  * 1. Download this script.
  * 2. Open chrome://extensions/ in the browser.
  * 3. Drag the downloaded file to the browser window.
+ * 
+ * Please star my gist if you like it :-)
  */
 
 var EMOJI = '⭕';
@@ -23,7 +25,7 @@ function getFirstIncompleteItem(checklists) {
 }
 
 function updateCard(cardElement) {
-  fetch(cardElement.href + '.json', {credentials: 'same-origin'})
+  fetch(cardElement.href + '.json', {credentials: 'include'})
     .then((res) => res.json())
     .then((json) => {
       var item = getFirstIncompleteItem(json.checklists);
@@ -52,4 +54,4 @@ btn.innerHTML = '<span class="board-header-btn-text">'
   + '</span>';
 document.getElementsByClassName('board-header-btns')[0].appendChild(btn);
 
-updateCards();
+setTimeout(updateCards, 100);
