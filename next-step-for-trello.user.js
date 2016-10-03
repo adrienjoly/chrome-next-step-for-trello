@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.4.1
+// @version 0.4.2
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/b/*
@@ -45,14 +45,23 @@ function updateCards() {
   }
 }
 
-var btn = document.createElement('a');
-btn.href = '#';
-btn.id = 'aj-nextstep-btn';
-btn.className = 'board-header-btn board-header-btn-without-icon';
-btn.onclick = updateCards;
-btn.innerHTML = '<span class="board-header-btn-text">'
-  + EMOJI + ' Refresh Next Actions'
-  + '</span>';
-document.getElementsByClassName('board-header-btns')[0].appendChild(btn);
+function init(){
+  var headerElements = document.getElementsByClassName('board-header-btns')
+  if (!headerElements.length) {
+    console.info('Trello is still not ready... => Will retry to init "next step" in 1 second.');
+    setTimeout(init, 500);
+  } else {
+    var btn = document.createElement('a');
+    btn.href = '#';
+    btn.id = 'aj-nextstep-btn';
+    btn.className = 'board-header-btn board-header-btn-without-icon';
+    btn.onclick = updateCards;
+    btn.innerHTML = '<span class="board-header-btn-text">'
+      + EMOJI + ' Refresh Next Actions'
+      + '</span>';
+    headerElements[0].appendChild(btn);
+    updateCards();
+  }
+}
 
-setTimeout(updateCards, 100);
+setTimeout(init, 100);
