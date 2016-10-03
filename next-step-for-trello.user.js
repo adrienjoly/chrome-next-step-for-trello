@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.4.3
+// @version 0.4.4
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/b/*
@@ -26,7 +26,8 @@ function getFirstIncompleteItem(checklists) {
 }
 
 function updateCard(cardElement) {
-  fetch(cardElement.href + '.json', {credentials: 'include'})
+  console.info('doing', cardElement.href, '...');
+  return fetch(cardElement.href + '.json', {credentials: 'include'})
     .then((res) => res.json())
     .then((json) => {
       var item = getFirstIncompleteItem(json.checklists);
@@ -34,13 +35,19 @@ function updateCard(cardElement) {
         cardElement.innerHTML =
           cardElement.innerHTML.replace(/<p.*<\/p>/, '')
           + '<p style="' + STYLING + '">' + EMOJI + ' ' + item.name + '</p>';
-      } 
+      }
+      console.info('done', cardElement.href);
     });
 }
 
 function updateCards() {
   var cards = document.getElementsByClassName('list-card-title');
-  Array.prototype.forEach.call(cards, updateCard);
+  var promises = Array.prototype.map.call(cards, updateCard);
+  Promise.all(promises).then(function(result) {
+    console.info('DONE ALL', result.length);
+  }, function(err) {
+    console.info('ERROR', err);
+  });;
 }
 
 function init(){
