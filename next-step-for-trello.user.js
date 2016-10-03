@@ -40,9 +40,7 @@ function updateCard(cardElement) {
 
 function updateCards() {
   var cards = document.getElementsByClassName('list-card-title');
-  for (var i = 0; i < cards.length; i++) {
-    updateCard(cards[i]);
-  }
+  Array.prototype.forEach.call(cards, updateCard);
 }
 
 function init(){
