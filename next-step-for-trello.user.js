@@ -8,6 +8,14 @@
 // @run-at document-start
 // ==/UserScript==
 
+/***************************
+ * BREAKING NEWS !
+ *
+ * YOU CAN NOW INSTALL THIS EXTENSION FROM THE CHROME WEB STORE:
+ * --> https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf?hl=en-US
+ *
+ ***************************/
+
 /***
  * How to Install in Chrome or Chromium:
  * 1. Download this script.
