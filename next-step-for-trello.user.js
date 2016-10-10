@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.4.6
+// @version 0.4.7
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/b/*
@@ -9,27 +9,19 @@
 // ==/UserScript==
 
 /***************************
- * BREAKING NEWS !
  *
- * YOU CAN NOW INSTALL THIS EXTENSION FROM THE CHROME WEB STORE:
+ * INSTALL THIS FROM THE CHROME WEB STORE:
  * --> https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf?hl=en-US
+ * 
+ * ...or by downloading this script, and dragging it into chrome://extensions
  *
  ***************************/
-
-/***
- * How to Install in Chrome or Chromium:
- * 1. Download this script.
- * 2. Open chrome://extensions/ in the browser.
- * 3. Drag the downloaded file to the browser window.
- * 
- * Please star my gist if you like it :-)
- */
 
 var EMOJI = '⭕';
 var STYLING = 'margin-top: 1em; font-size: 0.8em; line-height: 1.2em; color: #4476d6;';
 
 function getFirstIncompleteItem(checklists) {
-  var byPos = (a, b) => a.pos > b.pos; // take order into account
+  var byPos = (a, b) => a.pos > b.pos ? 1 : -1; // take order into account
   var checkItems = checklists
     .sort(byPos)
     .reduce((a, b) => a.concat(b.checkItems.sort(byPos)), []);
