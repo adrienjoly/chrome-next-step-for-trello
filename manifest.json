@@ -1,0 +1,15 @@
+{
+   "manifest_version": 2,
+   "content_scripts": [ {
+      "exclude_globs": [  ],
+      "exclude_matches": [  ],
+      "include_globs": [  ],
+      "js": [ "next-step-for-trello.user.js" ],
+      "matches": [ "http://trello.com/b/*", "https://trello.com/b/*" ],
+      "run_at": "document_start"
+   } ],
+   "converted_from_user_script": true,
+   "description": "Display the next task to be done, on each Trello card.",
+   "name": "Next Step for Trello cards",
+   "version": "0.4.6"
+}
