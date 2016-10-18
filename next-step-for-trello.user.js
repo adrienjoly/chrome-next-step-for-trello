@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.4.8
+// @version 0.4.9
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
-// @match https://trello.com/b/*
-// @match http://trello.com/b/*
+// @match https://trello.com/*
+// @match http://trello.com/*
 // @run-at document-start
 // ==/UserScript==
 
@@ -46,16 +46,17 @@ function updateCard(cardElement) {
 }
 
 function updateCards() {
+  console.log('[[ next-step-for-trello ]] updateCards()...');
   var cards = document.getElementsByClassName('list-card-title');
   var promises = Array.prototype.map.call(cards, updateCard);
   Promise.all(promises).then(function(result) {
-    console.info('DONE ALL', result.length);
+    //console.info('DONE ALL', result.length);
   }, function(err) {
     console.info('ERROR', err);
   });;
 }
 
-function init(){
+function installToolbar() {
   var headerElements = document.getElementsByClassName('board-header-btns')
   var btn = document.createElement('a');
   btn.href = '#';
@@ -66,7 +67,23 @@ function init(){
     + 'Refresh Next Steps'
     + '</span>';
   headerElements[0].appendChild(btn);
-  updateCards();
+}
+
+function init(){
+  var needsRefresh = true;
+  setInterval(function() {
+    if (window.location.href.indexOf('https://trello.com/b/') === 0) {
+      if (!document.getElementById('aj-nextstep-btn')) {
+        installToolbar();
+      }
+      if (needsRefresh) {
+        needsRefresh = false;
+        updateCards();
+      }
+    } else {
+      needsRefresh = true;
+    }
+  }, 500);
 }
 
 console.log('[[ next-step-for-trello ]]', document.readyState);
