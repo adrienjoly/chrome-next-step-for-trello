@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.4.7
+// @version 0.4.8
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/b/*
@@ -17,8 +17,8 @@
  *
  ***************************/
 
-var EMOJI = '⭕';
-var STYLING = 'margin-top: 1em; font-size: 0.8em; line-height: 1.2em; color: #4476d6;';
+var EMOJI = '◽️';
+var STYLING = 'overflow: auto; padding-left: 18px; margin-top: 1em; font-size: 12px; line-height: 1.2em; color: #8c8c8c; font-family: Helvetica Neue, Arial, Helvetica, sans-serif;';
 
 function getFirstIncompleteItem(checklists) {
   var byPos = (a, b) => a.pos > b.pos ? 1 : -1; // take order into account
@@ -36,8 +36,11 @@ function updateCard(cardElement) {
       var item = getFirstIncompleteItem(json.checklists);
       if (item) {
         cardElement.innerHTML =
-          cardElement.innerHTML.replace(/<p.*<\/p>/, '')
-          + '<p style="' + STYLING + '">' + EMOJI + ' ' + item.name + '</p>';
+          cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/, '')
+          + '<p class="aj-next-step" style="position: relative; ' + STYLING + '">'
+          + '<span style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
+          + '<span>' + item.name + '</span>'
+          + '</p>';
       }
     });
 }
@@ -60,7 +63,7 @@ function init(){
   btn.className = 'board-header-btn board-header-btn-without-icon';
   btn.onclick = updateCards;
   btn.innerHTML = '<span class="board-header-btn-text">'
-    + EMOJI + ' Refresh Next Actions'
+    + 'Refresh Next Steps'
     + '</span>';
   headerElements[0].appendChild(btn);
   updateCards();
