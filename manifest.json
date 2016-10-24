@@ -11,5 +11,5 @@
    "converted_from_user_script": true,
    "description": "Display the next task to be done, on each Trello card.",
    "name": "Next Step for Trello cards",
-   "version": "0.4.91"
+   "version": "0.4.92"
 }

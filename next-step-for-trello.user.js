@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.4.91
+// @version 0.4.92
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/*
@@ -28,25 +28,28 @@ function getFirstIncompleteItem(checklists) {
   return checkItems.filter((item) => item.state === 'incomplete')[0];
 }
 
-function updateCard(cardElement) {
-  if (!cardElement.href) console.warn('empty href!')
-  return fetch(cardElement.href + '.json', {credentials: 'include'})
-    .then((res) => res.json())
-    .then((json) => {
-      var item = getFirstIncompleteItem(json.checklists);
-      cardElement.innerHTML =
-        cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/, '')
-        + (!item ? '' : ('<p class="aj-next-step" style="position: relative; ' + STYLING + '">'
-        + '<span style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
-        + '<span>' + item.name + '</span>'
-        + '</p>'));
-    });
+function setCardContent(cardElement, item) {
+  cardElement.innerHTML =
+    cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/, '')
+    + (!item ? '' : ('<p class="aj-next-step" style="position: relative; ' + STYLING + '">'
+    + '<span style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
+    + '<span>' + item.name + '</span>'
+    + '</p>'));
 }
+
+const cleanCard = setCardContent;
+
+const updateCard = (cardElement) => fetch(cardElement.href + '.json', {credentials: 'include'})
+  .then((res) => res.json())
+  .then((json) => {
+    setCardContent(cardElement, getFirstIncompleteItem(json.checklists));
+  });
 
 function updateCards() {
   console.log('[[ next-step-for-trello ]] updateCards()...');
   var cards = document.getElementsByClassName('list-card-title');
-  var promises = Array.prototype.map.call(cards, updateCard);
+  var handler = (cardElement) => cardElement.href && MODES[currentMode].handler(cardElement);
+  var promises = Array.prototype.map.call(cards, handler);
   Promise.all(promises).then(function(result) {
     //console.info('DONE ALL', result.length);
   }, function(err) {
@@ -54,35 +57,22 @@ function updateCards() {
   });;
 }
 
-function cleanCard(cardElement) {
-  if (!cardElement.href) console.warn('empty href!')
-  cardElement.innerHTML = cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/, '');
-}
-
-function cleanCards() {
-  console.log('[[ next-step-for-trello ]] cleanCards()...');
-  var cards = document.getElementsByClassName('list-card-title');
-  Array.prototype.forEach.call(cards, cleanCard);
-}
-
 var MODES = [
   {
     label: 'One step per card',
-    activate: updateCards
+    handler: updateCard
   },
   {
     label: 'Hide next steps',
-    activate: cleanCards
+    handler: cleanCard
   },
 ];
 
 var currentMode = 0;
 
 function nextMode() {
-  console.log('old mode', currentMode);
   currentMode = (currentMode + 1) % MODES.length;
-  MODES[currentMode].activate();
-  console.log('new mode', currentMode);
+  updateCards();
   document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
 }
 
