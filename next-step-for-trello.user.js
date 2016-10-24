@@ -20,30 +20,30 @@
 var EMOJI = '◽️';
 var STYLING = 'overflow: auto; padding-left: 18px; margin-top: 1em; font-size: 12px; line-height: 1.2em; color: #8c8c8c; font-family: Helvetica Neue, Arial, Helvetica, sans-serif;';
 
-function getFirstIncompleteItem(checklists) {
-  var byPos = (a, b) => a.pos > b.pos ? 1 : -1; // take order into account
-  var checkItems = checklists
-    .sort(byPos)
-    .reduce((a, b) => a.concat(b.checkItems.sort(byPos)), []);
-  return checkItems.filter((item) => item.state === 'incomplete')[0];
-}
+const byPos = (a, b) => a.pos > b.pos ? 1 : -1; // take order into account
 
-function setCardContent(cardElement, item) {
+const getAllIncompleteItem = (checklists) => checklists
+  .sort(byPos)
+  .reduce((a, b) => a.concat(b.checkItems.sort(byPos)), [])
+  .filter((item) => item.state === 'incomplete');
+
+const getFirstIncompleteItem = (checklists) => ([ getAllIncompleteItem(checklists)[0] ]);
+
+function setCardContent(cardElement, items) {
   cardElement.innerHTML =
-    cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/, '')
-    + (!item ? '' : ('<p class="aj-next-step" style="position: relative; ' + STYLING + '">'
-    + '<span style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
-    + '<span>' + item.name + '</span>'
-    + '</p>'));
+    cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/g, '')
+    + (items || []).map((item) => '<p class="aj-next-step" style="position: relative; ' + STYLING + '">'
+      + '<span style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
+      + '<span>' + item.name + '</span>'
+      + '</p>'
+    ).join('\n');
 }
 
-const cleanCard = setCardContent;
-
-const updateCard = (cardElement) => fetch(cardElement.href + '.json', {credentials: 'include'})
+const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json', {credentials: 'include'})
   .then((res) => res.json())
   .then((json) => {
-    setCardContent(cardElement, getFirstIncompleteItem(json.checklists));
-  });
+    setCardContent(cardElement, handler(json.checklists));
+  }); 
 
 function updateCards() {
   console.log('[[ next-step-for-trello ]] updateCards()...');
@@ -60,11 +60,15 @@ function updateCards() {
 var MODES = [
   {
     label: 'One step per card',
-    handler: updateCard
+    handler: (cardElement) => fetchStepsThen(cardElement, getFirstIncompleteItem)
   },
   {
     label: 'Hide next steps',
-    handler: cleanCard
+    handler: setCardContent
+  },
+  {
+    label: 'All next steps',
+    handler: (cardElement) => fetchStepsThen(cardElement, getAllIncompleteItem)
   },
 ];
 
