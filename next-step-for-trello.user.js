@@ -24,21 +24,22 @@ const nonNull = (item) => !!item;
 
 const byPos = (a, b) => a.pos > b.pos ? 1 : -1; // take order into account
 
+const sortedNextSteps = (checklist) => checklist.checkItems
+  .sort(byPos)
+  .filter((item) => item.state === 'incomplete'); 
+
+const getFirstResult = (fct) => function() {
+  return fct.apply(this, arguments)[0];
+};
+
 const getAllIncompleteItems = (checklists) => checklists
   .sort(byPos)
-  .map((checklist) => checklist.checkItems
-    .sort(byPos)
-    .filter((item) => item.state === 'incomplete')
-  )
+  .map(sortedNextSteps)
   .reduce((a, b) => a.concat(b), []);
 
 const getFirstIncompleteItemsOfEachChecklist = (checklists) => checklists
   .sort(byPos)
-  .map((checklist) => checklist.checkItems
-    .sort(byPos)
-    .filter((item) => item.state === 'incomplete')
-    [0]
-  )
+  .map(getFirstResult(sortedNextSteps))
   .filter(nonNull)
   .reduce((a, b) => a.concat(b), []);
 
