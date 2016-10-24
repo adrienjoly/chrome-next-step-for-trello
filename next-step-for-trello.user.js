@@ -26,8 +26,11 @@ const byPos = (a, b) => a.pos > b.pos ? 1 : -1; // take order into account
 
 const getAllIncompleteItems = (checklists) => checklists
   .sort(byPos)
-  .reduce((a, b) => a.concat(b.checkItems.sort(byPos)), [])
-  .filter((item) => item.state === 'incomplete');
+  .map((checklist) => checklist.checkItems
+    .sort(byPos)
+    .filter((item) => item.state === 'incomplete')
+  )
+  .reduce((a, b) => a.concat(b), []);
 
 const getFirstIncompleteItemsOfEachChecklist = (checklists) => checklists
   .sort(byPos)
