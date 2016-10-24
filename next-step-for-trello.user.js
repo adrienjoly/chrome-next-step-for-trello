@@ -54,15 +54,47 @@ function updateCards() {
   });;
 }
 
+function cleanCard(cardElement) {
+  if (!cardElement.href) console.warn('empty href!')
+  cardElement.innerHTML = cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/, '');
+}
+
+function cleanCards() {
+  console.log('[[ next-step-for-trello ]] cleanCards()...');
+  var cards = document.getElementsByClassName('list-card-title');
+  Array.prototype.forEach.call(cards, cleanCard);
+}
+
+var MODES = [
+  {
+    label: 'One step per card',
+    activate: updateCards
+  },
+  {
+    label: 'Hide next steps',
+    activate: cleanCards
+  },
+];
+
+var currentMode = 0;
+
+function nextMode() {
+  console.log('old mode', currentMode);
+  currentMode = (currentMode + 1) % MODES.length;
+  MODES[currentMode].activate();
+  console.log('new mode', currentMode);
+  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
+}
+
 function installToolbar() {
   var headerElements = document.getElementsByClassName('board-header-btns')
   var btn = document.createElement('a');
   btn.href = '#';
   btn.id = 'aj-nextstep-btn';
   btn.className = 'board-header-btn board-header-btn-without-icon';
-  btn.onclick = updateCards;
+  btn.onclick = nextMode;
   btn.innerHTML = '<span class="board-header-btn-text">'
-    + 'Refresh Next Steps'
+    + 'Mode: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
     + '</span>';
   headerElements[0].appendChild(btn);
 }
