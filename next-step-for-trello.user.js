@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.4.92
+// @version 0.5.0
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/*
@@ -20,33 +20,57 @@
 var EMOJI = '◽️';
 var STYLING = 'overflow: auto; padding-left: 18px; margin-top: 1em; font-size: 12px; line-height: 1.2em; color: #8c8c8c; font-family: Helvetica Neue, Arial, Helvetica, sans-serif;';
 
+// basic helpers
+
 const nonNull = (item) => !!item;
 
 const byPos = (a, b) => a.pos > b.pos ? 1 : -1; // take order into account
-
-const sortedNextSteps = (checklist) => checklist.checkItems
-  .sort(byPos)
-  .filter((item) => item.state === 'incomplete'); 
 
 const getFirstResult = (fct) => function() {
   return fct.apply(this, arguments)[0];
 };
 
-const getAllIncompleteItems = (checklists) => checklists
+// trello checklist processors
+
+const prefixChecklistName = (item) => 
+  Object.assign(item, {
+    name: item.checklistName + ': ' + item.name
+  });
+
+const sortedNextSteps = (checklist) => checklist.checkItems
+  .sort(byPos)
+  .filter((item) => item.state === 'incomplete')
+  .map((item) => Object.assign(item, {
+    checklistName: checklist.name
+  }));
+
+const getAllNextSteps = (checklists) => checklists
   .sort(byPos)
   .map(sortedNextSteps)
   .reduce((a, b) => a.concat(b), []);
 
-const getFirstIncompleteItemsOfEachChecklist = (checklists) => checklists
+const getAllNextStepsNamed = (checklists) => getAllNextSteps(checklists)
+  .map(prefixChecklistName);
+
+const getNextStepsOfChecklists = (checklists) => checklists
   .sort(byPos)
   .map(getFirstResult(sortedNextSteps))
   .filter(nonNull)
-  .reduce((a, b) => a.concat(b), []);
+  .reduce((a, b) => a.concat(b), [])
+  .map(prefixChecklistName);
 
-const getFirstIncompleteItem = (checklists) => (
-  [ getAllIncompleteItems(checklists)[0] ]
-    .filter(nonNull)
-);
+const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
+    .filter(nonNull);
+
+// trello data model
+
+const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json', {credentials: 'include'})
+  .then((res) => res.json())
+  .then((json) => {
+    setCardContent(cardElement, handler(json.checklists));
+  }); 
+
+// UI helpers
 
 function setCardContent(cardElement, items) {
   cardElement.innerHTML =
@@ -57,12 +81,6 @@ function setCardContent(cardElement, items) {
       + '</p>'
     ).join('\n');
 }
-
-const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json', {credentials: 'include'})
-  .then((res) => res.json())
-  .then((json) => {
-    setCardContent(cardElement, handler(json.checklists));
-  }); 
 
 function updateCards() {
   console.log('[[ next-step-for-trello ]] updateCards()...');
@@ -76,10 +94,12 @@ function updateCards() {
   });;
 }
 
+// extension modes
+
 var MODES = [
   {
     label: 'One step per card',
-    handler: (cardElement) => fetchStepsThen(cardElement, getFirstIncompleteItem)
+    handler: (cardElement) => fetchStepsThen(cardElement, getNextStep)
   },
   {
     label: 'Hide next steps',
@@ -87,11 +107,11 @@ var MODES = [
   },
   {
     label: 'All next steps',
-    handler: (cardElement) => fetchStepsThen(cardElement, getAllIncompleteItems)
+    handler: (cardElement) => fetchStepsThen(cardElement, getAllNextStepsNamed)
   },
   {
     label: 'First step of each checklist',
-    handler: (cardElement) => fetchStepsThen(cardElement, getFirstIncompleteItemsOfEachChecklist)
+    handler: (cardElement) => fetchStepsThen(cardElement, getNextStepsOfChecklists)
   },
 ];
 
@@ -102,6 +122,8 @@ function nextMode() {
   updateCards();
   document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
 }
+
+// extension initialization
 
 function installToolbar() {
   var headerElements = document.getElementsByClassName('board-header-btns')
