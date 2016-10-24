@@ -20,14 +20,29 @@
 var EMOJI = '◽️';
 var STYLING = 'overflow: auto; padding-left: 18px; margin-top: 1em; font-size: 12px; line-height: 1.2em; color: #8c8c8c; font-family: Helvetica Neue, Arial, Helvetica, sans-serif;';
 
+const nonNull = (item) => !!item;
+
 const byPos = (a, b) => a.pos > b.pos ? 1 : -1; // take order into account
 
-const getAllIncompleteItem = (checklists) => checklists
+const getAllIncompleteItems = (checklists) => checklists
   .sort(byPos)
   .reduce((a, b) => a.concat(b.checkItems.sort(byPos)), [])
   .filter((item) => item.state === 'incomplete');
 
-const getFirstIncompleteItem = (checklists) => ([ getAllIncompleteItem(checklists)[0] ]);
+const getFirstIncompleteItemsOfEachChecklist = (checklists) => checklists
+  .sort(byPos)
+  .map((checklist) => checklist.checkItems
+    .sort(byPos)
+    .filter((item) => item.state === 'incomplete')
+    [0]
+  )
+  .filter(nonNull)
+  .reduce((a, b) => a.concat(b), []);
+
+const getFirstIncompleteItem = (checklists) => (
+  [ getAllIncompleteItems(checklists)[0] ]
+    .filter(nonNull)
+);
 
 function setCardContent(cardElement, items) {
   cardElement.innerHTML =
@@ -68,7 +83,11 @@ var MODES = [
   },
   {
     label: 'All next steps',
-    handler: (cardElement) => fetchStepsThen(cardElement, getAllIncompleteItem)
+    handler: (cardElement) => fetchStepsThen(cardElement, getAllIncompleteItems)
+  },
+  {
+    label: 'First step of each checklist',
+    handler: (cardElement) => fetchStepsThen(cardElement, getFirstIncompleteItemsOfEachChecklist)
   },
 ];
 
