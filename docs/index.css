@@ -52,16 +52,6 @@
   margin-top: 0px;
   margin-bottom: 1.5em;
 }
-.pt a {
-  color: #d35a29;
-  cursor: pointer;
-}
-.pt a.lp-is-active {
-  color: #333 !important;
-}
-.pt a:hover {
-  color: #9bb099;
-}
 .pt h1 {
   font-size: 2em;
   line-height: 1.5em;
@@ -117,6 +107,7 @@
 .lp-btn {
   font-family: Avenir, 'Lato', sans-serif;
   font-size: 1em;
+  text-decoration: none;
   border: 2px solid #2eabe8;
   background-color: rgba(46,171,232,0);
   color: #2eabe8;
@@ -204,13 +195,6 @@
 }
 .pt code pre {
   margin: 0;
-}
-.pt a {
-  color: #d35a29;
-  cursor: pointer;
-}
-.pt a:hover {
-  color: #9bb099;
 }
 body {
   width: 100%;
@@ -995,21 +979,6 @@ body.pt h4 {
   font-weight: 100;
   color: #2eabe8;
 }
-body.pt a {
-  color: #d35a29;
-  border-bottom: 1px solid #d35a29;
-  text-decoration: none;
-}
-body.pt a.btnlink {
-  border-bottom: none;
-}
-body.pt a:hover {
-  color: #9bb099;
-  border-bottom: 1px solid #9bb099;
-}
-body.pt a.lp-is-active {
-  border-bottom: none;
-}
 code {
   font-family: 'Anonymous Pro', monospace;
   font-size: 0.85em;
@@ -1538,13 +1507,6 @@ html.fp-enabled,
 }
 body.pt {
   background-color: #fff;
-}
-body.pt a {
-  text-decoration: none;
-  border-bottom: 1px solid #d35a29;
-}
-body.pt a:hover {
-  border-bottom: #9bb099;
 }
 body.pt h1 {
   font-size: 1.5555555555555556em;
