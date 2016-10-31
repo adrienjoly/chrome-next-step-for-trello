@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.5.0
+// @version 0.5.1
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/*
@@ -98,24 +98,24 @@ function updateCards() {
 
 var MODES = [
   {
-    label: 'One step per card',
-    handler: (cardElement) => fetchStepsThen(cardElement, getNextStep)
-  },
-  {
-    label: 'Hide next steps',
+    label: 'Hidden',
     handler: setCardContent
   },
   {
-    label: 'All next steps',
-    handler: (cardElement) => fetchStepsThen(cardElement, getAllNextStepsNamed)
+    label: 'One per card',
+    handler: (cardElement) => fetchStepsThen(cardElement, getNextStep)
   },
   {
-    label: 'First step of each checklist',
+    label: 'One per checklist',
     handler: (cardElement) => fetchStepsThen(cardElement, getNextStepsOfChecklists)
+  },
+  {
+    label: 'Display all',
+    handler: (cardElement) => fetchStepsThen(cardElement, getAllNextStepsNamed)
   },
 ];
 
-var currentMode = 0;
+var currentMode = 1;
 
 function nextMode() {
   currentMode = (currentMode + 1) % MODES.length;
@@ -133,7 +133,7 @@ function installToolbar() {
   btn.className = 'board-header-btn board-header-btn-without-icon';
   btn.onclick = nextMode;
   btn.innerHTML = '<span class="board-header-btn-text">'
-    + 'Mode: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
+    + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
     + '</span>';
   headerElements[0].appendChild(btn);
 }
