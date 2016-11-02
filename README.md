@@ -7,3 +7,5 @@ Appends the first unchecked checklist item to the title of each card, when visit
 **Install and rate it from there: ["Next Step" for Trello cards](https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf)** (Chrome Web Store page)
 
 ![Next step for trello screenshot](/docs/assets/next-step-anim-big.gif)
+
+📺🛠 You can watch me develop this Chrome Extension live, every wednesday 2pm CET, on [my livecoding.tv page](https://www.livecoding.tv/adrienjoly/). 
