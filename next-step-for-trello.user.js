@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.5.2
+// @version 0.5.3
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/*
@@ -147,6 +147,19 @@ function installToolbar() {
 
 function init(){
   var needsRefresh = true;
+  // refresh on card name change
+  document.body.addEventListener('DOMSubtreeModified', function(e){
+    if ('list-card-details' == e.target.className) {
+      needsRefresh = true;
+    }
+  }, false);
+  // refresh after drag&dropping a card to another column
+  document.body.addEventListener('DOMNodeInserted', function(e){
+    if (e.target.className == 'list-card js-member-droppable active-card ui-droppable') {
+      needsRefresh = true;
+    }
+  }, false);
+  // refresh on page change
   setInterval(function() {
     if (window.location.href.indexOf('https://trello.com/b/') === 0) {
       if (!document.getElementById('aj-nextstep-btn')) {
