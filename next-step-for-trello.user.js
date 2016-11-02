@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.5.1
+// @version 0.5.2
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/*
@@ -72,12 +72,19 @@ const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json
 
 // UI helpers
 
+function renderMarkdown(text) {
+  return text
+    .replace(/\[(.*)\]\(.*\)/g, '<span style="text-decoration:underline;">$1</span>')
+    .replace(/https?\:\/\/([^\/ ]+)[^ ]+/g, '<span style="text-decoration:underline;">$1</span>')
+    .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
+}
+
 function setCardContent(cardElement, items) {
   cardElement.innerHTML =
     cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/g, '')
     + (items || []).map((item) => '<p class="aj-next-step" style="position: relative; ' + STYLING + '">'
       + '<span style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
-      + '<span>' + item.name + '</span>'
+      + '<span>' + renderMarkdown(item.name) + '</span>'
       + '</p>'
     ).join('\n');
 }
