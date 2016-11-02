@@ -6,4 +6,4 @@ Appends the first unchecked checklist item to the title of each card, when visit
 
 **Install and rate it from there: ["Next Step" for Trello cards](https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf)** (Chrome Web Store page)
 
-![Next step for trello screenshot](/resources/screenshot-small.png)
+![Next step for trello screenshot](/docs/assets/next-step-anim-big.gif)
