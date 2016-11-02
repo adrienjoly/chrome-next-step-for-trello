@@ -7,23 +7,46 @@
 	<title>Next Task for Trello</title>
 	<meta name="viewport" content="width=device-width">
 	<link rel="stylesheet" href="index.css">
+	<link rel="stylesheet" href="http://platform.twitter.com/css/tweet.5a864f234703f39cb21ec32807df961c.light.ltr.css">
+	<style>
+		.twitter-tweet-rendered {
+			position: static;
+			visibility: visible;
+			display: block;
+			transform: rotate(0deg);
+			max-width: 100%;
+			width: 500px;
+			min-width: 220px;
+			margin-top: 10px;
+			margin-bottom: 10px;
+			background-color: white;
+			color: #1c2022;
+			text-align: left;
+			padding: 20px;
+			font-size: 16px;
+			font-family: Helvetica, Roboto, Segoe UI, Calibri, sans-serif;
+		}
+		.twitter-tweet-rendered img {
+			left: 50%;
+		}
+	</style>
 	<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf">
 	<meta property="og:title" content="Next Step for Trello">
-	<meta property="og:description" content="See the next step of each card from your Trello board.">
+	<meta property="og:description" content="Increase your productivity with this Google Chrome extension that displays the next To-Do step of each card, on your Trello boards.">
 	<meta property="og:image" content="http://adrienjoly.com/next-step-for-trello">
 	<meta property="og:url" content="http://adrienjoly.com/next-step-for-trello">
 </head>
 <body class="home teams no-fullpage pt">
 	<div id="fullpage" class="panels">
-		<div id="section-hero" class="section">
+		<section id="section-hero" class="section">
 			<div style="display: flex; flex-direction: column;" class="section-content lp-txt-align-c">
 				<h1 style="flex: 0 1 auto;">Next Step for Trello</h1>
-				<h2 style="flex: 0 1 auto" class="lp-m-top-p5">See the next step of each card<br> from your Trello board.</h2>
+				<h2 style="flex: 0 1 auto" class="lp-m-top-p5">Trello cards on steroids</h2>
 				<div style="flex: 15 5; position: relative; justify-content: center; align-items: center; pointer-events: none" class="lp-m-top-1">
 					<img id="video-01" src="assets/next-step-anim.gif">
 				</div>
 				<div data-js-hero-cta-buttons style="display: flex; flex: 0 1 auto; justify-content: space-around; position: relative" class="lp-m-top-3">
-					<a href="https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf" style="flex: 1 0 280px; padding-left: 0; padding-right: 0" class="lp-btn">Install in Google Chrome</a>
+					<a href="https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf" style="flex: 1 0 280px; padding-left: 0; padding-right: 0" class="lp-btn">Install on Google Chrome</a>
 					<!--
 					<button style="flex: 1 0 280px; padding-left: 0; padding-right: 0; margin-left: 20px" class="lp-btn">Install in Firefox</button>
 					-->
@@ -33,57 +56,158 @@
 					<div data-js-down-arrow style="flex: 0 0 auto;"><i style="cursor: pointer; font-size: 2em; color: lightgray" class="pnticn-caret_down"></i></div>
 				</div>
 			</div>
-		</div>
-		<div id="section-explainer-1" class="section">
-			<div class="section-subsection-wrapper">
-				<div class="section-subsection section-subsection-right">
-					<div class="section-subsection-text lp-txt-align-l">
-						<h2>Quickly plan your day from Trello.</h2>
-						<p class="lp-m-top-0">If you use checklists inside your cards, we'll show you the next item to do, directly from your board view.</p>
-					</div>
-					<div style="background-image: url('assets/homepage-send.png') " class="section-subsection-img"></div>
+		</section>
+		<section style="display: flex; flex-direction: row; margin: 50px;">
+			<div class="section-subsection" style="flex-grow: 1; width: 33%;">
+				<div class="section-subsection-text">
+					<h2>Boost your productivity!</h2>
+					<p class="lp-m-top-0">Checklists inside your cards is good. Seeing the next item on the list directly from your board view is even better.</p>
 				</div>
 			</div>
-		</div>
-		<div id="section-explainer-2" class="section">
-			<div class="section-subsection-wrapper">
-				<div class="section-subsection section-subsection-left">
-					<div class="section-subsection-text lp-txt-align-l">
-						<h2>Boost your productivity!</h2>
-						<p class="lp-m-top-0">Stop losing minutes figuring out what you're supposed to do next. All you need is to keep your checklists up to date on Trello.</p>
-					</div>
-					<div style="background-image: url('assets/homepage-quote.png')" class="section-subsection-img"></div>
+			<div class="section-subsection" style="flex-grow: 1; width: 33%;">
+				<div class="section-subsection-text">
+					<h2>Trello users waste 4min35 opening cards everyday.</h2>
+					<p class="lp-m-top-0">This accounts for more than 3 months in a lifetime. Sure you don't need this extension?</p>
 				</div>
 			</div>
-		</div>
-		<div id="section-explainer-3" class="section">
-			<div class="section-subsection-wrapper">
-				<div class="section-subsection section-subsection-right">
-					<div class="section-subsection-text lp-txt-align-l">
-						<h2>Four modes.</h2>
-						<p class="lp-m-top-0">First checklist item? First item of each checklist? All checklist items? You can switch in one click!</p>
-					</div>
-					<div style="background-image: url('assets/homepage-quote.png')" class="section-subsection-img"></div>
+			<div class="section-subsection" style="flex-grow: 1; width: 33%;">
+				<div class="section-subsection-text">
+					<h2>No strings attached.</h2>
+					<p class="lp-m-top-0">Next Step for Trello works immediately after installation. No signup. No credit card. No questions asked.</p>
 				</div>
 			</div>
-		</div>
-		<div id="section-explainer-4" class="section">
-			<div class="section-subsection-wrapper">
-				<div class="section-subsection section-subsection-left">
-					<div class="section-subsection-text lp-txt-align-l">
-						<h2>No strings attached.</h2>
-						<p class="lp-m-top-0">Next Step for Trello works immediately after installation. No signup. No credit card. No questions asked.</p>
-					</div>
-					<div style="background-image: url('assets/homepage-inbox.png')" class="section-subsection-img"></div>
+			<!--
+			<div class="section-subsection">
+				<div class="section-subsection-text">
+					<h2>Quickly plan your day from Trello.</h2>
+					<p class="lp-m-top-0">If you use checklists inside your cards, we'll show you the next item to do, directly from your board view.</p>
 				</div>
 			</div>
-		</div>
-		<div id="section-testimonials" class="section">
+			<div class="section-subsection">
+				<div class="section-subsection-text">
+					<h2>Four modes.</h2>
+					<p class="lp-m-top-0">First checklist item? First item of each checklist? All checklist items? You can switch in one click!</p>
+				</div>
+			</div>
+			-->
+		</section>
+		<section id="section-testimonials" class="section">
 			<div style="display: flex; flex-direction: column;" class="section-content lp-txt-align-c">
 				<h1>People <span class='heart'>❤</span> it.</h1>
-				<p>( insert some tweets and/or testimonials here )</p>
+				<!--
+				<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en">
+					<p lang="en" dir="ltr">
+						New <a href="https://twitter.com/hashtag/idea?src=hash">#idea</a> 💡by <a href="https://twitter.com/adrienjoly">@adrienjoly</a>
+						- Next step for Trello cards: &quot;Google Chrome extension that displays the next...&quot;
+						<a href="https://t.co/QzL8ZyiDEG">https://t.co/QzL8ZyiDEG</a>
+					</p>
+					&mdash; Pitchcard (@pitchcard)
+					<a href="https://twitter.com/pitchcard/status/782948099216011264">October 3, 2016</a>
+				</blockquote>
+				<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en">
+					<p lang="en" dir="ltr">I just made a Chrome Extension that displays the next step of each Trello card:<a href="https://t.co/AUyOCLVNLa">https://t.co/AUyOCLVNLa</a><br>
+						Thx to <a href="https://twitter.com/pitchcard">@pitchcard</a> and <a href="https://twitter.com/lailo_ch">@lailo_ch</a> :-)
+						<a href="https://t.co/4CSSIs0uUn">pic.twitter.com/4CSSIs0uUn</a>
+					</p>
+					&mdash; Adrien Joly (@adrienjoly)
+					<a href="https://twitter.com/adrienjoly/status/782888175807131648">October 3, 2016</a>
+				</blockquote>
+				<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+				-->
+
+				<article class="twitter-tweet twitter-tweet-rendered">
+					<blockquote class="Tweet h-entry js-tweetIdInfo subject expanded is-deciderHtmlWhitespace" cite="https://twitter.com/adrienjoly/status/782888175807131648" data-tweet-id="782888175807131648" data-scribe="section:subject">
+						<div class="Tweet-header u-cf">
+							<div class="Tweet-brand u-floatRight">
+								<span class="u-hiddenInNarrowEnv">
+									<a class="FollowButton follow-button profile" href="https://twitter.com/adrienjoly" role="button">
+										<span class="FollowButton-bird">
+											<div class="Icon Icon--twitter "></div>
+										</span>			Follow
+									</a>
+								</span>
+							</div>
+							<div class="TweetAuthor" data-scribe="component:author">
+								<a class="TweetAuthor-link Identity u-linkBlend" href="https://twitter.com/adrienjoly">
+									<span class="TweetAuthor-avatar Identity-avatar">
+										<img class="Avatar" src="https://pbs.twimg.com/profile_images/49918572/half-face-ice_400x400.jpg">
+									</span>
+									<span class="TweetAuthor-name Identity-name customisable-highlight">Tim Ferriss</span>
+									<span class="TweetAuthor-screenName Identity-screenName">@tferriss</span>
+								</a>
+							</div>
+						</div>
+						<div class="Tweet-body e-entry-content" data-scribe="component:tweet">
+							<p class="Tweet-text e-entry-title" lang="en" dir="ltr">
+								Thanks to my productivity boost with Next Step for Trello,<br />
+								I'm writing a new book: The 1-Hour Workweek
+							</p>
+						</div>
+					</blockquote>
+				</article>
+
+				<article class="twitter-tweet twitter-tweet-rendered">
+					<blockquote class="Tweet h-entry js-tweetIdInfo subject expanded is-deciderHtmlWhitespace" cite="https://twitter.com/adrienjoly/status/782888175807131648" data-tweet-id="782888175807131648" data-scribe="section:subject">
+						<div class="Tweet-header u-cf">
+							<div class="Tweet-brand u-floatRight">
+								<span class="u-hiddenInNarrowEnv">
+									<a class="FollowButton follow-button profile" href="https://twitter.com/adrienjoly" role="button">
+										<span class="FollowButton-bird">
+											<div class="Icon Icon--twitter "></div>
+										</span>			Follow
+									</a>
+								</span>
+							</div>
+							<div class="TweetAuthor" data-scribe="component:author">
+								<a class="TweetAuthor-link Identity u-linkBlend" href="https://twitter.com/adrienjoly">
+									<span class="TweetAuthor-avatar Identity-avatar">
+										<img class="Avatar" src="https://pbs.twimg.com/profile_images/767979173017219077/m12btfsk_400x400.jpg">
+									</span>
+									<span class="TweetAuthor-name Identity-name customisable-highlight">Max Braud</span>
+									<span class="TweetAuthor-screenName Identity-screenName">@mxbraud</span>
+								</a>
+							</div>
+						</div>
+						<div class="Tweet-body e-entry-content" data-scribe="component:tweet">
+							<p class="Tweet-text e-entry-title" lang="en" dir="ltr">
+								Shut up and take my money! 💵💵💵
+							</p>
+						</div>
+					</blockquote>
+				</article>
+
+				<article class="twitter-tweet twitter-tweet-rendered">
+					<blockquote class="Tweet h-entry js-tweetIdInfo subject expanded is-deciderHtmlWhitespace" cite="https://twitter.com/adrienjoly/status/782888175807131648" data-tweet-id="782888175807131648" data-scribe="section:subject">
+						<div class="Tweet-header u-cf">
+							<div class="Tweet-brand u-floatRight">
+								<span class="u-hiddenInNarrowEnv">
+									<a class="FollowButton follow-button profile" href="https://twitter.com/adrienjoly" role="button">
+										<span class="FollowButton-bird">
+											<div class="Icon Icon--twitter "></div>
+										</span>			Follow
+									</a>
+								</span>
+							</div>
+							<div class="TweetAuthor" data-scribe="component:author">
+								<a class="TweetAuthor-link Identity u-linkBlend" href="https://twitter.com/adrienjoly">
+									<span class="TweetAuthor-avatar Identity-avatar">
+										<img class="Avatar" src="https://pbs.twimg.com/profile_images/776668986683645952/6SEXM9it_400x400.jpg">
+									</span>
+									<span class="TweetAuthor-name Identity-name customisable-highlight">Adrien Montcoudiol</span>
+									<span class="TweetAuthor-screenName Identity-screenName">@adrienm</span>
+								</a>
+							</div>
+						</div>
+						<div class="Tweet-body e-entry-content" data-scribe="component:tweet">
+							<p class="Tweet-text e-entry-title" lang="en" dir="ltr">
+								Without Next Step for Trello, my freelancing life would be a complete disaster! 😱
+							</p>
+						</div>
+					</blockquote>
+				</article>
+
 			</div>
-		</div>
+		</section>
 	</div>
 	<div class="fixed-footer">
 		<div class="lp-menu lp-menu-horizontal">

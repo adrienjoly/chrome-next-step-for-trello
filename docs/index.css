@@ -1,3 +1,6 @@
+body {
+  font-family: Avenir, 'Lato', sans-serif;
+}
 .lp-h1 {
   font-size: 2em;
   line-height: 1.5em;
@@ -46,7 +49,6 @@
   line-height: 1.5em;
   margin-top: 1.5em;
   margin-bottom: 1.5em;
-  font-family: Avenir, 'Lato', sans-serif;
 }
 .pt p.lp-rhythm-upshift {
   margin-top: 0px;
@@ -91,7 +93,6 @@
   line-height: 1.5em;
   margin-top: 1.5em;
   margin-bottom: 1.5em;
-  font-family: Avenir, 'Lato', sans-serif;
 }
 .pt ul li.lp-rhythm-upshift,
 .pt li li.lp-rhythm-upshift {
@@ -105,7 +106,6 @@
   list-style-type: decimal;
 }
 .lp-btn {
-  font-family: Avenir, 'Lato', sans-serif;
   font-size: 1em;
   text-decoration: none;
   border: 2px solid #2eabe8;
@@ -172,7 +172,6 @@
 }
 .pt {
   font-size: 18px;
-  font-family: Avenir, 'Lato', sans-serif;
   color: #595554;
 /*p
         vertical-rhythm-p($bs-base-font-size)
@@ -785,7 +784,6 @@ body:after {
 input {
   padding: 0.4em;
   font-size: 0.9em;
-  font-family: Avenir, 'Lato', sans-serif;
   color: #595554;
   -webkit-border-radius: 3px;
   border-radius: 3px;
