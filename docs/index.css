@@ -298,22 +298,19 @@ h1 {
 .lp-is-visible {
   visibility: visible;
 }
-h1 {
+body h1 {
   font-size: 1.5555555555555556em;
   line-height: 1.5em;
   margin-top: 1.542857142857143em;
   margin-bottom: 0.38571428571428573em;
   color: #333;
 }
-h2 {
+body h2 {
   font-size: 1.3333333333333333em;
   line-height: 1.5em;
   margin-top: 1.8em;
   margin-bottom: 0.45em;
   line-height: 28px;
-  color: #2eabe8;
-}
-h2 {
   font-weight: 100;
   color: #2eabe8;
 }
