@@ -407,6 +407,9 @@ footer {
   background-color: #2eabe8;
   padding: 5px;
 }
+footer a {
+  color: inherit !important;
+}
 footer ul {
   padding: 0;
   margin: 0;
