@@ -99,6 +99,13 @@ body {
   width: 100%;
   *zoom: 1;
   font-family: Avenir, 'Lato', sans-serif;
+  font-size: 18px;
+  color: #595554;
+}
+body * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 body:before,
 body:after {
@@ -133,15 +140,6 @@ h1 {
 }
 .lp-btn:hover {
   background-color: rgba(46,171,232,0.1);
-}
-.pt {
-  font-size: 18px;
-  color: #595554;
-}
-.pt * {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
 }
 
 .lp-float-l {
@@ -320,16 +318,16 @@ h2 {
   color: #2eabe8;
 }
 
-body.pt p:first-child,
-body.pt h1:first-child,
-body.pt h2:first-child,
-body.pt h3:first-child {
+p:first-child,
+h1:first-child,
+h2:first-child,
+h3:first-child {
   margin-top: 0;
 }
-body.pt p:last-child,
-body.pt h1:last-child,
-body.pt h2:last-child,
-body.pt h3:last-child {
+p:last-child,
+h1:last-child,
+h2:last-child,
+h3:last-child {
   margin-bottom: 0;
 }
 #section-hero h2 {
@@ -341,10 +339,12 @@ body.pt h3:last-child {
 #section-testimonials {
   background-color: #2eabe8;
   color: #fff;
+  padding-bottom: 40px;
 }
 #section-testimonials h1 {
   font-size: 3rem !important;
   color: #fff !important;
+  margin-bottom: 40px;
 }
 #section-testimonials h2 {
   color: #fff !important;
@@ -386,10 +386,10 @@ body.pt h3:last-child {
   right: 0;
   bottom: 0;
 }
-body.no-fullpage #section-hero {
+#section-hero {
   padding-top: 60px;
 }
-body.no-fullpage .section-content {
+.section-content {
   position: static;
 }
 .demo-anim {
@@ -450,10 +450,14 @@ footer ul li a {
 .heart {
   color: #bd2240;
 }
-body.no-fullpage .section-content {
+.section-content {
   min-height: 600px;
 }
-
+#features {
+  display: flex;
+  flex-direction: row;
+  margin: 100px 50px;
+}
 #features article {
   margin: auto;
   flex-grow: 1;
@@ -466,10 +470,10 @@ body.no-fullpage .section-content {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 #features h2 {
-  min-height: 64px;
+  min-height: 80px;
 }
 .twitter-tweet-rendered {
   position: static;
@@ -492,13 +496,16 @@ body.no-fullpage .section-content {
   left: 50%;
 }
 
-@media only screen and (min-height: 700px) {
-  body.no-fullpage .section-content {
-    min-height: 600px !important;
+@media (max-width: 900px) {
+  #features {
+    flex-direction: column;
   }
-}
-@media only screen and (min-height: 2000px) {
-  body.no-fullpage .section-content {
-    min-height: 1900px !important;
+  #features article {
+    width: 100%;
+    margin-top: 40px;
+  }
+  #features h2 {
+    min-height: auto;
+    margin-bottom: 10px;
   }
 }
