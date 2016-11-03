@@ -8,28 +8,6 @@
 	<meta name="viewport" content="width=device-width">
 	<link rel="stylesheet" href="index.css">
 	<link rel="stylesheet" href="http://platform.twitter.com/css/tweet.5a864f234703f39cb21ec32807df961c.light.ltr.css">
-	<style>
-		.twitter-tweet-rendered {
-			position: static;
-			visibility: visible;
-			display: block;
-			transform: rotate(0deg);
-			max-width: 100%;
-			width: 500px;
-			min-width: 220px;
-			margin-top: 10px;
-			margin-bottom: 10px;
-			background-color: white;
-			color: #1c2022;
-			text-align: left;
-			padding: 20px;
-			font-size: 16px;
-			font-family: Helvetica, Roboto, Segoe UI, Calibri, sans-serif;
-		}
-		.twitter-tweet-rendered img {
-			left: 50%;
-		}
-	</style>
 	<link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf">
 	<meta property="og:title" content="Next Step for Trello">
 	<meta property="og:description" content="Increase your productivity with this Google Chrome extension that displays the next To-Do step of each card, on your Trello boards.">
@@ -43,7 +21,7 @@
 				<h1 style="flex: 0 1 auto;">Next Step for Trello</h1>
 				<h2 style="flex: 0 1 auto" class="lp-m-top-p5">Trello cards on steroids</h2>
 				<div style="flex: 15 5; position: relative; justify-content: center; align-items: center; pointer-events: none" class="lp-m-top-1">
-					<img id="video-01" src="assets/next-step-anim-big.gif">
+					<img id="video-01" class="demo-anim" src="assets/next-step-anim-big.gif">
 				</div>
 				<div data-js-hero-cta-buttons style="display: flex; flex: 0 1 auto; justify-content: space-around; position: relative" class="lp-m-top-3">
 					<a href="https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf" style="flex: 1 0 280px; padding-left: 0; padding-right: 0" class="lp-btn">Install on Google Chrome</a>
@@ -57,25 +35,22 @@
 				</div>
 			</div>
 		</section>
-		<section style="display: flex; flex-direction: row; margin: 50px;">
-			<div class="section-subsection" style="flex-grow: 1; width: 33%;">
-				<div class="section-subsection-text">
-					<h2>Boost your productivity!</h2>
-					<p class="lp-m-top-0">Checklists inside your cards is good. Seeing the next item on the list directly from your board view is even better.</p>
-				</div>
-			</div>
-			<div class="section-subsection" style="flex-grow: 1; width: 33%;">
-				<div class="section-subsection-text">
-					<h2>Trello users waste 4min35 opening cards everyday.</h2>
-					<p class="lp-m-top-0">This accounts for more than 3 months in a lifetime. Sure you don't need this extension?</p>
-				</div>
-			</div>
-			<div class="section-subsection" style="flex-grow: 1; width: 33%;">
-				<div class="section-subsection-text">
-					<h2>No strings attached.</h2>
-					<p class="lp-m-top-0">Next Step for Trello works immediately after installation. No signup. No credit card. No questions asked.</p>
-				</div>
-			</div>
+		<section id="features" style="display: flex; flex-direction: row; margin: 50px;">
+			<article>
+				<div class="feature-img" style="background-image:url(assets/noun_337973_cc.png)"></div>
+				<h2>Boost your productivity!</h2>
+				<p class="lp-m-top-0">Checklists inside your cards is good. Seeing the next item on the list directly from your board view is even better.</p>
+			</article>
+			<article>
+				<div class="feature-img" style="background-image:url(assets/noun_457042_cc.png)"></div>
+				<h2>Trello users waste 4min35 opening cards everyday.</h2>
+				<p class="lp-m-top-0">This accounts for more than 3 months in a lifetime. Sure you don't need this extension?</p>
+			</article>
+			<article>
+				<div class="feature-img" style="background-image:url(assets/noun_565967_cc.png)"></div>
+				<h2>No strings attached.</h2>
+				<p class="lp-m-top-0">Next Step for Trello works immediately after installation. No signup. No credit card. No questions asked.</p>
+			</article>
 			<!--
 			<div class="section-subsection">
 				<div class="section-subsection-text">
@@ -209,7 +184,14 @@
 			</div>
 		</section>
 	</div>
-	<div class="fixed-footer">
+	<footer>
+		<p style="width: 100%; text-align: center; margin: 10px; color: #999; font-size: 11px;">
+			Icons from Noun Project:
+			"Boost" by Ralf Schmitzer,
+			"Boosting" by Chameleon Design,
+			"Sun" by Ekin Tumer
+		</p>
+		<!--
 		<div class="lp-menu lp-menu-horizontal">
 			<ul>
 				<li><a href="team/">Team</a></li>
@@ -217,6 +199,7 @@
 				<li><a href="legal/">Legal</a></li>
 			</ul>
 		</div>
-	</div>
+		-->
+	</footer>
 </body>
 </html>
