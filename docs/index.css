@@ -301,14 +301,11 @@ h1 {
 body h1 {
   font-size: 1.5555555555555556em;
   line-height: 1.5em;
-  margin-top: 1.542857142857143em;
-  margin-bottom: 0.38571428571428573em;
   color: #333;
 }
 body h2 {
   font-size: 1.3333333333333333em;
-  line-height: 1.5em;
-  margin-top: 1.8em;
+  margin-top: 1em;
   margin-bottom: 0.45em;
   line-height: 28px;
   font-weight: 100;
@@ -339,7 +336,7 @@ h3:last-child {
   padding-bottom: 40px;
 }
 #section-testimonials h1 {
-  font-size: 3rem !important;
+  font-size: 2.5rem !important;
   color: #fff !important;
   margin-bottom: 40px;
 }
@@ -407,6 +404,8 @@ h3:last-child {
 footer {
   width: 100%;
   font-size: 0.8em;
+  background-color: #2eabe8;
+  padding: 5px;
 }
 footer ul {
   padding: 0;
@@ -417,7 +416,6 @@ footer ul li {
   list-style: none;
   display: inline-block;
   padding: 0;
-  margin: 10px;
 }
 footer ul li a {
   color: #cbcbcb;
@@ -488,6 +486,7 @@ footer ul li a {
   padding: 20px;
   font-size: 16px;
   font-family: Helvetica, Roboto, Segoe UI, Calibri, sans-serif;
+  border-radius: 5px;
 }
 .twitter-tweet-rendered img {
   left: 50%;
