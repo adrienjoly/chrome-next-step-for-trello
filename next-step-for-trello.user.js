@@ -83,7 +83,7 @@ function setCardContent(cardElement, items) {
   cardElement.innerHTML =
     cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/g, '')
     + (items || []).map((item) => '<p class="aj-next-step" style="position: relative; ' + STYLING + '">'
-      + '<span style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
+      + '<span onclick="ajClickOnCheckItem(arguments[0])" style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
       + '<span>' + renderMarkdown(item.name) + '</span>'
       + '</p>'
     ).join('\n');
@@ -173,6 +173,29 @@ function init(){
       needsRefresh = true;
     }
   }, 500);
+  // define global function to allow checking items directly from board.
+  window.ajClickOnCheckItem = function (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    // let's check that item
+    var urlEncodedData = 'state=complete&' + token.trim();
+    var cardId = '5803b13f1dfb52d879ffa12d';
+    var checklistId = '580e0b72c9ad8d91d813f5cf';
+    var itemId = '5803b1a0163254022fe9c662';
+    fetch('https://trello.com/1/cards/' + cardId + '/checklist/' + checklistId + '/checkItem/' + itemId, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': urlEncodedData.length
+      },
+      body: urlEncodedData
+    }).then(function() {
+      needsRefresh = true;
+    });
+  };
+  // it was made global because adding and removing listeners dynamically
+  // is too complex at that stage
 }
 
 console.log('[[ next-step-for-trello ]]', document.readyState);
