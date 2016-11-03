@@ -1,5 +1,6 @@
 I would like to express my gratitude to people who helped me develop Next Track for Trello:
 
+- [Adrien Montcoudiol](http://twitter.com/adrienm) for his advice on my landing page
 - [Ben Kimo Twichell](http://www.iambent.com/) for his kind and patient help in solving nasty bugs: https://github.com/adrienjoly/chrome-next-track-for-trello/issues/1
 - Xavier Dorémus, for feedback
 - Anthony Rodriguez, for feedback
