@@ -1,3 +1,5 @@
+== 0.5.4 New purple icon
+
 == 0.5.3 Auto-refresh on on-board updates
  * Refresh after moving a card to another column (and other actions made directly on the board page), issue #7
 
