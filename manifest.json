@@ -12,5 +12,6 @@
    "description": "Display the next task to be done, on each Trello card.",
    "icons": { "128": "icon-128.png" },
    "name": "Next Step for Trello cards",
+   "short_name": "Next Step",
    "version": "0.5.4"
 }
