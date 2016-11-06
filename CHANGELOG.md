@@ -1,3 +1,7 @@
+== 0.5.5 Fixes for stability and speed
+ * Make sure that initilization is run only once 
+ * Make sure that DOM watchers are initialized only once, and after toolbar installation
+
 == 0.5.4 New purple icon
 
 == 0.5.3 Auto-refresh on on-board updates

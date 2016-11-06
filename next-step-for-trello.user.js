@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.5.4
+// @version 0.5.5
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/*
@@ -90,7 +90,6 @@ function setCardContent(cardElement, items) {
 }
 
 function updateCards() {
-  console.log('[[ next-step-for-trello ]] updateCards()...');
   var cards = document.getElementsByClassName('list-card-title');
   var handler = (cardElement) => cardElement.href && MODES[currentMode].handler(cardElement);
   var promises = Array.prototype.map.call(cards, handler);
@@ -132,51 +131,80 @@ function nextMode() {
 
 // extension initialization
 
+const isToolbarInstalled = () => document.getElementById('aj-nextstep-mode'); 
+
 function installToolbar() {
-  var headerElements = document.getElementsByClassName('board-header-btns')
-  var btn = document.createElement('a');
-  btn.href = '#';
-  btn.id = 'aj-nextstep-btn';
-  btn.className = 'board-header-btn board-header-btn-without-icon';
-  btn.onclick = nextMode;
-  btn.innerHTML = '<span class="board-header-btn-text">'
-    + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
-    + '</span>';
-  headerElements[0].appendChild(btn);
+  var headerElements = document.getElementsByClassName('board-header-btns');
+  if (isToolbarInstalled() || !headerElements.length) {
+    return false;
+  } else {
+    var btn = document.createElement('a');
+    btn.href = '#';
+    btn.id = 'aj-nextstep-btn';
+    btn.className = 'board-header-btn board-header-btn-without-icon';
+    btn.onclick = nextMode;
+    btn.innerHTML = '<span class="board-header-btn-text">'
+      + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
+      + '</span>';
+    headerElements[0].appendChild(btn);
+    return true;
+  }
 }
 
-function init(){
-  var needsRefresh = true;
+function watchForChanges(handler) {
   // refresh on card name change
   document.body.addEventListener('DOMSubtreeModified', function(e){
     if ('list-card-details' == e.target.className) {
-      needsRefresh = true;
+      handler();
     }
   }, false);
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
     if (e.target.className == 'list-card js-member-droppable active-card ui-droppable') {
-      needsRefresh = true;
+      handler();
     }
   }, false);
-  // refresh on page change
-  setInterval(function() {
-    if (window.location.href.indexOf('https://trello.com/b/') === 0) {
-      if (!document.getElementById('aj-nextstep-btn')) {
-        installToolbar();
-      }
-      if (needsRefresh) {
-        needsRefresh = false;
-        updateCards();
-      }
+}
+
+const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
+
+var needsRefresh = true;
+
+const INIT_STEPS = [
+  // step 0: integrate the toolbar button (when page is ready)
+  function initToolbar(callback) {
+    if (installToolbar()) {
+      callback();
+    }
+  },
+  // step 1: watch DOM changes (one shot init)
+  function initWatchers(callback) {
+    watchForChanges(() => { needsRefresh = true; });
+    callback();
+  },
+  // step 2: main loop
+  function main() {
+    if (!isToolbarInstalled()) {
+      installToolbar();
+      needsRefresh = true;
+    }
+    if (needsRefresh) {
+      needsRefresh = false;
+      updateCards();
+    }
+  }
+];
+
+function init(){
+  var currentStep = 0;
+  setInterval(() => {
+    if (isOnBoardPage()) {
+      INIT_STEPS[currentStep](() => { ++currentStep; });
     } else {
       needsRefresh = true;
     }
   }, 500);
 }
 
-console.log('[[ next-step-for-trello ]]', document.readyState);
-
-window.onload = init;
-
-if (document.readyState === 'complete') init();
+console.log('[[ next-step-for-trello ]]');
+init();
