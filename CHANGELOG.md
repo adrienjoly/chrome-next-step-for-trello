@@ -1,3 +1,5 @@
+== 0.5.6 Added loading animation
+
 == 0.5.5 Fixes for stability and speed
  * Make sure that initilization is run only once 
  * Make sure that DOM watchers are initialized only once, and after toolbar installation
