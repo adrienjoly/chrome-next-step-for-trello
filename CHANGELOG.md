@@ -1,3 +1,5 @@
+== 0.6.0 Check items from board view
+
 == 0.5.6 Added loading animation
 
 == 0.5.5 Fixes for stability and speed

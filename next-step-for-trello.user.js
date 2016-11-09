@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.6-alpha
+// @version 0.6
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/*
@@ -17,7 +17,6 @@
  *
  ***************************/
 
-var EMOJI = '◽️';
 var STYLING = 'overflow: auto; padding-left: 18px; margin-top: 1em; font-size: 12px; line-height: 1.2em; color: #8c8c8c; font-family: Helvetica Neue, Arial, Helvetica, sans-serif;';
 
 // basic helpers
@@ -37,10 +36,13 @@ const prefixChecklistName = (item) =>
     name: item.checklistName + ': ' + item.name
   });
 
+// this function is used by all modes, to flatten item lists
 const sortedNextSteps = (checklist) => checklist.checkItems
   .sort(byPos)
   .filter((item) => item.state === 'incomplete')
   .map((item) => Object.assign(item, {
+    cardId: checklist.idCard,
+    checklistId: checklist.id,
     checklistName: checklist.name
   }));
 
@@ -49,9 +51,13 @@ const getAllNextSteps = (checklists) => checklists
   .map(sortedNextSteps)
   .reduce((a, b) => a.concat(b), []);
 
+// functions called by differents modes:
+
+// display all next steps
 const getAllNextStepsNamed = (checklists) => getAllNextSteps(checklists)
   .map(prefixChecklistName);
 
+// display one next step per checklist
 const getNextStepsOfChecklists = (checklists) => checklists
   .sort(byPos)
   .map(getFirstResult(sortedNextSteps))
@@ -59,6 +65,7 @@ const getNextStepsOfChecklists = (checklists) => checklists
   .reduce((a, b) => a.concat(b), [])
   .map(prefixChecklistName);
 
+// display the first next step only
 const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
     .filter(nonNull);
 
@@ -79,14 +86,21 @@ function renderMarkdown(text) {
     .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
 }
 
+const renderItem = (item) => `
+  <p class="aj-next-step"
+     style="position: relative; ${STYLING}"
+     data-card-id="${item.cardId}"
+     data-checklist-id="${item.checklistId}"
+     data-item-id="${item.id}"
+  >
+        <span class="aj-checkbox" style="position: absolute; top: 1px; left: 2px;">◽️</span>
+        <span> ${renderMarkdown(item.name)} </span>
+  </p>`;
+
 function setCardContent(cardElement, items) {
   cardElement.innerHTML =
-    cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/g, '')
-    + (items || []).map((item) => '<p class="aj-next-step" style="position: relative; ' + STYLING + '">'
-      + '<span class="aj-checkbox" style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
-      + '<span>' + renderMarkdown(item.name) + '</span>'
-      + '</p>'
-    ).join('\n');
+    cardElement.innerHTML.replace(/<p class="aj-next-step"(.|[\r\n])*<\/p>/g, '')
+    + (items || []).map(renderItem).join('\n');
   var checkboxes = document.getElementsByClassName('aj-checkbox');
   for (var i=0; i<checkboxes.length; ++i) {
     checkboxes[i].addEventListener('click', onCheckItem);
@@ -218,8 +232,30 @@ function injectCss() {
 const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
 
 var needsRefresh = true;
-var token;
-var onCheckItem; // will be bound to a function that needs token to be set
+var token; // needed by onCheckItem
+
+// define function to allow checking items directly from board.
+function onCheckItem(evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+  // let's check that item
+  var item = evt.currentTarget.parentNode;
+  var url = 'https://trello.com/1/cards/' + item.getAttribute('data-card-id')
+    + '/checklist/' + item.getAttribute('data-checklist-id')
+    + '/checkItem/' + item.getAttribute('data-item-id')
+  var urlEncodedData = 'state=complete&' + token.trim();
+  fetch(url, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': urlEncodedData.length
+    },
+    body: urlEncodedData
+  }).then(function() {
+    needsRefresh = true;
+  });
+}
 
 const INIT_STEPS = [
   // step 0: integrate the toolbar button (when page is ready)
@@ -275,27 +311,6 @@ function init(){
       needsRefresh = true;
     }
   }, 500);
-  // define function to allow checking items directly from board.
-  onCheckItem = function (evt) {
-    evt.preventDefault();
-    evt.stopPropagation();
-    // let's check that item
-    var urlEncodedData = 'state=complete&' + token.trim();
-    var cardId = '5803b13f1dfb52d879ffa12d'; // TODO: un-hard-code this
-    var checklistId = '580e0b72c9ad8d91d813f5cf'; // TODO: un-hard-code this
-    var itemId = '5803b1a0163254022fe9c662'; // TODO: un-hard-code this
-    fetch('https://trello.com/1/cards/' + cardId + '/checklist/' + checklistId + '/checkItem/' + itemId, {
-      method: 'PUT',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': urlEncodedData.length
-      },
-      body: urlEncodedData
-    }).then(function() {
-      needsRefresh = true;
-    });
-  };
 }
 
 console.log('[[ next-step-for-trello ]]');
