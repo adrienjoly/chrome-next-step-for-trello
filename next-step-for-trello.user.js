@@ -219,6 +219,7 @@ const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/'
 
 var needsRefresh = true;
 var token;
+var onCheckItem; // will be bound to a function that needs token to be set
 
 const INIT_STEPS = [
   // step 0: integrate the toolbar button (when page is ready)
@@ -235,22 +236,22 @@ const INIT_STEPS = [
   },
   // step 2: get global token from Trello
   function getToken(callback) {
+    callback(); // calling it right away, in case the following code crashes
+    // wait for the message
+    window.addEventListener("MyCustomEvent", function (e) {
+      token = e.detail.passback;
+      console.log('trello token:', token);
+    });
     // inject code into the page's context (unrestricted)
     var scr = document.createElement('script');
     scr.textContent = ` 
       var event = document.createEvent("CustomEvent");  
       event.initCustomEvent("MyCustomEvent", true, true, {"passback": token});
-      window.dispatchEvent(event);
-    `;
+      window.dispatchEvent(event);`;
     // (appending text to a function to convert it's src to string only works in Chrome)
     // add to document to make it run, then hide it 
     (document.head || document.documentElement).appendChild(scr);
     scr.parentNode.removeChild(scr);
-    // now wait for the message
-    window.addEventListener("MyCustomEvent", function (e) {
-      token = e.detail.passback;
-      callback();
-    });
   },
   // step 3: main loop
   function main() {
@@ -265,8 +266,6 @@ const INIT_STEPS = [
   }
 ];
 
-var onCheckItem;
-
 function init(){
   var currentStep = 0;
   setInterval(() => {
@@ -280,12 +279,11 @@ function init(){
   onCheckItem = function (evt) {
     evt.preventDefault();
     evt.stopPropagation();
-    console.log('ajClickOnCheckItem');
     // let's check that item
     var urlEncodedData = 'state=complete&' + token.trim();
-    var cardId = '5803b13f1dfb52d879ffa12d';
-    var checklistId = '580e0b72c9ad8d91d813f5cf';
-    var itemId = '5803b1a0163254022fe9c662';
+    var cardId = '5803b13f1dfb52d879ffa12d'; // TODO: un-hard-code this
+    var checklistId = '580e0b72c9ad8d91d813f5cf'; // TODO: un-hard-code this
+    var itemId = '5803b1a0163254022fe9c662'; // TODO: un-hard-code this
     fetch('https://trello.com/1/cards/' + cardId + '/checklist/' + checklistId + '/checkItem/' + itemId, {
       method: 'PUT',
       credentials: 'include',
