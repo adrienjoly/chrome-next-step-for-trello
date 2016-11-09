@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.5.6
+// @version 0.6-alpha
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/*
@@ -83,10 +83,14 @@ function setCardContent(cardElement, items) {
   cardElement.innerHTML =
     cardElement.innerHTML.replace(/<p class="aj-next-step".*<\/p>/g, '')
     + (items || []).map((item) => '<p class="aj-next-step" style="position: relative; ' + STYLING + '">'
-      + '<span onclick="ajClickOnCheckItem(arguments[0])" style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
+      + '<span class="aj-checkbox" style="position: absolute; top: 1px; left: 2px;">' + EMOJI + '</span>'
       + '<span>' + renderMarkdown(item.name) + '</span>'
       + '</p>'
     ).join('\n');
+  var checkboxes = document.getElementsByClassName('aj-checkbox');
+  for (var i=0; i<checkboxes.length; ++i) {
+    checkboxes[i].addEventListener('click', onCheckItem);
+  }
 }
 
 function updateCards() {
@@ -214,6 +218,7 @@ function injectCss() {
 const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
 
 var needsRefresh = true;
+var token;
 
 const INIT_STEPS = [
   // step 0: integrate the toolbar button (when page is ready)
@@ -228,7 +233,26 @@ const INIT_STEPS = [
     injectCss();
     callback();
   },
-  // step 2: main loop
+  // step 2: get global token from Trello
+  function getToken(callback) {
+    // inject code into the page's context (unrestricted)
+    var scr = document.createElement('script');
+    scr.textContent = ` 
+      var event = document.createEvent("CustomEvent");  
+      event.initCustomEvent("MyCustomEvent", true, true, {"passback": token});
+      window.dispatchEvent(event);
+    `;
+    // (appending text to a function to convert it's src to string only works in Chrome)
+    // add to document to make it run, then hide it 
+    (document.head || document.documentElement).appendChild(scr);
+    scr.parentNode.removeChild(scr);
+    // now wait for the message
+    window.addEventListener("MyCustomEvent", function (e) {
+      token = e.detail.passback;
+      callback();
+    });
+  },
+  // step 3: main loop
   function main() {
     if (!isToolbarInstalled()) {
       installToolbar();
@@ -241,6 +265,8 @@ const INIT_STEPS = [
   }
 ];
 
+var onCheckItem;
+
 function init(){
   var currentStep = 0;
   setInterval(() => {
@@ -250,10 +276,11 @@ function init(){
       needsRefresh = true;
     }
   }, 500);
-  // define global function to allow checking items directly from board.
-  window.ajClickOnCheckItem = function (evt) {
+  // define function to allow checking items directly from board.
+  onCheckItem = function (evt) {
     evt.preventDefault();
     evt.stopPropagation();
+    console.log('ajClickOnCheckItem');
     // let's check that item
     var urlEncodedData = 'state=complete&' + token.trim();
     var cardId = '5803b13f1dfb52d879ffa12d';
@@ -271,8 +298,6 @@ function init(){
       needsRefresh = true;
     });
   };
-  // it was made global because adding and removing listeners dynamically
-  // is too complex at that stage
 }
 
 console.log('[[ next-step-for-trello ]]');
