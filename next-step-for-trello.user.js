@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello cards
-// @version 0.5.3
+// @version 0.5.6
 // @homepage http://bit.ly/next-for-trello
 // @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
 // @match https://trello.com/*
@@ -90,12 +90,13 @@ function setCardContent(cardElement, items) {
 }
 
 function updateCards() {
-  console.log('[[ next-step-for-trello ]] updateCards()...');
+  document.getElementById('aj-nextstep-loading').style.display = 'inline-block';
   var cards = document.getElementsByClassName('list-card-title');
   var handler = (cardElement) => cardElement.href && MODES[currentMode].handler(cardElement);
   var promises = Array.prototype.map.call(cards, handler);
   Promise.all(promises).then(function(result) {
     //console.info('DONE ALL', result.length);
+    document.getElementById('aj-nextstep-loading').style.display = 'none';
   }, function(err) {
     console.info('ERROR', err);
   });;
@@ -132,43 +133,119 @@ function nextMode() {
 
 // extension initialization
 
+const isToolbarInstalled = () => document.getElementById('aj-nextstep-mode'); 
+
 function installToolbar() {
-  var headerElements = document.getElementsByClassName('board-header-btns')
-  var btn = document.createElement('a');
-  btn.href = '#';
-  btn.id = 'aj-nextstep-btn';
-  btn.className = 'board-header-btn board-header-btn-without-icon';
-  btn.onclick = nextMode;
-  btn.innerHTML = '<span class="board-header-btn-text">'
-    + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
-    + '</span>';
-  headerElements[0].appendChild(btn);
+  var headerElements = document.getElementsByClassName('board-header-btns');
+  if (isToolbarInstalled() || !headerElements.length) {
+    return false;
+  } else {
+    var btn = document.createElement('a');
+    btn.href = '#';
+    btn.id = 'aj-nextstep-btn';
+    btn.className = 'board-header-btn board-header-btn-without-icon';
+    btn.onclick = nextMode;
+    btn.innerHTML = '<span class="board-header-btn-text">'
+      + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
+      + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
+      + '</span>';
+    headerElements[0].appendChild(btn);
+    return true;
+  }
 }
 
-function init(){
-  var needsRefresh = true;
+function watchForChanges(handler) {
   // refresh on card name change
   document.body.addEventListener('DOMSubtreeModified', function(e){
     if ('list-card-details' == e.target.className) {
-      needsRefresh = true;
+      handler();
     }
   }, false);
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
     if (e.target.className == 'list-card js-member-droppable active-card ui-droppable') {
-      needsRefresh = true;
+      handler();
     }
   }, false);
-  // refresh on page change
-  setInterval(function() {
-    if (window.location.href.indexOf('https://trello.com/b/') === 0) {
-      if (!document.getElementById('aj-nextstep-btn')) {
-        installToolbar();
-      }
-      if (needsRefresh) {
-        needsRefresh = false;
-        updateCards();
-      }
+}
+
+function injectCss() {
+  var style = document.createElement('style');
+  style.innerText = `
+  #aj-nextstep-loading {
+    display: none;
+  }
+  @keyframes uil-reload-css {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .uil-reload-css {
+    position: relative;
+    display: inline-block;
+    top: -9px;
+    margin-left: 5px;
+    transform: scale(0.045);
+  }
+  .uil-reload-css > div {
+    animation: uil-reload-css 1s linear infinite;
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border-radius: 100px;
+    border: 20px solid #ffffff;
+    border-top: 20px solid rgba(0,0,0,0);
+    border-right: 20px solid #ffffff;
+    border-bottom: 20px solid #ffffff;
+  }
+  .uil-reload-css > div:after {
+    content: " ";
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-width: 0 30px 30px 30px;
+    border-color: transparent transparent #ffffff transparent;
+    display: block;
+    transform: translate(-15px, 0) rotate(45deg);
+  }`;
+  document.head.appendChild(style);
+}
+
+const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
+
+var needsRefresh = true;
+
+const INIT_STEPS = [
+  // step 0: integrate the toolbar button (when page is ready)
+  function initToolbar(callback) {
+    if (installToolbar()) {
+      callback();
+    }
+  },
+  // step 1: watch DOM changes (one shot init)
+  function initWatchers(callback) {
+    watchForChanges(() => { needsRefresh = true; });
+    injectCss();
+    callback();
+  },
+  // step 2: main loop
+  function main() {
+    if (!isToolbarInstalled()) {
+      installToolbar();
+      needsRefresh = true;
+    }
+    if (needsRefresh) {
+      needsRefresh = false;
+      updateCards();
+    }
+  }
+];
+
+function init(){
+  var currentStep = 0;
+  setInterval(() => {
+    if (isOnBoardPage()) {
+      INIT_STEPS[currentStep](() => { ++currentStep; });
     } else {
       needsRefresh = true;
     }
@@ -198,8 +275,5 @@ function init(){
   // is too complex at that stage
 }
 
-console.log('[[ next-step-for-trello ]]', document.readyState);
-
-window.onload = init;
-
-if (document.readyState === 'complete') init();
+console.log('[[ next-step-for-trello ]]');
+init();
