@@ -386,11 +386,20 @@ h3:last-child {
 .section-content {
   position: static;
 }
-.demo-anim {
+.preview {
+  flex: 15 5;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  width: 100%;
+}
+.preview * {
   position: absolute;
-  left: 0;
+  left: 50%;
   width: auto;
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   right: 50%;
   bottom: 50%;
   -webkit-transform: translateX(-50%) translateY(50%);
@@ -398,7 +407,6 @@ h3:last-child {
   -o-transform: translateX(-50%) translateY(50%);
   -ms-transform: translateX(-50%) translateY(50%);
   transform: translateX(-50%) translateY(50%);
-  max-height: 500px;
   pointer-events: none;
 }
 footer {
@@ -497,6 +505,20 @@ footer ul li a {
 }
 
 @media (max-width: 900px) {
+  #features {
+    flex-direction: column;
+  }
+  #features article {
+    width: 100%;
+    margin-top: 40px;
+  }
+  #features h2 {
+    min-height: auto;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 600px) {
   #features {
     flex-direction: column;
   }
