@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.0.0
+// @version 1.0.1
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -236,7 +236,7 @@ function injectCss() {
   }
   @keyframes highlight {
     0% {
-      background-color: rgba(255, 255, 128, 1);
+      background-color: rgba(255, 255, 128, 0.5);
     }
     100% {
       background-color: rgba(255, 255, 128, 0);
