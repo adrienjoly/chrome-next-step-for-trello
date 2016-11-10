@@ -1,3 +1,5 @@
+== 1.0.2 Added tooltip and link to project page
+
 == 1.0.1 Made toggle button more visible
 
 == 1.0.0 Animation when checking an item
