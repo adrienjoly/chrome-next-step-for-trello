@@ -164,6 +164,7 @@ function installToolbar() {
     btn.className = 'board-header-btn board-header-btn-without-icon';
     btn.onclick = nextMode;
     btn.innerHTML = '<span class="board-header-btn-text">'
+      + '<span style="position: relative; top: -1px;">↑↓&nbsp;&nbsp;</span>' // ⇟⇵⇅↿⇂
       + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
       + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
       + '</span>';
@@ -225,7 +226,23 @@ function injectCss() {
     border-color: transparent transparent #ffffff transparent;
     display: block;
     transform: translate(-15px, 0) rotate(45deg);
-  }`;
+  }
+  #aj-nextstep-mode {
+    color: #bfbfbf;
+  }
+  #aj-nextstep-btn {
+    transform: translate3d(0, 0, 0);
+    animation: highlight 2s ease-out;
+  }
+  @keyframes highlight {
+    0% {
+      background-color: rgba(255, 255, 128, 1);
+    }
+    100% {
+      background-color: rgba(255, 255, 128, 0);
+    }
+  }
+  `;
   document.head.appendChild(style);
 }
 
