@@ -9,9 +9,9 @@
       "run_at": "document_start"
    } ],
    "converted_from_user_script": true,
-   "description": "Display the next task to be done, on each Trello card.",
+   "description": "Check tasks directly from your Trello boards",
    "icons": { "128": "icon-128.png" },
-   "name": "Next Step for Trello cards",
+   "name": "Next Step for Trello",
    "short_name": "Next Step",
-   "version": "0.6.0"
+   "version": "1.0.0"
 }

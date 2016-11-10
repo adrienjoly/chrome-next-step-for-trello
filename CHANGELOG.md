@@ -1,3 +1,5 @@
+== 1.0.0 Animation when checking an item
+
 == 0.6.0 Check items from board view
 
 == 0.5.6 Added loading animation

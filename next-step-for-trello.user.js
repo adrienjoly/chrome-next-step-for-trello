@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name Next Step for Trello cards
-// @version 0.6
-// @homepage http://bit.ly/next-for-trello
-// @description Appends the first unchecked checklist item to the title of each card, when visiting a Trello board.
+// @name Next Step for Trello
+// @version 1.0.0
+// @homepage http://adrienjoly.com/chrome-next-step-for-trello
+// @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
 // @match http://trello.com/*
 // @run-at document-start
@@ -94,7 +94,7 @@ const renderItem = (item) => `
      data-item-id="${item.id}"
   >
         <span class="aj-checkbox" style="position: absolute; top: 1px; left: 2px;">◽️</span>
-        <span> ${renderMarkdown(item.name)} </span>
+        <span class="aj-item-name"> ${renderMarkdown(item.name)} </span>
   </p>`;
 
 function setCardContent(cardElement, items) {
@@ -240,6 +240,16 @@ function onCheckItem(evt) {
   evt.stopPropagation();
   // let's check that item
   var item = evt.currentTarget.parentNode;
+  var check = document.createElement('span');
+  check.innerHTML = '✔';
+  check.style = 'position: absolute; top: -1px; left: 5px;';
+  item.appendChild(check); 
+  item.style.display = 'block';
+  item.style.height = item.offsetHeight + 'px';
+  item.style.transform = 'translate3d(0, 0, 0)'; // to enable hardware acceleration of transition
+  item.getElementsByClassName('aj-item-name')[0]
+    .style.textDecoration = 'line-through';
+  // let's tell trello
   var url = 'https://trello.com/1/cards/' + item.getAttribute('data-card-id')
     + '/checklist/' + item.getAttribute('data-checklist-id')
     + '/checkItem/' + item.getAttribute('data-item-id')
@@ -253,6 +263,12 @@ function onCheckItem(evt) {
     },
     body: urlEncodedData
   }).then(function() {
+    // hide the task progressively
+    item.style.overflow = 'hidden';
+    item.style.transition = 'all 0.5s ease';
+    item.style.height = '0px';
+    item.style.margin = '0';
+    // will make the list of tasks refresh
     needsRefresh = true;
   });
 }
