@@ -98,7 +98,7 @@ function setCardContent(cardElement, items) {
   cardElement.innerHTML =
     cardElement.innerHTML.replace(/<p class="aj-next-step"(.|[\r\n])*<\/p>/g, '')
     + (items || []).map(renderItem).join('\n');
-  var checkboxes = document.getElementsByClassName('aj-checkbox');
+  var checkboxes = document.getElementsByClassName('aj-checkbox-tick');
   for (var i=0; i<checkboxes.length; ++i) {
     checkboxes[i].addEventListener('click', onCheckItem);
   }
@@ -211,17 +211,20 @@ function injectCss() {
     text-decoration: underline;
   }
   .aj-next-step > .aj-checkbox-tick {
-    display: none;
+    opacity: 0;
     position: absolute;
     top: -1px;
     left: 5px;
+  }
+  .aj-next-step > .aj-checkbox-tick:hover {
+    opacity: 0.5;
   }
   .aj-next-step.aj-checking {
     transform: translate3d(0, 0, 0); /* to enable hardware acceleration of transition */
     display: block;
   }
   .aj-next-step.aj-checking > .aj-checkbox-tick {
-    display: block;
+    opacity: 1;
   }
   .aj-next-step.aj-checking > .aj-item-name {
     text-decoration: line-through;
