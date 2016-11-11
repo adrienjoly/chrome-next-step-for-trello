@@ -17,8 +17,6 @@
  *
  ***************************/
 
-var STYLING = 'overflow: auto; padding-left: 18px; margin-top: 1em; font-size: 12px; line-height: 1.2em; color: #8c8c8c; font-family: Helvetica Neue, Arial, Helvetica, sans-serif;';
-
 // basic helpers
 
 const nonNull = (item) => !!item;
@@ -81,19 +79,17 @@ const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json
 
 function renderMarkdown(text) {
   return text
-    .replace(/\[(.*)\]\(.*\)/g, '<span style="text-decoration:underline;">$1</span>')
-    .replace(/https?\:\/\/([^\/ ]+)[^ ]+/g, '<span style="text-decoration:underline;">$1</span>')
+    .replace(/\[(.*)\]\(.*\)/g, '<span class="aj-md-hyperlink">$1</span>')
+    .replace(/https?\:\/\/([^\/ ]+)[^ ]+/g, '<span class=aj-md-hyperlink"">$1</span>')
     .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
 }
 
 const renderItem = (item) => `
   <p class="aj-next-step"
-     style="position: relative; ${STYLING}"
      data-card-id="${item.cardId}"
      data-checklist-id="${item.checklistId}"
-     data-item-id="${item.id}"
-  >
-        <span class="aj-checkbox" style="position: absolute; top: 1px; left: 2px;">◽️</span>
+     data-item-id="${item.id}" >
+        <span class="aj-checkbox">◽️</span>
         <span class="aj-item-name"> ${renderMarkdown(item.name)} </span>
   </p>`;
 
@@ -166,7 +162,7 @@ function installToolbar() {
     btn.className = 'board-header-btn board-header-btn-without-icon';
     btn.onclick = nextMode;
     btn.innerHTML = '<span class="board-header-btn-text">'
-      + '<span style="position: relative; top: -1px;">↑↓&nbsp;&nbsp;</span>' // ⇟⇵⇅↿⇂
+      + '<span class="aj-nextstep-icon">↑↓&nbsp;&nbsp;</span>' // ⇟⇵⇅↿⇂
       + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
       + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
       + '</span>';
@@ -193,6 +189,51 @@ function watchForChanges(handler) {
 function injectCss() {
   var style = document.createElement('style');
   style.innerText = `
+  /* next step item */
+
+  .aj-next-step {
+    position: relative;
+    overflow: auto;
+    padding-left: 18px;
+    margin-top: 1em;
+    font-size: 12px;
+    line-height: 1.2em;
+    color: #8c8c8c;
+    font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+  }
+  .aj-checkbox {
+    position: absolute;
+    top: 1px;
+    left: 2px;
+  }
+  .aj-md-hyperlink {
+    text-decoration: underline;
+  }
+
+  /* next step toolbar button */
+
+  #aj-nextstep-mode {
+    color: #bfbfbf;
+  }
+  #aj-nextstep-btn {
+    transform: translate3d(0, 0, 0);
+    animation: highlight 2s ease-out;
+  }
+  @keyframes highlight {
+    0% {
+      background-color: rgba(255, 255, 128, 0.5);
+    }
+    100% {
+      background-color: rgba(255, 255, 128, 0);
+    }
+  }
+  .aj-nextstep-icon {
+    position: relative;
+    top: -1px;
+  }
+
+  /* next step toolbar button - loading animation */
+
   #aj-nextstep-loading {
     display: none;
   }
@@ -228,21 +269,6 @@ function injectCss() {
     border-color: transparent transparent #ffffff transparent;
     display: block;
     transform: translate(-15px, 0) rotate(45deg);
-  }
-  #aj-nextstep-mode {
-    color: #bfbfbf;
-  }
-  #aj-nextstep-btn {
-    transform: translate3d(0, 0, 0);
-    animation: highlight 2s ease-out;
-  }
-  @keyframes highlight {
-    0% {
-      background-color: rgba(255, 255, 128, 0.5);
-    }
-    100% {
-      background-color: rgba(255, 255, 128, 0);
-    }
   }
   `;
   document.head.appendChild(style);
