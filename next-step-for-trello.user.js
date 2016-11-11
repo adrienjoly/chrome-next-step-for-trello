@@ -90,6 +90,7 @@ const renderItem = (item) => `
      data-checklist-id="${item.checklistId}"
      data-item-id="${item.id}" >
         <span class="aj-checkbox">◽️</span>
+        <span class="aj-checkbox-tick">✔</span>
         <span class="aj-item-name"> ${renderMarkdown(item.name)} </span>
   </p>`;
 
@@ -201,13 +202,35 @@ function injectCss() {
     color: #8c8c8c;
     font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
   }
-  .aj-checkbox {
+  .aj-next-step > .aj-checkbox {
     position: absolute;
     top: 1px;
     left: 2px;
   }
-  .aj-md-hyperlink {
+  .aj-next-step > .aj-md-hyperlink {
     text-decoration: underline;
+  }
+  .aj-next-step > .aj-checkbox-tick {
+    display: none;
+    position: absolute;
+    top: -1px;
+    left: 5px;
+  }
+  .aj-next-step.aj-checking {
+    transform: translate3d(0, 0, 0); /* to enable hardware acceleration of transition */
+    display: block;
+  }
+  .aj-next-step.aj-checking > .aj-checkbox-tick {
+    display: block;
+  }
+  .aj-next-step.aj-checking > .aj-item-name {
+    text-decoration: line-through;
+  }
+  .aj-next-step.aj-checked {
+    overflow: hidden;
+    transition: all 0.5s ease;
+    height: 0px !important;
+    margin: 0;
   }
 
   /* next step toolbar button */
@@ -285,15 +308,8 @@ function onCheckItem(evt) {
   evt.stopPropagation();
   // let's check that item
   var item = evt.currentTarget.parentNode;
-  var check = document.createElement('span');
-  check.innerHTML = '✔';
-  check.style = 'position: absolute; top: -1px; left: 5px;';
-  item.appendChild(check); 
-  item.style.display = 'block';
+  item.classList.add('aj-checking');
   item.style.height = item.offsetHeight + 'px';
-  item.style.transform = 'translate3d(0, 0, 0)'; // to enable hardware acceleration of transition
-  item.getElementsByClassName('aj-item-name')[0]
-    .style.textDecoration = 'line-through';
   // let's tell trello
   var url = 'https://trello.com/1/cards/' + item.getAttribute('data-card-id')
     + '/checklist/' + item.getAttribute('data-checklist-id')
@@ -309,10 +325,7 @@ function onCheckItem(evt) {
     body: urlEncodedData
   }).then(function() {
     // hide the task progressively
-    item.style.overflow = 'hidden';
-    item.style.transition = 'all 0.5s ease';
-    item.style.height = '0px';
-    item.style.margin = '0';
+    item.classList.add('aj-checked');
     // will make the list of tasks refresh
     needsRefresh = true;
   });
