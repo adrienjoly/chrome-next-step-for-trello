@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.0.3
+// @version 1.2.0
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -75,7 +75,90 @@ const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json
     setCardContent(cardElement, handler(json.checklists));
   }); 
 
+// app state
+
+var MODES;
+var currentMode = 1;
+
+function setMode(modeIndex) {
+  currentMode = modeIndex;
+  updateCards();
+  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
+}
+/*
+function nextMode(evt) {
+  evt.preventDefault();
+  setMode((currentMode + 1) % MODES.length);
+}
+*/
+
 // UI helpers
+
+function initToolbarButton() {
+  var btn = document.createElement('a');
+  btn.href = 'http://adrienjoly.com/chrome-next-step-for-trello';
+  btn.title = 'Click to toggle display of next task(s)';
+  btn.id = 'aj-nextstep-btn';
+  btn.className = 'board-header-btn board-header-btn-without-icon';
+  btn.innerHTML = '<span class="board-header-btn-text">'
+    + '<span class="aj-nextstep-icon">↑↓&nbsp;&nbsp;</span>' // ⇟⇵⇅↿⇂
+    + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
+    + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
+    + '</span>';
+  return btn;
+}
+
+const renderSelectorOption = (mode, i) => `
+  <li>
+    <a id="aj-nextstep-mode-${ i }" class="js-select light-hover" href="#" name="org" >
+      ${ mode.label }
+      ${ currentMode === i ? '<span class="icon-sm icon-check"></span>' : '' }
+      <span class="sub-name">Le tableau est visible.</span>
+    </a>
+  </li>`;
+
+const renderToolbarSelector = (selectorId) => `
+  <div class="pop-over-header js-pop-over-header">
+    <span class="pop-over-header-title">Next Step - Display mode</span>
+    <a
+      href="#"
+      class="pop-over-header-close-btn icon-sm icon-close"
+      onclick="document.getElementById('${selectorId}').classList.remove('is-shown');">
+    </a>
+  </div>
+  <div>
+    <div class="pop-over-content js-pop-over-content u-fancy-scrollbar js-tab-parent" style="max-height: 599px;">
+      <div>
+        <ul class="pop-over-list" id="aj-nextstep-modes">
+        </ul>
+      </div>
+    </div>
+  </div>`;
+
+function initToolbarSelector(btn) {
+  const node = document.createElement('div');
+  node.id = 'aj-nextstep-selector';
+  node.className = 'pop-over';
+  node.innerHTML = renderToolbarSelector(node.id);
+  node.hide = () => {
+    node.classList.remove('is-shown');
+  }
+  node.show = () => {
+    document.getElementById('aj-nextstep-modes').innerHTML = MODES.map(renderSelectorOption).join('\n');
+    MODES.forEach((modeObj, mode) => document.getElementById('aj-nextstep-mode-' + mode)
+      .onclick = function() {
+        setMode(mode);
+        node.hide();
+      });
+    node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;';
+    node.classList.add('is-shown');
+  };
+  node.toggle = function(evt) {
+    try { evt.preventDefault(); } catch(e) {};
+    this[ this.classList.contains('is-shown') ? 'hide' : 'show' ]();
+  };
+  return node;
+}
 
 function renderMarkdown(text) {
   return text
@@ -119,7 +202,7 @@ function updateCards() {
 
 // extension modes
 
-var MODES = [
+MODES = [
   {
     label: 'Hidden',
     handler: setCardContent
@@ -138,15 +221,6 @@ var MODES = [
   },
 ];
 
-var currentMode = 1;
-
-function nextMode(evt) {
-  evt.preventDefault();
-  currentMode = (currentMode + 1) % MODES.length;
-  updateCards();
-  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
-}
-
 // extension initialization
 
 const isToolbarInstalled = () => document.getElementById('aj-nextstep-mode'); 
@@ -156,18 +230,11 @@ function installToolbar() {
   if (isToolbarInstalled() || !headerElements.length) {
     return false;
   } else {
-    var btn = document.createElement('a');
-    btn.href = 'http://adrienjoly.com/chrome-next-step-for-trello';
-    btn.title = 'Click to toggle display of next task(s)';
-    btn.id = 'aj-nextstep-btn';
-    btn.className = 'board-header-btn board-header-btn-without-icon';
-    btn.onclick = nextMode;
-    btn.innerHTML = '<span class="board-header-btn-text">'
-      + '<span class="aj-nextstep-icon">↑↓&nbsp;&nbsp;</span>' // ⇟⇵⇅↿⇂
-      + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
-      + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
-      + '</span>';
+    const btn = initToolbarButton();
+    const popover = initToolbarSelector(btn);
     headerElements[0].appendChild(btn);
+    document.body.appendChild(popover);
+    btn.onclick = popover.toggle.bind(popover);
     return true;
   }
 }
@@ -239,7 +306,7 @@ function injectCss() {
   /* next step toolbar button */
 
   #aj-nextstep-mode {
-    color: #bfbfbf;
+    font-weight: 100;
   }
   #aj-nextstep-btn {
     transform: translate3d(0, 0, 0);
