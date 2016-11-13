@@ -67,19 +67,12 @@ const getNextStepsOfChecklists = (checklists) => checklists
 const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
     .filter(nonNull);
 
-// trello data model
-
-const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json', {credentials: 'include'})
-  .then((res) => res.json())
-  .then((json) => {
-    setCardContent(cardElement, handler(json.checklists));
-  }); 
-
 // app state
 
 var MODES;
 var currentMode = 1;
 var setMode;
+var onCheckItem;
 
 // UI helpers
 
@@ -149,12 +142,10 @@ function initToolbarSelector(btn) {
   return node;
 }
 
-function renderMarkdown(text) {
-  return text
-    .replace(/\[(.*)\]\(.*\)/g, '<span class="aj-md-hyperlink">$1</span>')
-    .replace(/https?\:\/\/([^\/ ]+)[^ ]+/g, '<span class=aj-md-hyperlink"">$1</span>')
-    .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
-}
+const renderMarkdown = (text) => text
+  .replace(/\[(.*)\]\(.*\)/g, '<span class="aj-md-hyperlink">$1</span>')
+  .replace(/https?\:\/\/([^\/ ]+)[^ ]+/g, '<span class=aj-md-hyperlink"">$1</span>')
+  .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>');
 
 const renderItem = (item) => `
   <p class="aj-next-step"
@@ -182,10 +173,7 @@ function updateCards() {
   var handler = (cardElement) => cardElement.href && MODES[currentMode].handler(cardElement);
   var promises = Array.prototype.map.call(cards, handler);
   Promise.all(promises).then(function(result) {
-    //console.info('DONE ALL', result.length);
     document.getElementById('aj-nextstep-loading').style.display = 'none';
-  }, function(err) {
-    console.info('ERROR', err);
   });;
 }
 
@@ -194,6 +182,14 @@ setMode = function(modeIndex) {
   updateCards();
   document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
 }
+
+// trello data model
+
+const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json', {credentials: 'include'})
+  .then((res) => res.json())
+  .then((json) => {
+    setCardContent(cardElement, handler(json.checklists));
+  }); 
 
 // extension modes
 
@@ -237,13 +233,13 @@ function installToolbar() {
 function watchForChanges(handler) {
   // refresh on card name change
   document.body.addEventListener('DOMSubtreeModified', function(e){
-    if ('list-card-details' == e.target.className) {
+    if ('list-card-details' === e.target.className) {
       handler();
     }
   }, false);
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
-    if (e.target.className == 'list-card js-member-droppable active-card ui-droppable') {
+    if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
       handler();
     }
   }, false);
@@ -368,7 +364,7 @@ var needsRefresh = true;
 var token; // needed by onCheckItem
 
 // define function to allow checking items directly from board.
-function onCheckItem(evt) {
+onCheckItem = function(evt) {
   evt.preventDefault();
   evt.stopPropagation();
   // let's check that item
@@ -378,7 +374,7 @@ function onCheckItem(evt) {
   // let's tell trello
   var url = 'https://trello.com/1/cards/' + item.getAttribute('data-card-id')
     + '/checklist/' + item.getAttribute('data-checklist-id')
-    + '/checkItem/' + item.getAttribute('data-item-id')
+    + '/checkItem/' + item.getAttribute('data-item-id');
   var urlEncodedData = 'state=complete&' + token.trim();
   fetch(url, {
     method: 'PUT',
@@ -415,7 +411,6 @@ const INIT_STEPS = [
     // wait for the message
     window.addEventListener("MyCustomEvent", function (e) {
       token = e.detail.passback;
-      console.log('trello token:', token);
     });
     // inject code into the page's context (unrestricted)
     var scr = document.createElement('script');
@@ -452,5 +447,4 @@ function init(){
   }, 500);
 }
 
-console.log('[[ next-step-for-trello ]]');
 init();
