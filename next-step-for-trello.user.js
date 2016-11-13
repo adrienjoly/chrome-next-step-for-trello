@@ -174,14 +174,14 @@ function updateCards() {
   var promises = Array.prototype.map.call(cards, handler);
   Promise.all(promises).then(function(result) {
     document.getElementById('aj-nextstep-loading').style.display = 'none';
-  });;
+  });
 }
 
 setMode = function(modeIndex) {
   currentMode = modeIndex;
   updateCards();
   document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
-}
+};
 
 // trello data model
 
