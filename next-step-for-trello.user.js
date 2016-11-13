@@ -79,18 +79,7 @@ const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json
 
 var MODES;
 var currentMode = 1;
-
-function setMode(modeIndex) {
-  currentMode = modeIndex;
-  updateCards();
-  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
-}
-/*
-function nextMode(evt) {
-  evt.preventDefault();
-  setMode((currentMode + 1) % MODES.length);
-}
-*/
+var setMode;
 
 // UI helpers
 
@@ -142,7 +131,7 @@ function initToolbarSelector(btn) {
   node.innerHTML = renderToolbarSelector(node.id);
   node.hide = () => {
     node.classList.remove('is-shown');
-  }
+  };
   node.show = () => {
     document.getElementById('aj-nextstep-modes').innerHTML = MODES.map(renderSelectorOption).join('\n');
     MODES.forEach((modeObj, mode) => document.getElementById('aj-nextstep-mode-' + mode)
@@ -154,7 +143,7 @@ function initToolbarSelector(btn) {
     node.classList.add('is-shown');
   };
   node.toggle = function(evt) {
-    try { evt.preventDefault(); } catch(e) {};
+    evt.preventDefault();
     this[ this.classList.contains('is-shown') ? 'hide' : 'show' ]();
   };
   return node;
@@ -198,6 +187,12 @@ function updateCards() {
   }, function(err) {
     console.info('ERROR', err);
   });;
+}
+
+setMode = function(modeIndex) {
+  currentMode = modeIndex;
+  updateCards();
+  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
 }
 
 // extension modes
