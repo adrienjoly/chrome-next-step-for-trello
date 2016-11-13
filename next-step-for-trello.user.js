@@ -71,8 +71,15 @@ const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
 
 var MODES;
 var currentMode = 1;
-var setMode;
+var needsRefresh = true;
+var refreshing = false;
 var onCheckItem;
+var token; // needed by onCheckItem
+
+function setMode(modeIndex) {
+  currentMode = modeIndex;
+  needsRefresh = true;
+}
 
 // UI helpers
 
@@ -168,20 +175,17 @@ function setCardContent(cardElement, items) {
 }
 
 function updateCards() {
+  refreshing = true;
+  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
   document.getElementById('aj-nextstep-loading').style.display = 'inline-block';
   var cards = document.getElementsByClassName('list-card-title');
   var handler = (cardElement) => cardElement.href && MODES[currentMode].handler(cardElement);
   var promises = Array.prototype.map.call(cards, handler);
   Promise.all(promises).then(function(result) {
+    refreshing = false;
     document.getElementById('aj-nextstep-loading').style.display = 'none';
   });
 }
-
-setMode = function(modeIndex) {
-  currentMode = modeIndex;
-  updateCards();
-  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
-};
 
 // trello data model
 
@@ -230,17 +234,17 @@ function installToolbar() {
   }
 }
 
-function watchForChanges(handler) {
+function watchForChanges() {
   // refresh on card name change
   document.body.addEventListener('DOMSubtreeModified', function(e){
     if ('list-card-details' === e.target.className) {
-      handler();
+      needsRefresh = true;
     }
   }, false);
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
     if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
-      handler();
+      needsRefresh = true;
     }
   }, false);
 }
@@ -360,9 +364,6 @@ function injectCss() {
 
 const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
 
-var needsRefresh = true;
-var token; // needed by onCheckItem
-
 // define function to allow checking items directly from board.
 onCheckItem = function(evt) {
   evt.preventDefault();
@@ -401,7 +402,7 @@ const INIT_STEPS = [
   },
   // step 1: watch DOM changes (one shot init)
   function initWatchers(callback) {
-    watchForChanges(() => { needsRefresh = true; });
+    watchForChanges();
     injectCss();
     callback();
   },
@@ -429,7 +430,7 @@ const INIT_STEPS = [
       installToolbar();
       needsRefresh = true;
     }
-    if (needsRefresh) {
+    if (needsRefresh && !refreshing) {
       needsRefresh = false;
       updateCards();
     }
