@@ -390,7 +390,7 @@ onCheckItem = function(evt) {
     // will make the list of tasks refresh
     needsRefresh = true;
   });
-}
+};
 
 const INIT_STEPS = [
   // step 0: integrate the toolbar button (when page is ready)
