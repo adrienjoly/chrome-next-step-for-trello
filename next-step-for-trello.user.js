@@ -237,13 +237,13 @@ function installToolbar() {
 function watchForChanges() {
   // refresh on card name change
   document.body.addEventListener('DOMSubtreeModified', function(e){
-    if ('list-card-details' === e.target.className) {
+    if (!refreshing && e.target.classList && e.target.classList.contains('list-card-title')) {
       needsRefresh = true;
     }
   }, false);
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
-    if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
+    if (!refreshing && e.target.classList && e.target.classList.contains('list-card')) {
       needsRefresh = true;
     }
   }, false);
