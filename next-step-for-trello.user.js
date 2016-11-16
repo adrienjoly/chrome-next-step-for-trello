@@ -168,7 +168,7 @@ function setCardContent(cardElement, items) {
   cardElement.innerHTML =
     cardElement.innerHTML.replace(/<p class="aj-next-step"(.|[\r\n])*<\/p>/g, '')
     + (items || []).map(renderItem).join('\n');
-  var checkboxes = document.getElementsByClassName('aj-checkbox-tick');
+  var checkboxes = cardElement.getElementsByClassName('aj-checkbox-tick');
   for (var i=0; i<checkboxes.length; ++i) {
     checkboxes[i].addEventListener('click', onCheckItem);
   }
