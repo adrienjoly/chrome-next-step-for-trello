@@ -102,7 +102,7 @@ const renderSelectorOption = (mode, i) => `
     <a id="aj-nextstep-mode-${ i }" class="js-select light-hover" href="#" name="org" >
       ${ mode.label }
       ${ currentMode === i ? '<span class="icon-sm icon-check"></span>' : '' }
-      <span class="sub-name">Le tableau est visible.</span>
+      <span class="sub-name">${ mode.description }</span>
     </a>
   </li>`;
 
@@ -200,18 +200,22 @@ const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json
 MODES = [
   {
     label: 'Hidden',
+    description: 'Don\'t display next steps',
     handler: setCardContent
   },
   {
     label: 'One per card',
+    description: 'Display first next step of each card',
     handler: (cardElement) => fetchStepsThen(cardElement, getNextStep)
   },
   {
     label: 'One per checklist',
+    description: 'Display first next step of each checklist',
     handler: (cardElement) => fetchStepsThen(cardElement, getNextStepsOfChecklists)
   },
   {
     label: 'Display all',
+    description: 'Display all unchecked checklist items',
     handler: (cardElement) => fetchStepsThen(cardElement, getAllNextStepsNamed)
   },
 ];
