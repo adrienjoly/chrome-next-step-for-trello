@@ -1,3 +1,5 @@
+== 1.2.1 Added descriptions in toggle menu
+
 == 1.2.0 Select mode from a list popover
 
 == 1.0.2 Added tooltip and link to project page
