@@ -164,11 +164,18 @@ const renderItem = (item) => `
         <span class="aj-item-name"> ${renderMarkdown(item.name)} </span>
   </p>`;
 
-function setCardContent(cardElement, items) {
-  cardElement.innerHTML =
-    cardElement.innerHTML.replace(/<p class="aj-next-step"(.|[\r\n])*<\/p>/g, '')
-    + (items || []).map(renderItem).join('\n');
-  var checkboxes = cardElement.getElementsByClassName('aj-checkbox-tick');
+function setCardContent(cardTitleElement, items) {
+  var cardElement = cardTitleElement.parentNode;
+  var taskList = cardElement.getElementsByClassName('aj-task-list')[0];
+  // if task list div does not exist => create it
+  if (!taskList) {
+    taskList = document.createElement('div');
+    taskList.className = 'aj-task-list';
+    cardElement.insertBefore(taskList, cardTitleElement.nextSibling);
+  }
+  taskList.innerHTML = (items || []).map(renderItem).join('\n');
+  // attach click handlers on checkboxes
+  var checkboxes = taskList.getElementsByClassName('aj-checkbox-tick');
   for (var i=0; i<checkboxes.length; ++i) {
     checkboxes[i].addEventListener('click', onCheckItem);
   }
