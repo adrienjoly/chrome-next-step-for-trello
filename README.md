@@ -2,11 +2,13 @@
 
 # "Next Step" for Trello cards
 
-Google Chrome extension to check tasks directly from your Trello boards.
+Google Chrome extension to check tasks directly from your Trello boards. ☑️🚀
 
-**Install and rate it from there: [Next Step for Trello](https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf)** (Chrome Web Store page)
+🌟 Install and rate it from there: [Next Step for Trello](https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf) (Chrome Web Store)
 
-![Next step for trello screenshot](/docs/assets/next-step-anim-big.gif)
+🗳 Vote for the next features to be implemented: [What's next?](https://goo.gl/forms/E0mZ2utssWtTYMMB2) (poll) 
+
+![Next step for trello screenshot](/docs/assets/next-step-check-anim.gif)
 
 ## Developers
 
