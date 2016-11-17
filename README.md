@@ -10,4 +10,8 @@ Appends the first unchecked checklist item to the title of each card, when visit
 
 ![Next step for trello screenshot](/docs/assets/next-step-anim-big.gif)
 
+## Developers
+
 📺🛠 You can watch me develop this Chrome Extension live, every wednesday 2pm CET, on [my livecoding.tv page](https://www.livecoding.tv/adrienjoly/). 
+
+My previous streams are published in [a Youtube playlist](https://www.youtube.com/playlist?list=PLmzn1C-VN6G7FLdUJM3G82cG-Q69xJ2AY).
