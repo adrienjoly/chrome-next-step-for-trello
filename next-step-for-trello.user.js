@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.2.1
+// @version 1.3.0
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -67,14 +67,46 @@ const getNextStepsOfChecklists = (checklists) => checklists
 const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
     .filter(nonNull);
 
+// announcement/cookie helper
+
+const Announcement = (announcementId) => {
+  const COOKIE_NAME = 'aj-nextstep';
+  const cookieValue = 'seen-' + announcementId;
+  const setCookie = (name, value, days = 7, path = '/') => {
+    const expires = new Date(Date.now() + days * 864e5).toGMTString();
+    document.cookie = name + `=${encodeURIComponent(value)}; expires=${expires}; path=` + path;
+  };
+  const getCookie = (name) =>
+    document.cookie.split('; ').reduce((r, v) => {
+      const parts = v.split('=')
+      return parts[0] === name ? decodeURIComponent(parts[1]) : r
+    }, '');
+  const deleteCookie = (name, path) => {
+    setCookie(name, '', -1, path);
+  };
+  const notSeenYet = getCookie(COOKIE_NAME).indexOf(cookieValue) === -1;
+  if (notSeenYet) {
+    document.body.classList.add('aj-nextstep-display-' + announcementId);
+  }
+  return {
+    notSeenYet: notSeenYet,
+    setAsSeen: () => {
+      setCookie(COOKIE_NAME, cookieValue);
+      document.body.classList.remove('aj-nextstep-display-' + announcementId);
+    }
+  };
+};
+
 // app state
 
+var MENU_ITEMS;
 var MODES;
 var currentMode = 1;
 var needsRefresh = true;
 var refreshing = false;
 var onCheckItem;
 var token; // needed by onCheckItem
+var announcement;
 
 function setMode(modeIndex) {
   currentMode = modeIndex;
@@ -91,18 +123,20 @@ function initToolbarButton() {
   btn.className = 'board-header-btn board-header-btn-without-icon';
   btn.innerHTML = '<span class="board-header-btn-text">'
     + '<span class="aj-nextstep-icon">↑↓&nbsp;&nbsp;</span>' // ⇟⇵⇅↿⇂
+    + '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' // announcement
     + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
+  announcement = Announcement('ant1');
   return btn;
 }
 
-const renderSelectorOption = (mode, i) => `
+const renderSelectorOption = (menuItem, i) => `
   <li>
-    <a id="aj-nextstep-mode-${ i }" class="js-select light-hover" href="#" name="org" >
-      ${ mode.label }
-      ${ currentMode === i ? '<span class="icon-sm icon-check"></span>' : '' }
-      <span class="sub-name">${ mode.description }</span>
+    <a id="aj-nextstep-menuitem-${ i }" class="js-select light-hover ${ menuItem.className || '' }" href="#" name="org">
+      ${ menuItem.label }
+      ${ currentMode === menuItem.modeIndex ? '<span class="icon-sm icon-check"></span>' : '' }
+      <span class="sub-name">${ menuItem.description }</span>
     </a>
   </li>`;
 
@@ -133,10 +167,10 @@ function initToolbarSelector(btn) {
     node.classList.remove('is-shown');
   };
   node.show = () => {
-    document.getElementById('aj-nextstep-modes').innerHTML = MODES.map(renderSelectorOption).join('\n');
-    MODES.forEach((modeObj, mode) => document.getElementById('aj-nextstep-mode-' + mode)
-      .onclick = function() {
-        setMode(mode);
+    document.getElementById('aj-nextstep-modes').innerHTML = MENU_ITEMS.map(renderSelectorOption).join('\n');
+    MENU_ITEMS.forEach((menuItem, i) =>
+      document.getElementById('aj-nextstep-menuitem-' + i).onclick = function() {
+        menuItem.onClick.apply(this, arguments);
         node.hide();
       });
     node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;';
@@ -227,6 +261,23 @@ MODES = [
   },
 ];
 
+MENU_ITEMS = [
+  {
+    label: '📢 What feature do you want next?',
+    description: 'Tell us your wishes, it just takes two minutes!',
+    className: 'aj-nextstep-ant1-menuitem',
+    onClick: () => {
+      window.open('https://goo.gl/forms/E0mZ2utssWtTYMMB2');
+      announcement.setAsSeen();
+    }
+  },
+].concat(MODES.map((mode, i) => {
+  return Object.assign(mode, {
+    modeIndex: i,
+    onClick: () => setMode(i)
+  });
+}));
+
 // extension initialization
 
 const isToolbarInstalled = () => document.getElementById('aj-nextstep-mode'); 
@@ -262,7 +313,7 @@ function watchForChanges() {
 
 function injectCss() {
   var style = document.createElement('style');
-  style.innerText = `
+  style.innerHTML = `
   /* next step item */
 
   .aj-next-step {
@@ -368,6 +419,33 @@ function injectCss() {
     border-color: transparent transparent #ffffff transparent;
     display: block;
     transform: translate(-15px, 0) rotate(45deg);
+  }
+
+  /* next step toolbar button - announcements */
+
+  .aj-nextstep-ant-icon {
+    display: none;
+  }
+
+  body.aj-nextstep-display-ant1 .aj-nextstep-ant-icon {
+    display: inline !important;
+    background: red;
+    color: white;
+    font-weight: bold;
+    padding: 0 3px 0 3px;
+    border: 1px solid white;
+    font-size: 9px;
+    position: relative;
+    top: -1px;
+    margin-right: 4px;
+  }
+
+  body.aj-nextstep-display-ant1 .aj-nextstep-icon {
+    display: none;
+  }
+
+  body.aj-nextstep-display-ant1 .aj-nextstep-ant1-menuitem {
+    background-color: rgba(255, 0, 0, 0.1);
   }
   `;
   document.head.appendChild(style);
