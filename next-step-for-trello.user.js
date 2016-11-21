@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.3.0
+// @version 1.3.1
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -318,7 +318,7 @@ function injectCss() {
 
   .aj-next-step {
     position: relative;
-    overflow: auto;
+    overflow: hidden; /* to fix scrolling issue on win10 */
     padding-left: 18px;
     margin-top: 1em;
     font-size: 12px;
