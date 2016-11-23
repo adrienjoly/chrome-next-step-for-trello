@@ -193,8 +193,8 @@ const renderItem = (item) => `
      data-card-id="${item.cardId}"
      data-checklist-id="${item.checklistId}"
      data-item-id="${item.id}" >
-        <span class="aj-checkbox">◽️</span>
-        <span class="aj-checkbox-tick">✔</span>
+        <span class="aj-checkbox checklist-item-checkbox"></span>
+        <span class="aj-checkbox-tick"></span>
         <span class="aj-item-name"> ${renderMarkdown(item.name)} </span>
   </p>`;
 
@@ -328,8 +328,11 @@ function injectCss() {
   }
   .aj-next-step > .aj-checkbox {
     position: absolute;
-    top: 1px;
+    top: -5px;
     left: 2px;
+    box-shadow: none;
+    height: 10px;
+    width: 10px;
   }
   .aj-next-step > .aj-md-hyperlink {
     text-decoration: underline;
@@ -338,7 +341,10 @@ function injectCss() {
     opacity: 0;
     position: absolute;
     top: -1px;
-    left: 5px;
+    left: 4px;
+  }
+  .aj-next-step > .aj-checkbox-tick::before {
+        content: "\\2714"; /* ✔ Checkmark */
   }
   .aj-next-step > .aj-checkbox-tick:hover {
     opacity: 0.5;
