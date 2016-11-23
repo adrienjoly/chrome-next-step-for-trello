@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.3.2
+// @version 1.4
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -215,17 +215,21 @@ function setCardContent(cardTitleElement, items) {
   }
 }
 
-function updateCards() {
+function updateCardElements(cardElements) {
+  // cardElements must be an array of a.list-card-title elements (with a href)
   refreshing = true;
   document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
   document.getElementById('aj-nextstep-loading').style.display = 'inline-block';
-  var cards = document.getElementsByClassName('list-card-title');
   var handler = (cardElement) => cardElement.href && MODES[currentMode].handler(cardElement);
-  var promises = Array.prototype.map.call(cards, handler);
+  var promises = Array.prototype.map.call(cardElements, handler);
   Promise.all(promises).then(function(result) {
     refreshing = false;
     document.getElementById('aj-nextstep-loading').style.display = 'none';
   });
+}
+
+function updateCards() {
+  updateCardElements(document.getElementsByClassName('list-card-title'));
 }
 
 // trello data model
@@ -297,16 +301,20 @@ function installToolbar() {
 }
 
 function watchForChanges() {
+  /*
   // refresh on card name change
   document.body.addEventListener('DOMSubtreeModified', function(e){
     if ('list-card-details' === e.target.className) {
       needsRefresh = true;
     }
   }, false);
+  // TODO: re-activate name change detection without interfering with drag&drop with single ajax request, below:
+  */
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
     if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
-      needsRefresh = true;
+      var cardLink = e.target.getElementsByClassName('list-card-title')[0];
+      updateCardElements([cardLink]);
     }
   }, false);
 }

@@ -1,3 +1,5 @@
+== 1.4.0 Faster refresh after moving cards
+
 == 1.3.2 Complete fix for Win10 users
 
 == 1.3.1 Overflow fix for Win10 users
