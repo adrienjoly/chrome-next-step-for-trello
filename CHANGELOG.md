@@ -1,3 +1,5 @@
+== 1.3.2 Complete fix for Win10 users
+
 == 1.3.1 Overflow fix for Win10 users
 
 == 1.3.0 Announcement: vote for next feature
