@@ -344,7 +344,6 @@ function injectCss() {
 
   .aj-next-step {
     position: relative;
-    overflow: hidden; /* to fix scrolling issue on win10 */
     padding-left: 18px;
     margin-top: 1em;
     font-size: 12px;
