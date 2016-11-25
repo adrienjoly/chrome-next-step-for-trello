@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.4
+// @version 1.4.1
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -140,7 +140,7 @@ const renderSelectorOption = (menuItem, i) => `
     </a>
   </li>`;
 
-const renderToolbarSelector = (selectorId) => `
+const renderToolbarSelector = (selectorId, innerHTML) => `
   <div class="pop-over-header js-pop-over-header">
     <span class="pop-over-header-title">Next Step - Display mode</span>
     <a
@@ -153,6 +153,7 @@ const renderToolbarSelector = (selectorId) => `
     <div class="pop-over-content js-pop-over-content u-fancy-scrollbar js-tab-parent" style="max-height: 599px;">
       <div>
         <ul class="pop-over-list" id="aj-nextstep-modes">
+          ${innerHTML}
         </ul>
       </div>
     </div>
@@ -162,17 +163,18 @@ function initToolbarSelector(btn) {
   const node = document.createElement('div');
   node.id = 'aj-nextstep-selector';
   node.className = 'pop-over';
-  node.innerHTML = renderToolbarSelector(node.id);
   node.hide = () => {
     node.classList.remove('is-shown');
   };
   node.show = () => {
-    document.getElementById('aj-nextstep-modes').innerHTML = MENU_ITEMS.map(renderSelectorOption).join('\n');
-    MENU_ITEMS.forEach((menuItem, i) =>
-      document.getElementById('aj-nextstep-menuitem-' + i).onclick = function() {
-        menuItem.onClick.apply(this, arguments);
-        node.hide();
-      });
+    node.innerHTML = renderToolbarSelector(node.id, MENU_ITEMS.map(renderSelectorOption).join('\n'));
+    setTimeout(() => {
+      MENU_ITEMS.forEach((menuItem, i) =>
+        document.getElementById('aj-nextstep-menuitem-' + i).onclick = function() {
+          menuItem.onClick.apply(this, arguments);
+          node.hide();
+        });
+    }, 1);
     node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;';
     node.classList.add('is-shown');
   };
