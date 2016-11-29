@@ -359,7 +359,6 @@ function injectCss() {
     height: 10px;
     width: 10px;
   }
-  .aj-next-step > .aj-md-hyperlink {
   .aj-next-step > .aj-item-name > .aj-md-hyperlink {
     text-decoration: underline;
   }
