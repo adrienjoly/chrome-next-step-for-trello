@@ -1,3 +1,5 @@
+== 1.4.2 Disabled first announcement
+
 == 1.4.1 Bug fix tentative: menu items don't always show up
 
 == 1.4.0 Faster refresh after moving cards

@@ -1,21 +1,12 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.4.1
+// @version 1.4.2
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
 // @match http://trello.com/*
 // @run-at document-start
 // ==/UserScript==
-
-/***************************
- *
- * INSTALL THIS FROM THE CHROME WEB STORE:
- * --> https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf?hl=en-US
- * 
- * ...or by downloading this script, and dragging it into chrome://extensions
- *
- ***************************/
 
 // basic helpers
 
@@ -127,7 +118,7 @@ function initToolbarButton() {
     + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
-  announcement = Announcement('ant1');
+  //announcement = Announcement('ant1');
   return btn;
 }
 
@@ -269,6 +260,14 @@ MODES = [
 
 MENU_ITEMS = [
   {
+    label: '✍ Any feedback to share?',
+    description: 'Let me know how I can help, or give us some stars!',
+    onClick: () => {
+      window.open('https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf');
+    }
+  },
+  /*
+  {
     label: '📢 What feature do you want next?',
     description: 'Tell us your wishes, it just takes two minutes!',
     className: 'aj-nextstep-ant1-menuitem',
@@ -277,6 +276,7 @@ MENU_ITEMS = [
       announcement.setAsSeen();
     }
   },
+  */
 ].concat(MODES.map((mode, i) => {
   return Object.assign(mode, {
     modeIndex: i,
