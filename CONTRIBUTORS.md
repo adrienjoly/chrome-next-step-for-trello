@@ -7,4 +7,10 @@ I would like to express my gratitude to people who helped me develop Next Track 
 - [Mathieu Grac](http://www.mathieugrac.com/), Dominique Decotter, Xavier Dorémus, Anthony Rodriguez, Merlin Nimier-David, and Camille Betinyani, for feedback
 - and [Lailo](https://twitter.com/lailo_ch), for having encouraged me to turn this idea into a product, using [Pitchcard](http://pitchcard.io)!
 
-If you think that I forgot you, I'm very sorry about that, and please let me know so that I can add you to this list, with pleasure! :-)
+And the people who have been kindly supporting my efforts on [Patreon](https://www.patreon.com/adrienjoly):
+
+- [Kevin Lefevre](https://www.patreon.com/user?u=4535157)
+- [Jérémie Girault](https://www.patreon.com/user?u=4535051)
+- [Camille Betinyani Chacur](https://www.patreon.com/user?u=4534824)
+
+If you think that I forgot you -- sorry!... -- please let me know and I'll add you to this list, with pleasure! :-)
