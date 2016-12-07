@@ -176,10 +176,28 @@ function initToolbarSelector(btn) {
   return node;
 }
 
+function getUserName() {
+  let userName = document
+    .getElementsByClassName('header-user')[0]
+    .getElementsByClassName('member-avatar')[0].title;
+  return userName.slice(userName.indexOf('(') + 1, userName.indexOf(')'));
+}
+
+function renderAtMention(userName) {
+  let meClass = userName === '@' + getUserName() ? ' me' : '';
+  return '<span class="atMention' + meClass + '">' + userName + '</span>';
+}
+
 const renderMarkdown = (text) => text
   .replace(/\[(.*)\]\(.*\)/g, '<span class="aj-md-hyperlink">$1</span>')
-  .replace(/https?\:\/\/([^\/ ]+)[^ ]+/g, '<span class=aj-md-hyperlink"">$1</span>')
-  .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>');
+  .replace(/https?\:\/\/([^\/ ]+)[^ ]+/g, '<span class="aj-md-hyperlink">$&</span>')
+  .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
+  .replace(/__(.*)__/g, '<strong>$1</strong>')
+  .replace(/\*(?!\*)(.*)\*(?!\*)/g, '<em>$1</em>')
+  .replace(/_(?!_)(.*)_(?!_)/g, '<em>$1</em>')
+  .replace(/`{3}(.*)`{3}|`{1}(.*)`{1}/g, '<code>$1$2</code>')
+  .replace(/~~(.*)~~/g, '<del>$1</del>')
+  .replace(/@\w+/g, renderAtMention);
 
 const renderItem = (item) => `
   <p class="aj-next-step"
@@ -328,7 +346,6 @@ function injectCss() {
 
   .aj-next-step {
     position: relative;
-    overflow: hidden; /* to fix scrolling issue on win10 */
     padding-left: 18px;
     margin-top: 1em;
     font-size: 12px;
@@ -344,7 +361,7 @@ function injectCss() {
     height: 10px;
     width: 10px;
   }
-  .aj-next-step > .aj-md-hyperlink {
+  .aj-next-step > .aj-item-name > .aj-md-hyperlink {
     text-decoration: underline;
   }
   .aj-next-step > .aj-checkbox-tick {
