@@ -1,3 +1,5 @@
+== 1.5.0 Better markdown support + hyperlinks
+
 == 1.4.2 Disabled first announcement
 
 == 1.4.1 Bug fix tentative: menu items don't always show up
