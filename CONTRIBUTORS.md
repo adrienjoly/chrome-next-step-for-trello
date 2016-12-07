@@ -7,10 +7,14 @@ I would like to express my gratitude to people who helped me develop Next Track 
 - [Mathieu Grac](http://www.mathieugrac.com/), Dominique Decotter, Xavier Dorémus, Anthony Rodriguez, Merlin Nimier-David, and Camille Betinyani, for feedback
 - and [Lailo](https://twitter.com/lailo_ch), for having encouraged me to turn this idea into a product, using [Pitchcard](http://pitchcard.io)!
 
-And the people who have been kindly supporting my efforts on [Patreon](https://www.patreon.com/adrienjoly):
+I would like to thank the people who have been kindly supporting my efforts on [Patreon](https://www.patreon.com/adrienjoly):
 
 - [Kevin Lefevre](https://www.patreon.com/user?u=4535157)
 - [Jérémie Girault](https://www.patreon.com/user?u=4535051)
 - [Camille Betinyani Chacur](https://www.patreon.com/user?u=4534824)
+
+...and the backers of [my first Kickstarter campaign](https://www.kickstarter.com/projects/adrienjoly/next-step-for-trello-v20):
+
+- [Lukas Loder](https://www.kickstarter.com/profile/18699683)
 
 If you think that I forgot you -- sorry!... -- please let me know and I'll add you to this list, with pleasure! :-)
