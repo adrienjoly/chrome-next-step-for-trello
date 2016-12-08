@@ -9,12 +9,15 @@ I would like to express my gratitude to people who helped me develop Next Track 
 
 I would like to thank the people who have been kindly supporting my efforts on [Patreon](https://www.patreon.com/adrienjoly):
 
+- [Nicolas Daudin](https://www.patreon.com/user/creators?u=4570823)
 - [Kevin Lefevre](https://www.patreon.com/user?u=4535157)
 - [Jérémie Girault](https://www.patreon.com/user?u=4535051)
 - [Camille Betinyani Chacur](https://www.patreon.com/user?u=4534824)
 
 ...and the backers of [my first Kickstarter campaign](https://www.kickstarter.com/projects/adrienjoly/next-step-for-trello-v20):
 
+- [Russel Hammond](https://www.kickstarter.com/profile/237466455)
+- [Mike Wittenstein](https://www.kickstarter.com/profile/671686487)
 - [Lukas Loder](https://www.kickstarter.com/profile/18699683)
 
 If you think that I forgot you -- sorry!... -- please let me know and I'll add you to this list, with pleasure! :-)
