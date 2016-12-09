@@ -1,3 +1,5 @@
+== 1.5.1 Announcement: support v2.0 on Kickstarter
+
 == 1.5.0 Better markdown support + hyperlinks
 
 == 1.4.2 Disabled first announcement

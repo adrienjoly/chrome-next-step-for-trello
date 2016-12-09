@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.5
+// @version 1.5.1
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -118,7 +118,7 @@ function initToolbarButton() {
     + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
-  //announcement = Announcement('ant1');
+  announcement = Announcement('ant2');
   return btn;
 }
 
@@ -279,6 +279,7 @@ MODES = [
 ];
 
 MENU_ITEMS = [
+  /*
   {
     label: '✍ Any feedback to share?',
     description: 'Let me know how I can help, or give us some stars!',
@@ -286,17 +287,16 @@ MENU_ITEMS = [
       window.open('https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf');
     }
   },
-  /*
+  */
   {
-    label: '📢 What feature do you want next?',
-    description: 'Tell us your wishes, it just takes two minutes!',
-    className: 'aj-nextstep-ant1-menuitem',
+    label: '📢 Love Next Step? You can help!',
+    description: 'Support the development of v2.0 on Kickstarter!',
+    className: 'aj-nextstep-ant2-menuitem',
     onClick: () => {
-      window.open('https://goo.gl/forms/E0mZ2utssWtTYMMB2');
+      window.open('http://bit.ly/kickstarter-nextstep-from-ant2');
       announcement.setAsSeen();
     }
   },
-  */
 ].concat(MODES.map((mode, i) => {
   return Object.assign(mode, {
     modeIndex: i,
@@ -462,7 +462,7 @@ function injectCss() {
     display: none;
   }
 
-  body.aj-nextstep-display-ant1 .aj-nextstep-ant-icon {
+  body.aj-nextstep-display-ant2 .aj-nextstep-ant-icon {
     display: inline !important;
     background: red;
     color: white;
@@ -475,11 +475,11 @@ function injectCss() {
     margin-right: 4px;
   }
 
-  body.aj-nextstep-display-ant1 .aj-nextstep-icon {
+  body.aj-nextstep-display-ant2 .aj-nextstep-icon {
     display: none;
   }
 
-  body.aj-nextstep-display-ant1 .aj-nextstep-ant1-menuitem {
+  body.aj-nextstep-display-ant2 .aj-nextstep-ant2-menuitem {
     background-color: rgba(255, 0, 0, 0.1);
   }
   `;
