@@ -9,6 +9,7 @@ I would like to express my gratitude to people who helped me develop Next Track 
 
 I would like to thank the people who have been kindly supporting my efforts on [Patreon](https://www.patreon.com/adrienjoly):
 
+- [Carole Poinsot](https://www.patreon.com/user/creators?u=2970581)
 - [Nicolas Daudin](https://www.patreon.com/user/creators?u=4570823)
 - [Kevin Lefevre](https://www.patreon.com/user?u=4535157)
 - [Jérémie Girault](https://www.patreon.com/user?u=4535051)
