@@ -17,6 +17,7 @@ I would like to thank the people who have been kindly supporting my efforts on [
 
 ...and the backers of [my first Kickstarter campaign](https://www.kickstarter.com/projects/adrienjoly/next-step-for-trello-v20):
 
+- [Larry Yudelson](https://www.kickstarter.com/profile/1180496836)
 - [Russell Hammond](https://www.kickstarter.com/profile/237466455)
 - [Mike Wittenstein](https://www.kickstarter.com/profile/671686487)
 - [Lukas Loder](https://www.kickstarter.com/profile/18699683)
