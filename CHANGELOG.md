@@ -1,3 +1,5 @@
+== 1.5.2 Bug fix: conflict with Plus for Trello
+
 == 1.5.1 Announcement: support v2.0 on Kickstarter
 
 == 1.5.0 Better markdown support + hyperlinks
