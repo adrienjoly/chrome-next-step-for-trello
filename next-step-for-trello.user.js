@@ -218,7 +218,9 @@ function setCardContent(cardTitleElement, items) {
   if (!taskList) {
     taskList = document.createElement('div');
     taskList.className = 'aj-task-list';
-    cardElement.insertBefore(taskList, cardTitleElement.nextSibling);
+    const badgesEl = cardTitleElement.parentNode.getElementsByClassName('badges')[0];
+    cardElement.insertBefore(taskList, badgesEl);
+    // rely on the .badges element to avoid conflict with plus-for-trello
   }
   taskList.innerHTML = (items || []).map(renderItem).join('\n');
   // attach click handlers on checkboxes
@@ -242,7 +244,10 @@ function updateCardElements(cardElements) {
 }
 
 function updateCards() {
-  updateCardElements(document.getElementsByClassName('list-card-title'));
+  // extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
+  const lastTitle = (listCard) => Array.from(listCard.getElementsByClassName('list-card-title')).pop();
+  const cardLinks = [].map.call(document.getElementsByClassName('list-card'), lastTitle);
+  updateCardElements(cardLinks);
 }
 
 // trello data model
@@ -335,7 +340,7 @@ function watchForChanges() {
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
     if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
-      var cardLink = e.target.getElementsByClassName('list-card-title')[0];
+      var cardLink = Array.from(e.target.getElementsByClassName('list-card-title')).pop();
       updateCardElements([cardLink]);
     }
   }, false);
