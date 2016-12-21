@@ -218,8 +218,9 @@ function setCardContent(cardTitleElement, items) {
   if (!taskList) {
     taskList = document.createElement('div');
     taskList.className = 'aj-task-list';
-    cardElement.insertBefore(taskList, cardTitleElement.nextSibling);
-    // TODO: insert before .badges, instead (for plus-for-trello)
+    const badgesEl = cardTitleElement.parentNode.getElementsByClassName('badges')[0];
+    cardElement.insertBefore(taskList, badgesEl);
+    // rely on the .badges element to avoid conflict with plus-for-trello
   }
   taskList.innerHTML = (items || []).map(renderItem).join('\n');
   // attach click handlers on checkboxes
