@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.5.2
+// @version 1.5.3
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -114,11 +114,11 @@ function initToolbarButton() {
   btn.className = 'board-header-btn board-header-btn-without-icon';
   btn.innerHTML = '<span class="board-header-btn-text">'
     + '<span class="aj-nextstep-icon">↑↓&nbsp;&nbsp;</span>' // ⇟⇵⇅↿⇂
-    + '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' // announcement
+    + '<span class="aj-nextstep-ant-icon" style="display: none;">♥</span>' // announcement
     + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
-  announcement = Announcement('ant2');
+  announcement = Announcement('ant3');
   return btn;
 }
 
@@ -292,7 +292,6 @@ MENU_ITEMS = [
       window.open('https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf');
     }
   },
-  */
   {
     label: '📢 Love Next Step? You can help!',
     description: 'Support the development of v2.0 on Kickstarter!',
@@ -302,6 +301,17 @@ MENU_ITEMS = [
       announcement.setAsSeen();
     }
   },
+  */
+  {
+    label: 'You ❤️ Next Step?',
+    description: 'Tell us why, be featured on its website!',
+    className: 'aj-nextstep-ant3-menuitem',
+    onClick: () => {
+      window.open('http://bit.ly/tweet-nextstep-from-ant3');
+      announcement.setAsSeen();
+    }
+  },
+
 ].concat(MODES.map((mode, i) => {
   return Object.assign(mode, {
     modeIndex: i,
@@ -463,28 +473,39 @@ function injectCss() {
 
   /* next step toolbar button - announcements */
 
-  .aj-nextstep-ant-icon {
-    display: none;
+  @keyframes pulse {
+    0% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1.0;
+    }
   }
 
-  body.aj-nextstep-display-ant2 .aj-nextstep-ant-icon {
+  .aj-nextstep-ant-icon {
+    display: none;
+    transform: translate3d(0, 0, 0);
+    animation: pulse 1s linear infinite;
+  }
+
+  body.aj-nextstep-display-ant3 .aj-nextstep-ant-icon {
     display: inline !important;
     background: red;
     color: white;
     font-weight: bold;
     padding: 0 3px 0 3px;
     border: 1px solid white;
-    font-size: 9px;
+    font-size: 12px;
     position: relative;
     top: -1px;
     margin-right: 4px;
   }
 
-  body.aj-nextstep-display-ant2 .aj-nextstep-icon {
+  body.aj-nextstep-display-ant3 .aj-nextstep-icon {
     display: none;
   }
 
-  body.aj-nextstep-display-ant2 .aj-nextstep-ant2-menuitem {
+  body.aj-nextstep-display-ant3 .aj-nextstep-ant3-menuitem {
     background-color: rgba(255, 0, 0, 0.1);
   }
   `;
