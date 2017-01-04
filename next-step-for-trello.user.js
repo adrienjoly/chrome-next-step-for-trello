@@ -325,6 +325,10 @@ const isToolbarInstalled = () => document.getElementById('aj-nextstep-mode');
 
 function installToolbar() {
   var headerElements = document.getElementsByClassName('board-header-btns');
+  var myCardsPageWrapper = document.getElementsByClassName('tabbed-pane-main-col-wrapper'); // for /my/cards page
+  if (myCardsPageWrapper.length) {
+    headerElements = myCardsPageWrapper[0].children; // toolbar is the first child
+  }
   if (isToolbarInstalled() || !headerElements.length) {
     return false;
   } else {
@@ -513,6 +517,7 @@ function injectCss() {
 }
 
 const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
+const isOnMyCardsPage = () => /https\:\/\/trello.com\/[^/]*\/cards/.test(window.location.href);
 
 // define function to allow checking items directly from board.
 onCheckItem = function(evt) {
@@ -590,7 +595,7 @@ const INIT_STEPS = [
 function init(){
   var currentStep = 0;
   setInterval(() => {
-    if (isOnBoardPage()) {
+    if (isOnBoardPage() || isOnMyCardsPage()) {
       INIT_STEPS[currentStep](() => { ++currentStep; });
     } else {
       needsRefresh = true;
