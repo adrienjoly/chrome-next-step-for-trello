@@ -1,3 +1,5 @@
+== 1.5.4 Announcement: end of tweet campaign => ask for feedback / stars
+
 == 1.5.3 Announcement: tweet your testimonial for the website
 
 == 1.5.2 Bug fix: conflict with Plus for Trello
