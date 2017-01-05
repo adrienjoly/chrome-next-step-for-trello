@@ -115,7 +115,7 @@ function initToolbarButton() {
   btn.innerHTML = '<span class="board-header-btn-text">'
     + '<span class="aj-nextstep-icon">↑↓&nbsp;&nbsp;</span>' // ⇟⇵⇅↿⇂
     + '<span class="aj-nextstep-ant-icon" style="display: none;">♥</span>' // announcement
-    + 'Next steps: <span id="aj-nextstep-mode">' + MODES[currentMode].label + '</span>'
+    + 'Next steps: <span id="aj-nextstep-mode">Loading...</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
   announcement = Announcement('ant3');
@@ -133,7 +133,7 @@ const renderSelectorOption = (menuItem, i) => `
 
 const renderToolbarSelector = (selectorId, innerHTML) => `
   <div class="pop-over-header js-pop-over-header">
-    <span class="pop-over-header-title">Next Step - Display mode</span>
+    <span class="pop-over-header-title">Next Step for Trello</span>
     <a
       href="#"
       class="pop-over-header-close-btn icon-sm icon-close"
@@ -233,7 +233,7 @@ function setCardContent(cardTitleElement, items) {
 function updateCardElements(cardElements) {
   // cardElements must be an array of a.list-card-title elements (with a href)
   refreshing = true;
-  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label; 
+  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label.replace('Mode: ', '');
   document.getElementById('aj-nextstep-loading').style.display = 'inline-block';
   var handler = (cardElement) => cardElement.href && MODES[currentMode].handler(cardElement);
   var promises = Array.prototype.map.call(cardElements, handler);
@@ -262,22 +262,22 @@ const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json
 
 MODES = [
   {
-    label: 'Hidden',
+    label: 'Mode: Hidden',
     description: 'Don\'t display next steps',
     handler: setCardContent
   },
   {
-    label: 'One per card',
+    label: 'Mode: One per card',
     description: 'Display first next step of each card',
     handler: (cardElement) => fetchStepsThen(cardElement, getNextStep)
   },
   {
-    label: 'One per checklist',
+    label: 'Mode: One per checklist',
     description: 'Display first next step of each checklist',
     handler: (cardElement) => fetchStepsThen(cardElement, getNextStepsOfChecklists)
   },
   {
-    label: 'Display all',
+    label: 'Mode: All steps',
     description: 'Display all unchecked checklist items',
     handler: (cardElement) => fetchStepsThen(cardElement, getAllNextStepsNamed)
   },
