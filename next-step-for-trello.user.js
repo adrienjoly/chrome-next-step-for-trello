@@ -284,14 +284,14 @@ MODES = [
 ];
 
 MENU_ITEMS = [
-  /*
   {
-    label: '✍ Any feedback to share?',
+    label: '✍ Any feedback on Next Step for Trello?',
     description: 'Let me know how I can help, or give us some stars!',
     onClick: () => {
       window.open('https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf');
     }
   },
+  /*
   {
     label: '📢 Love Next Step? You can help!',
     description: 'Support the development of v2.0 on Kickstarter!',
@@ -302,15 +302,6 @@ MENU_ITEMS = [
     }
   },
   */
-  {
-    label: 'You ❤️ Next Step?',
-    description: 'Tell us why, be featured on its website!',
-    className: 'aj-nextstep-ant3-menuitem',
-    onClick: () => {
-      window.open('http://bit.ly/tweet-nextstep-from-ant3');
-      announcement.setAsSeen();
-    }
-  },
 
 ].concat(MODES.map((mode, i) => {
   return Object.assign(mode, {
