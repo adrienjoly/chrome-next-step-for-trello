@@ -1,3 +1,5 @@
+== 1.5.6 Bug fix: stop announcement animation
+
 == 1.5.5 Bug fix: stop announcement animation after clicking
 
 == 1.5.4 Announcement: end of tweet campaign => ask for feedback / stars

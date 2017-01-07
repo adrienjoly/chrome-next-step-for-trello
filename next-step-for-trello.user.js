@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.5.5
+// @version 1.5.6
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -478,7 +478,7 @@ function injectCss() {
   .aj-nextstep-ant-icon {
     display: none;
     transform: translate3d(0, 0, 0);
-    animation: pulse 1s linear infinite;
+    /* animation: pulse 1s linear infinite; */
   }
 
   body.aj-nextstep-display-ant3 .aj-nextstep-ant-icon {
