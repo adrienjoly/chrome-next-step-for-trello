@@ -1,3 +1,5 @@
+== 1.5.7 UX Fix: display announcement notification after checking 5 tasks
+
 == 1.5.6 Bug fix: stop announcement animation
 
 == 1.5.5 Bug fix: stop announcement animation after clicking

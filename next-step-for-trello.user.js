@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.5.6
+// @version 1.5.7
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -61,8 +61,8 @@ const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
 // announcement/cookie helper
 
 const Announcement = (announcementId) => {
-  const COOKIE_NAME = 'aj-nextstep';
-  const cookieValue = 'seen-' + announcementId;
+  const COOKIE_NAME = 'aj-nextstep-json';
+  const COOKIE_SEEN_PROP = 'seen-' + announcementId;
   const setCookie = (name, value, days = 7, path = '/') => {
     const expires = new Date(Date.now() + days * 864e5).toGMTString();
     document.cookie = name + `=${encodeURIComponent(value)}; expires=${expires}; path=` + path;
@@ -75,15 +75,22 @@ const Announcement = (announcementId) => {
   const deleteCookie = (name, path) => {
     setCookie(name, '', -1, path);
   };
-  const notSeenYet = getCookie(COOKIE_NAME).indexOf(cookieValue) === -1;
-  if (notSeenYet) {
-    document.body.classList.add('aj-nextstep-display-' + announcementId);
-  }
+  const cookieValue = JSON.parse(getCookie(COOKIE_NAME) || '{}');
+  cookieValue.checkCounter = cookieValue.checkCounter || 0;
+  const shouldDisplay = () => !cookieValue[COOKIE_SEEN_PROP] && cookieValue.checkCounter > 5;
+  const displayIfNecessary = () =>
+    document.body.classList.toggle('aj-nextstep-display-' + announcementId, shouldDisplay());
+  displayIfNecessary();
   return {
-    notSeenYet: notSeenYet,
+    incrementCheckCounter: () => {
+      cookieValue.checkCounter++;
+      setCookie(COOKIE_NAME, JSON.stringify(cookieValue));
+      displayIfNecessary();
+    },
     setAsSeen: () => {
-      setCookie(COOKIE_NAME, cookieValue);
-      document.body.classList.remove('aj-nextstep-display-' + announcementId);
+      cookieValue[COOKIE_SEEN_PROP] = true;
+      setCookie(COOKIE_NAME, JSON.stringify(cookieValue));
+      displayIfNecessary();
     }
   };
 };
@@ -533,6 +540,8 @@ onCheckItem = function(evt) {
     item.classList.add('aj-checked');
     // will make the list of tasks refresh
     needsRefresh = true;
+    // increment check counter
+    announcement.incrementCheckCounter();
   });
 };
 
