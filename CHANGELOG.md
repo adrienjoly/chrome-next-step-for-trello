@@ -1,3 +1,5 @@
+== 1.5.5 Bug fix: stop announcement animation after clicking
+
 == 1.5.4 Announcement: end of tweet campaign => ask for feedback / stars
 
 == 1.5.3 Announcement: tweet your testimonial for the website

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.5.4
+// @version 1.5.5
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -114,7 +114,7 @@ function initToolbarButton() {
   btn.className = 'board-header-btn board-header-btn-without-icon';
   btn.innerHTML = '<span class="board-header-btn-text">'
     + '<span class="aj-nextstep-icon">↑↓&nbsp;&nbsp;</span>' // ⇟⇵⇅↿⇂
-    + '<span class="aj-nextstep-ant-icon" style="display: none;">♥</span>' // announcement
+    + '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' // announcement
     + 'Next steps: <span id="aj-nextstep-mode">Loading...</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
@@ -287,8 +287,10 @@ MENU_ITEMS = [
   {
     label: '✍ Any feedback on Next Step for Trello?',
     description: 'Let me know how I can help, or give us some stars!',
+    className: 'aj-nextstep-ant3-menuitem',
     onClick: () => {
       window.open('https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf');
+      announcement.setAsSeen();
     }
   },
   /*
