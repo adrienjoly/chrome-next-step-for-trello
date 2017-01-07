@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.5.7
+// @version 1.5.8
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -199,7 +199,7 @@ const renderMarkdown = (text) => text
   // 1) turn plain URLs (non-markdown links) into markdown links
   .replace(/([^\]][^\(])(https?\:\/\/([^\/ ]+)[^ ]+)/g, '$1[$2]($2)')
   // 2) turn markdown links into hyperlinks
-  .replace(/\[(.*)\]\((.*)\)/g, '<a href="$2" class="aj-md-hyperlink">$1</a>')
+  .replace(/\[([^\]]*)\]\(([^\)]*)\)/g, '<a href="$2" class="aj-md-hyperlink">$1</a>')
   .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
   .replace(/__(.*)__/g, '<strong>$1</strong>')
   .replace(/\*(?!\*)(.*)\*(?!\*)/g, '<em>$1</em>')

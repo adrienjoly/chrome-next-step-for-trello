@@ -1,3 +1,5 @@
+== 1.5.8 Bug fix #34: hyperlink covers the whole task title
+
 == 1.5.7 UX Fix: display announcement notification after checking 5 tasks
 
 == 1.5.6 Bug fix: stop announcement animation
