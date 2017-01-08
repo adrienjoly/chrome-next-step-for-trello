@@ -1,3 +1,5 @@
+== 1.5.9 Bug fix: freeze when coming back from creating a card with checklist
+
 == 1.5.8 Bug fix #34: hyperlink covers the whole task title
 
 == 1.5.7 UX Fix: display announcement notification after checking 5 tasks

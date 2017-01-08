@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.5.8
+// @version 1.5.9
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -242,7 +242,7 @@ function updateCardElements(cardElements) {
   refreshing = true;
   document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label.replace('Mode: ', '');
   document.getElementById('aj-nextstep-loading').style.display = 'inline-block';
-  var handler = (cardElement) => cardElement.href && MODES[currentMode].handler(cardElement);
+  var handler = (cardElement) => cardElement && cardElement.href && MODES[currentMode].handler(cardElement);
   var promises = Array.prototype.map.call(cardElements, handler);
   Promise.all(promises).then(function(result) {
     refreshing = false;
