@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.5.9
+// @version 1.5.10
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -291,6 +291,7 @@ MODES = [
 ];
 
 MENU_ITEMS = [
+  /*
   {
     label: '✍ Any feedback on Next Step for Trello?',
     description: 'Let me know how I can help, or give us some stars!',
@@ -300,18 +301,16 @@ MENU_ITEMS = [
       announcement.setAsSeen();
     }
   },
-  /*
+  */
   {
-    label: '📢 Love Next Step? You can help!',
-    description: 'Support the development of v2.0 on Kickstarter!',
-    className: 'aj-nextstep-ant2-menuitem',
+    label: '⚡️ More info about Next Step for Trello',
+    description: 'by Adrien Joly',
+    className: 'aj-nextstep-ant3-menuitem',
     onClick: () => {
-      window.open('http://bit.ly/kickstarter-nextstep-from-ant2');
+      window.open('http://adrienjoly.com/chrome-next-step-for-trello/');
       announcement.setAsSeen();
     }
   },
-  */
-
 ].concat(MODES.map((mode, i) => {
   return Object.assign(mode, {
     modeIndex: i,
