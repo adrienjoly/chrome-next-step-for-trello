@@ -563,12 +563,14 @@ onCheckItem = function(evt) {
 function injectJs(jsString, options) {
   options = options || {};
   var scr = document.createElement('script');
-  if (options.id) scr.id = options.id;
+  scr.id = options.id;
   scr.textContent = jsString;
   // (appending text to a function to convert it's src to string only works in Chrome)
   // add to document to make it run, then hide it 
   (document.head || document.documentElement).appendChild(scr);
-  if (options.thenRemove) scr.parentNode.removeChild(scr);
+  if (options.thenRemove) {
+    scr.parentNode.removeChild(scr);
+  }
 }
 
 const INIT_STEPS = [

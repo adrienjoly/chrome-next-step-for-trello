@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # This script creates a ZIP archive of this extension
 # and uploads it to the Chrome Web Store.
 
