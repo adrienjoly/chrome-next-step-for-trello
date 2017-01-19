@@ -60,8 +60,7 @@ const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
 
 // user preferences / cookie helper
 
-const userPrefs = (() => {
-  const COOKIE_NAME = 'aj-nextstep-json';
+const userPrefs = new (function UserPrefs(COOKIE_NAME) {
   const setCookie = (name, value, days = 7, path = '/') => {
     const expires = new Date(Date.now() + days * 864e5).toGMTString();
     document.cookie = name + `=${encodeURIComponent(value)}; expires=${expires}; path=` + path;
@@ -74,31 +73,37 @@ const userPrefs = (() => {
   const deleteCookie = (name, path) => {
     setCookie(name, '', -1, path);
   };
-  return {
+  return Object.assign(this, {
     get: () => JSON.parse(getCookie(COOKIE_NAME) || '{}'),
-    set: (json) => setCookie(COOKIE_NAME, JSON.stringify(json)),
-  };
-})();
+    getValue: (key, defaultVal) => {
+      let val = this.get()[key];
+      return typeof val === 'undefined' ? defaultVal : val;
+    },
+    set: (obj) => setCookie(COOKIE_NAME, JSON.stringify(Object.assign(this.get(), obj))),
+    setValue: (key, val) => {
+      let obj = {};
+      obj[key] = val;
+      this.set(obj);
+    },
+  });
+})('aj-nextstep-json');
 
 // announcement helper
 
 const Announcement = (announcementId) => {
-  const COOKIE_SEEN_PROP = 'seen-' + announcementId;
-  var cookieValue = userPrefs.get();
-  cookieValue.checkCounter = cookieValue.checkCounter || 0;
-  const shouldDisplay = () => !cookieValue[COOKIE_SEEN_PROP] && cookieValue.checkCounter > 5;
+  const SEEN_PROP = 'seen-' + announcementId;
+  const getCheckCount = () => userPrefs.getValue('checkCounter', 0);
+  const shouldDisplay = () => !userPrefs.getValue(SEEN_PROP) && getCheckCount() > 5;
   const displayIfNecessary = () =>
     document.body.classList.toggle('aj-nextstep-display-' + announcementId, shouldDisplay());
   displayIfNecessary();
   return {
     incrementCheckCounter: () => {
-      cookieValue.checkCounter++;
-      userPrefs.set(cookieValue);
+      userPrefs.set({ checkCounter: getCheckCount() + 1 });
       displayIfNecessary();
     },
     setAsSeen: () => {
-      cookieValue[COOKIE_SEEN_PROP] = true;
-      userPrefs.set(cookieValue);
+      userPrefs.setValue(SEEN_PROP, true);
       displayIfNecessary();
     }
   };
