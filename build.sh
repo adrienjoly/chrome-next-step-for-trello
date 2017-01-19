@@ -1,6 +1,8 @@
-# this script creates a ZIP archive of this extension and uploads it to chrome web store
+# This script creates a ZIP archive of this extension
+# and uploads it to the Chrome Web Store.
 
 # it requires environment variables: APP_ID and ACCESS_TOKEN
+# (see https://developer.chrome.com/webstore/using_webstore_api)
 source .env
 
 VERSION=$(jq --raw-output .version manifest.json)
@@ -20,9 +22,12 @@ curl \
   -v \
   https://www.googleapis.com/upload/chromewebstore/v1.1/items/$APP_ID
 
-# then you need to update the description field (e.g. include changes)
-# and publish changes manually when ready.
+# then you can manually update the description field (e.g. changelog)
+# and publish changes when ready.
 open https://chrome.google.com/webstore/developer/edit/$APP_ID
+
+# TODO: find a way to automatically update changelog in extension's description field,
+# (https://developer.chrome.com/webstore/api_index) then publish with this:
 
 # echo "Publishing update ..."
 # curl \
