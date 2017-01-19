@@ -544,6 +544,18 @@ onCheckItem = function(evt) {
   });
 };
 
+// inject code into the page's context (unrestricted)
+function injectJs(jsString, options) {
+  options = options || {};
+  var scr = document.createElement('script');
+  if (options.id) scr.id = options.id;
+  scr.textContent = jsString;
+  // (appending text to a function to convert it's src to string only works in Chrome)
+  // add to document to make it run, then hide it 
+  (document.head || document.documentElement).appendChild(scr);
+  if (options.thenRemove) scr.parentNode.removeChild(scr);
+}
+
 const INIT_STEPS = [
   // step 0: integrate the toolbar button (when page is ready)
   function initToolbar(callback) {
@@ -565,15 +577,10 @@ const INIT_STEPS = [
       token = e.detail.passback;
     });
     // inject code into the page's context (unrestricted)
-    var scr = document.createElement('script');
-    scr.textContent = ` 
+    injectJs(` 
       var event = document.createEvent("CustomEvent");  
       event.initCustomEvent("MyCustomEvent", true, true, {"passback": token});
-      window.dispatchEvent(event);`;
-    // (appending text to a function to convert it's src to string only works in Chrome)
-    // add to document to make it run, then hide it 
-    (document.head || document.documentElement).appendChild(scr);
-    scr.parentNode.removeChild(scr);
+      window.dispatchEvent(event);`, { thenRemove: true });
   },
   // step 3: main loop
   function main() {
