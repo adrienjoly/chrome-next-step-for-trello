@@ -58,11 +58,10 @@ const getNextStepsOfChecklists = (checklists) => checklists
 const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
     .filter(nonNull);
 
-// announcement/cookie helper
+// user preferences / cookie helper
 
-const Announcement = (announcementId) => {
+const userPrefs = (() => {
   const COOKIE_NAME = 'aj-nextstep-json';
-  const COOKIE_SEEN_PROP = 'seen-' + announcementId;
   const setCookie = (name, value, days = 7, path = '/') => {
     const expires = new Date(Date.now() + days * 864e5).toGMTString();
     document.cookie = name + `=${encodeURIComponent(value)}; expires=${expires}; path=` + path;
@@ -75,7 +74,17 @@ const Announcement = (announcementId) => {
   const deleteCookie = (name, path) => {
     setCookie(name, '', -1, path);
   };
-  const cookieValue = JSON.parse(getCookie(COOKIE_NAME) || '{}');
+  return {
+    get: () => JSON.parse(getCookie(COOKIE_NAME) || '{}'),
+    set: (json) => setCookie(COOKIE_NAME, JSON.stringify(json)),
+  };
+})();
+
+// announcement helper
+
+const Announcement = (announcementId) => {
+  const COOKIE_SEEN_PROP = 'seen-' + announcementId;
+  var cookieValue = userPrefs.get();
   cookieValue.checkCounter = cookieValue.checkCounter || 0;
   const shouldDisplay = () => !cookieValue[COOKIE_SEEN_PROP] && cookieValue.checkCounter > 5;
   const displayIfNecessary = () =>
@@ -84,12 +93,12 @@ const Announcement = (announcementId) => {
   return {
     incrementCheckCounter: () => {
       cookieValue.checkCounter++;
-      setCookie(COOKIE_NAME, JSON.stringify(cookieValue));
+      userPrefs.set(cookieValue);
       displayIfNecessary();
     },
     setAsSeen: () => {
       cookieValue[COOKIE_SEEN_PROP] = true;
-      setCookie(COOKIE_NAME, JSON.stringify(cookieValue));
+      userPrefs.set(cookieValue);
       displayIfNecessary();
     }
   };
