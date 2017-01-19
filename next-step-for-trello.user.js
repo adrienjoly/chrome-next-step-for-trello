@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.5.10
+// @version 1.6.0
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -113,7 +113,7 @@ const Announcement = (announcementId) => {
 
 var MENU_ITEMS;
 var MODES;
-var currentMode = 1;
+var currentMode = userPrefs.getValue('defaultMode', 1);
 var needsRefresh = true;
 var refreshing = false;
 var onCheckItem;
@@ -123,6 +123,7 @@ var announcement;
 function setMode(modeIndex) {
   currentMode = modeIndex;
   needsRefresh = true;
+  userPrefs.setValue('defaultMode', modeIndex);
 }
 
 // UI helpers

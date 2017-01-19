@@ -1,3 +1,5 @@
+== 1.6.0 Persistent display mode
+
 == 1.5.10 Silent announcement: link to home page
 
 == 1.5.9 Bug fix: freeze when coming back from creating a card with checklist
