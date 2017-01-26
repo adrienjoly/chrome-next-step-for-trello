@@ -1,3 +1,5 @@
+== 1.6.1 Added Heap, to understand usage of the extension
+
 == 1.6.0 Persistent display mode
 
 == 1.5.10 Silent announcement: link to home page
