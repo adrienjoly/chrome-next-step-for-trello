@@ -119,12 +119,17 @@ var refreshing = false;
 var onCheckItem;
 var token; // needed by onCheckItem
 var announcement;
+var version;
 
 function setMode(modeIndex) {
   currentMode = modeIndex;
   needsRefresh = true;
   userPrefs.setValue('defaultMode', modeIndex);
 }
+
+try {
+  version = chrome.runtime.getManifest().version;
+} catch(e) {}
 
 // UI helpers
 
@@ -156,7 +161,10 @@ const renderSelectorOption = (menuItem, i) => `
 
 const renderToolbarSelector = (selectorId, innerHTML) => `
   <div class="pop-over-header js-pop-over-header">
-    <span class="pop-over-header-title">Next Step for Trello</span>
+    <a
+      class="pop-over-header-title"
+      href="https://adrienjoly.com/chrome-next-step-for-trello/"
+      target="_blank">ℹ️ Next Step for Trello ${ version }</a>
     <a
       href="#"
       class="pop-over-header-close-btn icon-sm icon-close"
@@ -545,6 +553,15 @@ function injectCss() {
 
   #aj-nextstep-selector {
     width: 320px;
+  }
+
+  #aj-nextstep-selector .pop-over-header {
+    background-color: #eeeeee;
+  }
+
+  #aj-nextstep-selector a.pop-over-header-title {
+    text-decoration: none;
+    margin: 0;
   }
   `;
   document.head.appendChild(style);
