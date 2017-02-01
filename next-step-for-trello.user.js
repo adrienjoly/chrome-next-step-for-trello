@@ -95,7 +95,7 @@ const Announcement = (announcementId) => {
   const getCheckCount = () => userPrefs.getValue('checkCounter', 0);
   const shouldDisplay = () => !userPrefs.getValue(SEEN_PROP) && getCheckCount() > 5;
   const displayIfNecessary = () =>
-    document.body.classList.toggle('aj-nextstep-display-' + announcementId, shouldDisplay());
+    document.body.classList.toggle('aj-nextstep-display-ant', shouldDisplay());
   displayIfNecessary();
   return {
     incrementCheckCounter: () => {
@@ -311,7 +311,7 @@ MENU_ITEMS = [
   {
     label: '✍ Any feedback on Next Step for Trello?',
     description: 'Let me know how I can help, or give us some stars!',
-    className: 'aj-nextstep-ant3-menuitem',
+    className: 'aj-nextstep-ant-menuitem',
     onClick: () => {
       window.open('https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf');
       announcement.setAsSeen();
@@ -321,7 +321,7 @@ MENU_ITEMS = [
   {
     label: '⚡️ More info about Next Step for Trello',
     description: 'by Adrien Joly',
-    className: 'aj-nextstep-ant3-menuitem',
+    className: 'aj-nextstep-ant-menuitem',
     onClick: () => {
       window.open('http://adrienjoly.com/chrome-next-step-for-trello/');
       announcement.setAsSeen();
@@ -503,7 +503,7 @@ function injectCss() {
     /* animation: pulse 1s linear infinite; */
   }
 
-  body.aj-nextstep-display-ant3 .aj-nextstep-ant-icon {
+  body.aj-nextstep-display-ant .aj-nextstep-ant-icon {
     display: inline !important;
     background: red;
     color: white;
@@ -516,11 +516,11 @@ function injectCss() {
     margin-right: 4px;
   }
 
-  body.aj-nextstep-display-ant3 .aj-nextstep-icon {
+  body.aj-nextstep-display-ant .aj-nextstep-icon {
     display: none;
   }
 
-  body.aj-nextstep-display-ant3 .aj-nextstep-ant3-menuitem {
+  body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
     background-color: rgba(255, 0, 0, 0.1);
   }
   `;
