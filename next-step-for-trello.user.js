@@ -140,7 +140,7 @@ function initToolbarButton() {
     + 'Next steps: <span id="aj-nextstep-mode">Loading...</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
-  announcement = Announcement('ant3');
+  announcement = Announcement('ant4');
   return btn;
 }
 
@@ -318,13 +318,22 @@ MENU_ITEMS = [
       announcement.setAsSeen();
     }
   },
-  */
   {
     label: '⚡️ More info about Next Step for Trello',
     description: 'by Adrien Joly',
     className: 'aj-nextstep-ant-menuitem',
     onClick: () => {
       window.open('http://adrienjoly.com/chrome-next-step-for-trello/');
+      announcement.setAsSeen();
+    }
+  },
+  */
+  {
+    label: '<div class="aj-nextstep-ant-pic"></div>🎂 Hey, it\'s my birthday in ' + (20 - new Date().getDate()) + ' days!',
+    description: 'Like Next Step? You can thank me with a 🍺!',
+    className: 'aj-nextstep-ant-menuitem',
+    href: 'https://www.paypal.me/adrienjoly',
+    onClick: (evt) => {
       announcement.setAsSeen();
     }
   },
@@ -523,6 +532,19 @@ function injectCss() {
 
   body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
     background-color: rgba(255, 0, 0, 0.1);
+  }
+
+  .aj-nextstep-ant-pic {
+    position: absolute;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background-image: url('http://i.imgur.com/CK4hCZq.jpg');
+    background-size: cover;
+  }
+
+  #aj-nextstep-selector {
+    width: 320px;
   }
   `;
   document.head.appendChild(style);
