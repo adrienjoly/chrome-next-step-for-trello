@@ -146,7 +146,8 @@ function initToolbarButton() {
 
 const renderSelectorOption = (menuItem, i) => `
   <li>
-    <a id="aj-nextstep-menuitem-${ i }" class="js-select light-hover ${ menuItem.className || '' }" href="#" name="org">
+    <a id="aj-nextstep-menuitem-${ i }" class="js-select light-hover ${ menuItem.className || '' }"
+       href="${ menuItem.href || '#' }" ${ menuItem.href ? 'target="_blank"' : '' } name="org">
       ${ menuItem.label }
       ${ currentMode === menuItem.modeIndex ? '<span class="icon-sm icon-check"></span>' : '' }
       <span class="sub-name">${ menuItem.description }</span>
