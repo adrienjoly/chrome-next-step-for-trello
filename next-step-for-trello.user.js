@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.6.2
+// @version 1.6.3
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -209,9 +209,9 @@ function initToolbarSelector(btn) {
 }
 
 function getUserName() {
-  let userName = document
+  let userName = (document
     .getElementsByClassName('header-user')[0]
-    .getElementsByClassName('member-avatar')[0].title;
+    .getElementsByClassName('member-avatar')[0] || {}).title || 'me';
   return userName.slice(userName.indexOf('(') + 1, userName.indexOf(')'));
 }
 
@@ -320,7 +320,7 @@ MENU_ITEMS = [
   {
     label: '✍ Any feedback on Next Step for Trello?',
     description: 'Let me know how I can help, or give us some stars!',
-    className: 'aj-nextstep-ant-menuitem',
+    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-feedback',
     onClick: () => {
       window.open('https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf');
       announcement.setAsSeen();
@@ -329,7 +329,7 @@ MENU_ITEMS = [
   {
     label: '⚡️ More info about Next Step for Trello',
     description: 'by Adrien Joly',
-    className: 'aj-nextstep-ant-menuitem',
+    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-more-info',
     onClick: () => {
       window.open('http://adrienjoly.com/chrome-next-step-for-trello/');
       announcement.setAsSeen();
@@ -339,7 +339,7 @@ MENU_ITEMS = [
   {
     label: '<div class="aj-nextstep-ant-pic"></div>🎂 Hey, it\'s my birthday in ' + (20 - new Date().getDate()) + ' days!',
     description: 'Like Next Step? You can thank me with a 🍺!',
-    className: 'aj-nextstep-ant-menuitem',
+    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-bday',
     href: 'https://www.paypal.me/adrienjoly',
     onClick: (evt) => {
       announcement.setAsSeen();

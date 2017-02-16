@@ -1,3 +1,5 @@
+== 1.6.3 Bug fix: Cannot read property 'title' of undefined
+
 == 1.6.2 Birthday announcement :-)
 
 == 1.6.1 Added Heap, to understand usage of the extension
