@@ -1,3 +1,5 @@
+== 1.6.5 Back to normal donate button
+
 == 1.6.4 Happy Birthday, me!  :-)
 
 == 1.6.3 Bug fix: Cannot read property 'title' of undefined

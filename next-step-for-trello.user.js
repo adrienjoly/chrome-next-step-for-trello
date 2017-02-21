@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.6.4
+// @version 1.6.5
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -140,7 +140,7 @@ function initToolbarButton() {
   btn.id = 'aj-nextstep-btn';
   btn.className = 'board-header-btn board-header-btn-without-icon';
   btn.innerHTML = '<span class="board-header-btn-text">'
-    + '<span class="aj-nextstep-icon">🎂&nbsp;&nbsp;</span>' // ↑↓
+    + '<span class="aj-nextstep-icon">↑↓&nbsp;&nbsp;</span>'
     + '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' // announcement
     + 'Next steps: <span id="aj-nextstep-mode">Loading...</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
@@ -342,9 +342,9 @@ MENU_ITEMS = MODES.map((mode, i) => {
   },
   */
   {
-    label: '<div class="aj-nextstep-ant-pic"></div>🎂 Hey, it\'s my birthday today!',
-    description: 'Like Next Step? You can thank me with a 🍺!',
-    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-bday',
+    label: '<div class="aj-nextstep-ant-pic"></div>📈 Enjoying Next Step?',
+    description: 'You can thank me with a 🍺!',
+    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-donate',
     href: 'https://adrienjoly.com/donate',
     onClick: (evt) => {
       announcement.setAsSeen();
