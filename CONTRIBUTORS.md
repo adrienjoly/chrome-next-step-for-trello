@@ -9,6 +9,7 @@ I would like to express my gratitude to people who helped me develop Next Track 
 
 Thanks a lot to the kind users who sent me a [donation](https://adrienjoly.com/donate):
 
+- Adam P.
 - Raffaele G.
 - Nicholas S.
 - Eric E.
