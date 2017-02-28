@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.6.5
+// @version 1.7.0
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -320,37 +320,7 @@ MENU_ITEMS = MODES.map((mode, i) => {
     modeIndex: i,
     onClick: () => setMode(i)
   });
-}).concat([
-  /*
-  {
-    label: '✍ Any feedback on Next Step for Trello?',
-    description: 'Let me know how I can help, or give us some stars!',
-    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-feedback',
-    onClick: () => {
-      window.open('https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf');
-      announcement.setAsSeen();
-    }
-  },
-  {
-    label: '⚡️ More info about Next Step for Trello',
-    description: 'by Adrien Joly',
-    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-more-info',
-    onClick: () => {
-      window.open('http://adrienjoly.com/chrome-next-step-for-trello/');
-      announcement.setAsSeen();
-    }
-  },
-  */
-  {
-    label: '<div class="aj-nextstep-ant-pic"></div>📈 Enjoying Next Step?',
-    description: 'You can thank me with a 🍺!',
-    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-donate',
-    href: 'https://adrienjoly.com/donate',
-    onClick: (evt) => {
-      announcement.setAsSeen();
-    }
-  },
-]);
+});
 
 // extension initialization
 
@@ -448,6 +418,18 @@ const INIT_STEPS = [
   function initToolbar(callback) {
     if (installToolbar()) {
       callback();
+      fetch('https://adrienjoly.com/chrome-next-step-for-trello/assets/announcement.json')
+        .then((response) => response.json())
+        .then((json) => MENU_ITEMS.push(Object.assign(json, {
+          onClick: (evt) => announcement.setAsSeen()
+        })))
+        .catch(() => MENU_ITEMS.push({
+          label: '✍ Any feedback on Next Step for Trello?',
+          description: 'Let me know how I can help, or give us some stars!',
+          className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-feedback',
+          href: 'https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf',
+          onClick: () => announcement.setAsSeen(),
+        }));
     }
   },
   // step 1: watch DOM changes (one shot init)
