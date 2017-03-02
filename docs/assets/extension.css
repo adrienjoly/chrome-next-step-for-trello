@@ -27,7 +27,7 @@
   left: 4px;
 }
 .aj-next-step > .aj-checkbox-tick::before {
-      content: "\\2714"; /* ✔ Checkmark */
+      content: "\2714"; /* ✔ Checkmark */
 }
 .aj-next-step > .aj-checkbox-tick:hover {
   opacity: 0.5;
