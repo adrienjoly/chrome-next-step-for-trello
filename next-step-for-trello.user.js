@@ -10,6 +10,12 @@
 
 const URL_PREFIX = 'https://adrienjoly.com/chrome-next-step-for-trello'
 
+const DEV_MODE = !('update_url' in chrome.runtime.getManifest())
+
+const ANNOUNCEMENT_URL = DEV_MODE
+  ? chrome.extension.getURL('/docs/assets/announcement.json') // load locally
+  : `${URL_PREFIX}/assets/announcement.json` // load from official website
+
 // basic helpers
 
 const nonNull = (item) => !!item;
@@ -451,7 +457,7 @@ const INIT_STEPS = [
   function initToolbar(callback) {
     if (installToolbar()) {
       callback();
-      fetch(`${URL_PREFIX}/assets/announcement.json`)
+      fetch(ANNOUNCEMENT_URL)
         .then((response) => response.json())
         .catch(() => ({
           label: '✍ Any feedback on Next Step for Trello?',

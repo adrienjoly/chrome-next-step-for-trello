@@ -12,7 +12,10 @@
    "converted_from_user_script": true,
    "description": "Check tasks directly from your Trello boards",
    "icons": { "128": "icon-128.png" },
-   "web_accessible_resources": [ "next-step-for-trello.css" ],
+   "web_accessible_resources": [
+     "next-step-for-trello.css",
+     "/docs/assets/announcement.json"
+   ],
    "name": "Next Step for Trello",
    "short_name": "Next Step",
    "version": "1.8.1"
