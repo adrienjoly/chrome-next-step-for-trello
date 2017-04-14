@@ -1,3 +1,5 @@
+== v1.8.1 optimisation: only (re)load the card on which an item was checked
+
 == v1.8.0 optimisation: only (re)load cards that contain checklists
 
 == 1.7.0 Cleaning: Load CSS and Announcement from Github
