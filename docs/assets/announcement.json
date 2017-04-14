@@ -1,6 +1,6 @@
 {
-  "label": "<div class=\"aj-nextstep-ant-pic\"></div>📈 Enjoying Next Step?",
-  "description": "You can thank me with a 🍺!",
-  "className": "aj-nextstep-ant-menuitem aj-nextstep-ant-donate",
-  "href": "https://donorbox.org/next-step-for-trello?ref=extension"
+  "label": "✍ Enjoying Next Step?",
+  "description": "Ask me anything, or give it ⭐️️️⭐️️️⭐️️️⭐️️️⭐️️️ on the store!",
+  "className": "aj-nextstep-ant-menuitem aj-nextstep-ant-feedback",
+  "href": "https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf"
 }
