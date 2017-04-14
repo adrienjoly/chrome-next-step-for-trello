@@ -303,25 +303,19 @@ function updateCards(toRefresh) {
   document.getElementById('aj-nextstep-loading').style.display = 'inline-block';
   // TODO: create a function to toggle the loading UI
   fetchBoardChecklists().then((checklists) => {
-    //let cards = cardLinks.map((cardLink) => ({ href: cardLink.href }))
     // 1. filter cards that contain checklists
-    let cards = checklists.reduce((cards, checklist) => {
+    let cards = Object.values(checklists.reduce((cards, checklist) => {
       const shortUrl = checklist.cards[0].shortUrl
       cards[shortUrl] = cards[shortUrl] || { shortUrl: shortUrl, checklists: [] }
       cards[shortUrl].checklists.push(checklist)
-      return cards
-    }, {})
-    console.log('cards:', cards)
-    //const hasChecklists = (card) => !!cardUrls[shortUrl(card.href)]
-    //cards = cards.filter(hasChecklists)
-    /*
+      return cards // TODO: rewrite this function
+    }, {}))
     // 2. only refresh specified cards (e.g. when checking an item of a card)
     if ((toRefresh || {}).cardUrls) {
-      cards = cards.filter((card) => toRefresh.cardUrls.includes(card.href))
+      const shortUrls = toRefresh.cardUrls.map(shortUrl)
+      cards = cards.filter((card) => shortUrls.includes(card.shortUrl))
     }
-    */
-    // TODO: re-enable filter #2 above
-    updateCardElements(Object.values(cards)).then(function(result) {
+    updateCardElements(cards).then(function(result) {
       refreshing = false
       document.getElementById('aj-nextstep-loading').style.display = 'none'
     })
