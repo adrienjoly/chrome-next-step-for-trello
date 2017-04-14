@@ -449,16 +449,15 @@ const INIT_STEPS = [
       callback();
       fetch('https://adrienjoly.com/chrome-next-step-for-trello/assets/announcement.json')
         .then((response) => response.json())
-        .then((json) => MENU_ITEMS.push(Object.assign(json, {
-          onClick: (evt) => announcement.setAsSeen()
-        })))
-        .catch(() => MENU_ITEMS.push({
+        .catch(() => ({
           label: '✍ Any feedback on Next Step for Trello?',
           description: 'Let me know how I can help, or give us some stars!',
           className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-feedback',
           href: 'https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf',
-          onClick: () => announcement.setAsSeen(),
-        }));
+        }))
+        .then((json) => MENU_ITEMS.push(Object.assign(json, {
+          onClick: (evt) => announcement.setAsSeen()
+        })))
     }
   },
   // step 1: watch DOM changes (one shot init)
