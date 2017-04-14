@@ -297,11 +297,15 @@ const fetchBoardChecklists = (boardId = extractId()) =>
   fetch(`https://trello.com/1/boards/${boardId}/checklists?cards=all&card_fields=shortUrl`, {credentials: 'include'})
     .then((res) => res.json())
 
+function toggleLoadingUI(state) {
+  refreshing = !!state
+  document.getElementById('aj-nextstep-loading').style.display
+    = state ? 'inline-block' : 'none'
+}
+
 function updateCards(toRefresh) {
-  refreshing = true;
   document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label.replace('Mode: ', '');
-  document.getElementById('aj-nextstep-loading').style.display = 'inline-block';
-  // TODO: create a function to toggle the loading UI
+  toggleLoadingUI(true)
   fetchBoardChecklists().then((checklists) => {
     // 1. filter cards that contain checklists
     let cards = Object.values(checklists.reduce((cards, checklist) => {
@@ -316,8 +320,7 @@ function updateCards(toRefresh) {
       cards = cards.filter((card) => shortUrls.includes(card.shortUrl))
     }
     updateCardElements(cards)
-    refreshing = false
-    document.getElementById('aj-nextstep-loading').style.display = 'none'
+    toggleLoadingUI(false)
   })
 }
 
