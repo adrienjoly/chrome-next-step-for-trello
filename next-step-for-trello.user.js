@@ -114,7 +114,7 @@ const Announcement = (announcementId) => {
 var MENU_ITEMS;
 var MODES;
 var currentMode = userPrefs.getValue('defaultMode', 1);
-var needsRefresh = true;
+var needsRefresh = true; // true = all, or { cardUrls }
 var refreshing = false;
 var onCheckItem;
 var token; // needed by onCheckItem
@@ -235,6 +235,7 @@ const renderMarkdown = (text) => text
 
 const renderItem = (item) => `
   <p class="aj-next-step"
+     data-card-url="${item.cardUrl}"
      data-card-id="${item.cardId}"
      data-checklist-id="${item.checklistId}"
      data-item-id="${item.id}" >
@@ -254,7 +255,9 @@ function setCardContent(cardTitleElement, items) {
     cardElement.insertBefore(taskList, badgesEl);
     // rely on the .badges element to avoid conflict with plus-for-trello
   }
-  taskList.innerHTML = (items || []).map(renderItem).join('\n');
+  taskList.innerHTML = (items || [])
+    .map((item) => Object.assign(item, { cardUrl: cardTitleElement.href }))
+    .map(renderItem).join('\n');
   // attach click handlers on checkboxes
   var checkboxes = taskList.getElementsByClassName('aj-checkbox-tick');
   for (var i=0; i<checkboxes.length; ++i) {
@@ -283,17 +286,27 @@ const fetchBoardChecklists = (boardId = extractId()) =>
   fetch(`https://trello.com/1/boards/${boardId}/checklists?cards=all&card_fields=shortUrl`, {credentials: 'include'})
     .then((res) => res.json())
 
-function updateCards() {
+function updateCards(toRefresh) {
   // extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
   const lastTitle = (listCard) => Array.from(listCard.getElementsByClassName('list-card-title')).pop();
   const cardLinks = [].map.call(document.getElementsByClassName('list-card'), lastTitle);
-  // filter fetch cards that contain checklists
-  fetchBoardChecklists().then((checklists) => {
-    const cardUrls = checklists.reduce((cardUrls, checklist) =>
-      Object.assign(cardUrls, { [checklist.cards[0].shortUrl]: true }), {})
-    const hasChecklists = (cardLink) => !!cardUrls[shortUrl(cardLink.href)]
-    updateCardElements(cardLinks.filter(hasChecklists))
-  })
+
+  if (typeof toRefresh === 'object' && toRefresh.cardUrls) {
+    // only refresh specified cards (e.g. when checking an item of a card)
+    console.log('toRefresh.cardUrls', toRefresh.cardUrls)
+    console.log('cardLinks', cardLinks)
+    console.log('cardLinks', cardLinks.map((cardLink) => console.log('cl', cardLink.href)))
+    const hasToRefresh = (cardLink) => toRefresh.cardUrls.includes(cardLink.href)
+    updateCardElements(cardLinks.filter(hasToRefresh)) 
+  } else {
+    // filter fetch cards that contain checklists
+    fetchBoardChecklists().then((checklists) => {
+      const cardUrls = checklists.reduce((cardUrls, checklist) =>
+        Object.assign(cardUrls, { [checklist.cards[0].shortUrl]: true }), {})
+      const hasChecklists = (cardLink) => !!cardUrls[shortUrl(cardLink.href)]
+      updateCardElements(cardLinks.filter(hasChecklists))
+    })
+  }
 }
 
 // trello data model
@@ -359,7 +372,7 @@ function watchForChanges() {
   // refresh on card name change
   document.body.addEventListener('DOMSubtreeModified', function(e){
     if ('list-card-details' === e.target.className) {
-      needsRefresh = true;
+      needsRefresh = true; // TODO: use { cardUrls } instead
     }
   }, false);
   // TODO: re-activate name change detection without interfering with drag&drop with single ajax request, below:
@@ -407,7 +420,9 @@ onCheckItem = function(evt) {
     // hide the task progressively
     item.classList.add('aj-checked');
     // will make the list of tasks refresh
-    needsRefresh = true;
+    needsRefresh = {
+      cardUrls: [ item.getAttribute('data-card-url') ],
+    }
     // increment check counter
     announcement.incrementCheckCounter();
   });
@@ -477,8 +492,8 @@ const INIT_STEPS = [
       needsRefresh = true;
     }
     if (needsRefresh && !refreshing) {
+      updateCards(needsRefresh);
       needsRefresh = false;
-      updateCards();
     }
   }
 ];
