@@ -1,3 +1,5 @@
+== v1.8.3 optimisation: one API request to load all checklists
+
 == v1.8.2 refactoring / non-visible updates
  * load css from package
  * simpler logic for loading announcement, including when testing
