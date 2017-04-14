@@ -8,6 +8,8 @@
 // @run-at document-start
 // ==/UserScript==
 
+const URL_PREFIX = 'https://adrienjoly.com/chrome-next-step-for-trello'
+
 // basic helpers
 
 const nonNull = (item) => !!item;
@@ -163,7 +165,7 @@ const renderToolbarSelector = (selectorId, innerHTML) => `
   <div class="pop-over-header js-pop-over-header">
     <a
       class="pop-over-header-title"
-      href="https://adrienjoly.com/chrome-next-step-for-trello/"
+      href="${URL_PREFIX}/"
       target="_blank">ℹ️ Next Step for Trello ${ version }</a>
     <a
       href="#"
@@ -389,7 +391,7 @@ function watchForChanges() {
 function injectCss() {
   var link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = 'https://adrienjoly.com/chrome-next-step-for-trello/assets/extension.css'
+  link.href = `${URL_PREFIX}/assets/extension.css`
   document.head.appendChild(link);
 }
 
@@ -447,7 +449,7 @@ const INIT_STEPS = [
   function initToolbar(callback) {
     if (installToolbar()) {
       callback();
-      fetch('https://adrienjoly.com/chrome-next-step-for-trello/assets/announcement.json')
+      fetch(`${URL_PREFIX}/assets/announcement.json`)
         .then((response) => response.json())
         .catch(() => ({
           label: '✍ Any feedback on Next Step for Trello?',
