@@ -301,9 +301,6 @@ function updateCards(toRefresh) {
 
   if (typeof toRefresh === 'object' && toRefresh.cardUrls) {
     // only refresh specified cards (e.g. when checking an item of a card)
-    console.log('toRefresh.cardUrls', toRefresh.cardUrls)
-    console.log('cardLinks', cardLinks)
-    console.log('cardLinks', cardLinks.map((cardLink) => console.log('cl', cardLink.href)))
     const hasToRefresh = (cardLink) => toRefresh.cardUrls.includes(cardLink.href)
     updateCardElements(cardLinks.filter(hasToRefresh)) 
   } else {
