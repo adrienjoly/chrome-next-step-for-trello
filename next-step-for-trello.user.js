@@ -280,14 +280,14 @@ const getCardElementByParent = (parentElement) =>
 const getCardElementByShortUrl = (shortUrl) =>
   Array.from(document.querySelectorAll(`.list-card-title[href^="${shortUrl.split('.com')[1]}"]`)).pop()
 
-// TODO: remove promise?
-const updateCardElements = (cards) => Promise.all(cards
-  .map((card) => {
+const updateCardElements = (cards) => {
+  const handler = MODES[currentMode].handler
+  cards.forEach((card) => {
     const cardElement = getCardElementByShortUrl(card.shortUrl)
     //console.log('-', card.shortUrl, cardElement)
-    return cardElement && setCardContent(cardElement, MODES[currentMode].handler(card.checklists))
+    return cardElement && setCardContent(cardElement, handler(card.checklists))
   })
-)
+}
 
 const extractId = (url = window.location.href) => url.split('/')[4] // ooooh! this is dirty!
 
@@ -315,10 +315,9 @@ function updateCards(toRefresh) {
       const shortUrls = toRefresh.cardUrls.map(shortUrl)
       cards = cards.filter((card) => shortUrls.includes(card.shortUrl))
     }
-    updateCardElements(cards).then(function(result) {
-      refreshing = false
-      document.getElementById('aj-nextstep-loading').style.display = 'none'
-    })
+    updateCardElements(cards)
+    refreshing = false
+    document.getElementById('aj-nextstep-loading').style.display = 'none'
   })
 }
 
