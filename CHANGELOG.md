@@ -1,3 +1,5 @@
+== v1.8.0 optimisation: only (re)load cards that contain checklists
+
 == 1.7.0 Cleaning: Load CSS and Announcement from Github
 
 == 1.6.5 Back to normal donate button
