@@ -275,11 +275,28 @@ function updateCardElements(cardElements) {
   });
 }
 
+const extractId = (url = window.location.href) => url.split('/')[4] // ooooh! this is dirty!
+
+const shortUrl = (url) => url.split('/', 5).join('/')
+
+const fetchBoardChecklists = (boardId = extractId()) => {
+  return fetch(`https://trello.com/1/boards/${boardId}/checklists?cards=all&card_fields=shortUrl`, {credentials: 'include'})
+    .then((res) => res.json())
+}
+
 function updateCards() {
   // extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
   const lastTitle = (listCard) => Array.from(listCard.getElementsByClassName('list-card-title')).pop();
   const cardLinks = [].map.call(document.getElementsByClassName('list-card'), lastTitle);
-  updateCardElements(cardLinks);
+  // filter fetch cards that contain checklists
+  fetchBoardChecklists().then((checklists) => {
+    const cardUrls = {} // TODO: use reduce instead
+    checklists.map((checklist) => {
+      const cardShortUrl = checklist.cards[0].shortUrl
+      cardUrls[cardShortUrl] = true
+    })
+    updateCardElements(cardLinks.filter((cardLink) => !!cardUrls[shortUrl(cardLink.href)]))
+  })
 }
 
 // trello data model
