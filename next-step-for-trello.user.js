@@ -388,12 +388,14 @@ function watchForChanges() {
   }, false);
 }
 
+/*
 function injectCss() {
   var link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = `${URL_PREFIX}/assets/extension.css`
+  link.href = `${URL_PREFIX}/assets/extension.css` // or chrome.extension.getURL('/next-step-for-trello.css')
   document.head.appendChild(link);
 }
+*/
 
 const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
 
@@ -465,7 +467,7 @@ const INIT_STEPS = [
   // step 1: watch DOM changes (one shot init)
   function initWatchers(callback) {
     watchForChanges();
-    injectCss();
+    //injectCss(); // now loaded from package (see manifest.json)
     callback();
     // inject analytics
     injectJs(` 

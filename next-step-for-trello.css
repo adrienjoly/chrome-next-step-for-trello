@@ -1,5 +1,3 @@
-/* DEPRECATED => css file packaged in extension will be used instead */
-
 /* next step item */
 
 .aj-next-step {
@@ -170,4 +168,8 @@ body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
 #aj-nextstep-selector a.pop-over-header-title {
   text-decoration: none;
   margin: 0;
+}
+
+#aj-nextstep-selector .pop-over-content {
+  padding-bottom: 0;
 }
