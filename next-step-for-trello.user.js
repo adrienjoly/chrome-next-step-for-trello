@@ -279,10 +279,9 @@ const extractId = (url = window.location.href) => url.split('/')[4] // ooooh! th
 
 const shortUrl = (url) => url.split('/', 5).join('/')
 
-const fetchBoardChecklists = (boardId = extractId()) => {
-  return fetch(`https://trello.com/1/boards/${boardId}/checklists?cards=all&card_fields=shortUrl`, {credentials: 'include'})
+const fetchBoardChecklists = (boardId = extractId()) =>
+  fetch(`https://trello.com/1/boards/${boardId}/checklists?cards=all&card_fields=shortUrl`, {credentials: 'include'})
     .then((res) => res.json())
-}
 
 function updateCards() {
   // extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
@@ -290,12 +289,10 @@ function updateCards() {
   const cardLinks = [].map.call(document.getElementsByClassName('list-card'), lastTitle);
   // filter fetch cards that contain checklists
   fetchBoardChecklists().then((checklists) => {
-    const cardUrls = {} // TODO: use reduce instead
-    checklists.map((checklist) => {
-      const cardShortUrl = checklist.cards[0].shortUrl
-      cardUrls[cardShortUrl] = true
-    })
-    updateCardElements(cardLinks.filter((cardLink) => !!cardUrls[shortUrl(cardLink.href)]))
+    const cardUrls = checklists.reduce((cardUrls, checklist) =>
+      Object.assign(cardUrls, { [checklist.cards[0].shortUrl]: true }), {})
+    const hasChecklists = (cardLink) => !!cardUrls[shortUrl(cardLink.href)]
+    updateCardElements(cardLinks.filter(hasChecklists))
   })
 }
 
