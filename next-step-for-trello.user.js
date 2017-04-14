@@ -388,7 +388,7 @@ function watchForChanges() {
   document.body.addEventListener('DOMNodeInserted', function(e){
     if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
       var cardLink = getCardElementByParent(e.target)
-      updateCards({ cardUrls: cardLink.href })
+      updateCards({ cardUrls: [ cardLink.href ] })
     }
   }, false);
 }
