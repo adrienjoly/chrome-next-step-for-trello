@@ -273,18 +273,21 @@ function setCardContent(cardTitleElement, items) {
   }
 }
 
-function updateCardElements(cardElements) {
-  // cardElements must be an array of a.list-card-title elements (with a href)
-  refreshing = true;
-  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label.replace('Mode: ', '');
-  document.getElementById('aj-nextstep-loading').style.display = 'inline-block';
-  var handler = (cardElement) => cardElement && cardElement.href && MODES[currentMode].handler(cardElement);
-  var promises = Array.prototype.map.call(cardElements, handler);
-  Promise.all(promises).then(function(result) {
-    refreshing = false;
-    document.getElementById('aj-nextstep-loading').style.display = 'none';
-  });
-}
+// extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
+const getCardElementByParent = (parentElement) =>
+  Array.from(parentElement.getElementsByClassName('list-card-title')).pop()
+
+const getCardElementByShortUrl = (shortUrl) =>
+  Array.from(document.querySelectorAll(`.list-card-title[href^="${shortUrl.split('.com')[1]}"]`)).pop()
+
+// TODO: remove promise?
+const updateCardElements = (cards) => Promise.all(cards
+  .map((card) => {
+    const cardElement = getCardElementByShortUrl(card.shortUrl)
+    //console.log('-', card.shortUrl, cardElement)
+    return cardElement && setCardContent(cardElement, MODES[currentMode].handler(card.checklists))
+  })
+)
 
 const extractId = (url = window.location.href) => url.split('/')[4] // ooooh! this is dirty!
 
@@ -295,32 +298,35 @@ const fetchBoardChecklists = (boardId = extractId()) =>
     .then((res) => res.json())
 
 function updateCards(toRefresh) {
-  // extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
-  const lastTitle = (listCard) => Array.from(listCard.getElementsByClassName('list-card-title')).pop();
-  const cardLinks = [].map.call(document.getElementsByClassName('list-card'), lastTitle);
-
-  if (typeof toRefresh === 'object' && toRefresh.cardUrls) {
-    // only refresh specified cards (e.g. when checking an item of a card)
-    const hasToRefresh = (cardLink) => toRefresh.cardUrls.includes(cardLink.href)
-    updateCardElements(cardLinks.filter(hasToRefresh)) 
-  } else {
-    // filter fetch cards that contain checklists
-    fetchBoardChecklists().then((checklists) => {
-      const cardUrls = checklists.reduce((cardUrls, checklist) =>
-        Object.assign(cardUrls, { [checklist.cards[0].shortUrl]: true }), {})
-      const hasChecklists = (cardLink) => !!cardUrls[shortUrl(cardLink.href)]
-      updateCardElements(cardLinks.filter(hasChecklists))
+  refreshing = true;
+  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label.replace('Mode: ', '');
+  document.getElementById('aj-nextstep-loading').style.display = 'inline-block';
+  // TODO: create a function to toggle the loading UI
+  fetchBoardChecklists().then((checklists) => {
+    //let cards = cardLinks.map((cardLink) => ({ href: cardLink.href }))
+    // 1. filter cards that contain checklists
+    let cards = checklists.reduce((cards, checklist) => {
+      const shortUrl = checklist.cards[0].shortUrl
+      cards[shortUrl] = cards[shortUrl] || { shortUrl: shortUrl, checklists: [] }
+      cards[shortUrl].checklists.push(checklist)
+      return cards
+    }, {})
+    console.log('cards:', cards)
+    //const hasChecklists = (card) => !!cardUrls[shortUrl(card.href)]
+    //cards = cards.filter(hasChecklists)
+    /*
+    // 2. only refresh specified cards (e.g. when checking an item of a card)
+    if ((toRefresh || {}).cardUrls) {
+      cards = cards.filter((card) => toRefresh.cardUrls.includes(card.href))
+    }
+    */
+    // TODO: re-enable filter #2 above
+    updateCardElements(Object.values(cards)).then(function(result) {
+      refreshing = false
+      document.getElementById('aj-nextstep-loading').style.display = 'none'
     })
-  }
+  })
 }
-
-// trello data model
-
-const fetchStepsThen = (cardElement, handler) => fetch(cardElement.href + '.json', {credentials: 'include'})
-  .then((res) => res.json())
-  .then((json) => {
-    setCardContent(cardElement, handler(json.checklists));
-  }); 
 
 // extension modes
 
@@ -328,22 +334,22 @@ MODES = [
   {
     label: 'Mode: Hidden',
     description: 'Don\'t display next steps',
-    handler: setCardContent
+    handler: (checklists) => ([]),
   },
   {
     label: 'Mode: One per card',
     description: 'Display first next step of each card',
-    handler: (cardElement) => fetchStepsThen(cardElement, getNextStep)
+    handler: getNextStep,
   },
   {
     label: 'Mode: One per checklist',
     description: 'Display first next step of each checklist',
-    handler: (cardElement) => fetchStepsThen(cardElement, getNextStepsOfChecklists)
+    handler: getNextStepsOfChecklists,
   },
   {
     label: 'Mode: All steps',
     description: 'Display all unchecked checklist items',
-    handler: (cardElement) => fetchStepsThen(cardElement, getAllNextStepsNamed)
+    handler: getAllNextStepsNamed,
   },
 ];
 
@@ -385,8 +391,8 @@ function watchForChanges() {
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
     if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
-      var cardLink = Array.from(e.target.getElementsByClassName('list-card-title')).pop();
-      updateCardElements([cardLink]);
+      var cardLink = getCardElementByParent(e.target)
+      updateCards({ cardUrls: cardLink.href })
     }
   }, false);
 }
