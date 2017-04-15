@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script> <!-- required by client.js -->
+    <script src="https://api.trello.com/1/client.js?key=0b15414357140fe88faecea94f0a22b1"></script>
+  </head>
+  <body>
+    <button id="auth">Count me in!</button>
+    <script>
+      
+      function getUser(user) {
+        console.log('=> user:', user);
+        console.log('cherry-picked properties:', {
+          username: user.username,
+          fullName: user.fullName,
+          email: user.email,
+          avatar: {
+            '50': `https://trello-avatars.s3.amazonaws.com/${user.avatarHash}/50.png`, // found on profile page
+            '170': `https://trello-avatars.s3.amazonaws.com/${user.avatarHash}/170.png`, // found on public page
+            '200': `http://www.gravatar.com/avatar/${user.gravatarHash}.jpg?s=200`, // found on stackoverflow
+          },
+        });
+        alert('Hi, ' + user.fullName + '!');
+      }
+
+      function showApiError(error) {
+        console.log('=> error:', error);
+        // if user revoked auth for this app (https://trello.com/adrienjoly/account),
+        // an error will be received here until the trello entry is deleted from localstorage.
+        if (error.responseText === 'invalid token') {
+          localStorage.removeItem('trello_token');
+          alert('please refresh this page and try again');
+          // auth();
+        } else {
+          alert('error: ' + error.responseText);
+        }
+      }
+
+      function authenticationSuccess() {
+        console.log('Successful authentication', arguments);
+        // cf https://developers.trello.com/clientjs
+        Trello.get('members/me', {}, getUser, showApiError);
+      }
+
+      function authenticationFailure() {
+        console.log('auth error:', error);
+        alert('error... please check your javascript console for more info.');
+      };
+
+      function auth() {
+        Trello.authorize({
+          type: 'popup',
+          name: 'Next Step users',
+          scope: {
+            read: 'true',
+            //write: 'true',
+            account: true, // required to access the user's email
+          },
+          expiration: 'never',
+          success: authenticationSuccess,
+          error: authenticationFailure
+        });
+      }
+
+      document.getElementById('auth').onclick = auth;
+    </script>
+  </body>
+</html>
