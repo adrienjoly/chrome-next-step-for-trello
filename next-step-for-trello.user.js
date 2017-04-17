@@ -473,15 +473,7 @@ const INIT_STEPS = [
   // step 2: get global token from Trello
   function getToken(callback) {
     callback(); // calling it right away, in case the following code crashes
-    // wait for the message
-    window.addEventListener("MyCustomEvent", function (e) {
-      token = e.detail.passback;
-    });
-    // inject code into the page's context (unrestricted)
-    injectJs(` 
-      var event = document.createEvent("CustomEvent");  
-      event.initCustomEvent("MyCustomEvent", true, true, {"passback": token});
-      window.dispatchEvent(event);`, { thenRemove: true });
+    injectJs(getSymbolFromHost('token', (_token) => { token = _token; }), { thenRemove: true });
   },
   // step 3: main loop
   function main() {
@@ -495,6 +487,19 @@ const INIT_STEPS = [
     }
   }
 ];
+
+function getSymbolFromHost(symbolName, callback) {
+  // wait for the message
+  window.addEventListener(`MyCustomEvent_${symbolName}`, function (e) {
+    console.log(`MyCustomEvent_${symbolName}`, e);
+    callback(e.detail.passback);
+  });
+  // inject code into the page's context (unrestricted)
+  return ` 
+    var event = document.createEvent("CustomEvent");  
+    event.initCustomEvent("MyCustomEvent_${symbolName}", true, true, {"passback": ${symbolName}});
+    window.dispatchEvent(event);`;
+}
 
 function init(){
   var currentStep = 0;
