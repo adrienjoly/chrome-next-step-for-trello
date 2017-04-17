@@ -117,6 +117,31 @@ const Announcement = (announcementId) => {
   };
 };
 
+// analytics helper
+
+class Analytics {
+  constructor(code = 'UA-XXXXXXXX-X') {
+    injectJs(`
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://ssl.google-analytics.com/analytics.js','ga');
+
+      ga('create', '${code}', 'auto', 'nextstep');
+      ga('nextstep.send', 'pageview');
+      //ga('nextstep.send', 'event', 'test', 'test');
+    `);
+  };
+  trackPage() {
+    injectJs(`ga('nextstep.send', 'pageview');`, { thenRemove: true });
+  };
+  trackEvent(category, action, opt_label, opt_value, opt_noninteraction) {
+    injectJs(`ga('nextstep.send', 'event', '${category}', '${action}');`, { thenRemove: true });
+  };
+};
+
+var analytics = new Analytics('UA-1858235-21');
+
 // app state
 
 var MENU_ITEMS;
@@ -133,6 +158,7 @@ function setMode(modeIndex) {
   currentMode = modeIndex;
   needsRefresh = true;
   userPrefs.setValue('defaultMode', modeIndex);
+  analytics.trackEvent(MODES[currentMode].label, 'click');
 }
 
 try {
@@ -195,6 +221,7 @@ function initToolbarSelector(btn) {
   node.className = 'pop-over';
   node.hide = () => {
     node.classList.remove('is-shown');
+    analytics.trackEvent('Toolbar Button', 'hide');
   };
   node.show = () => {
     node.innerHTML = renderToolbarSelector(node.id, MENU_ITEMS.map(renderSelectorOption).join('\n'));
@@ -208,6 +235,7 @@ function initToolbarSelector(btn) {
     node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;';
     node.classList.add('is-shown');
     //heap.track('Click on toolbar button', {});
+    analytics.trackEvent('Toolbar Button', 'show');
   };
   node.toggle = function(evt) {
     evt.preventDefault();
@@ -370,6 +398,7 @@ function installToolbar() {
     headerElements[0].appendChild(btn);
     document.body.appendChild(popover);
     btn.onclick = popover.toggle.bind(popover);
+    analytics.trackEvent('Board', 'install-toolbar');
     return true;
   }
 }
@@ -426,6 +455,7 @@ onCheckItem = function(evt) {
     // increment check counter
     announcement.incrementCheckCounter();
   });
+  analytics.trackEvent('Checklist item', 'tick');
 };
 
 // inject code into the page's context (unrestricted)
@@ -465,10 +495,12 @@ const INIT_STEPS = [
     watchForChanges();
     callback();
     // inject analytics
+    /*
     injectJs(` 
       window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(r?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","removeEventProperty","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
         heap.load("3050518868");
     `);
+    */
   },
   // step 2: get global token from Trello
   function getToken(callback) {
@@ -484,6 +516,8 @@ const INIT_STEPS = [
     if (needsRefresh && !refreshing) {
       updateCards(needsRefresh);
       needsRefresh = false;
+      analytics.trackPage();
+      analytics.trackEvent('Board', 'refresh');
     }
   }
 ];
@@ -506,8 +540,9 @@ function init(){
   setInterval(() => {
     if (isOnBoardPage()) {
       INIT_STEPS[currentStep](() => { ++currentStep; });
-    } else {
+    } else if (!needsRefresh) {
       needsRefresh = true;
+      analytics.trackPage();
     }
   }, 500);
   // TODO: get rid of this interval
