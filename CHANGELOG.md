@@ -1,3 +1,5 @@
+== v1.8.5 removed console outputs
+
 == v1.8.4 switched to google analytics
 
 == v1.8.3 optimisation: one API request to load all checklists

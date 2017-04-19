@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.4
+// @version 1.8.5
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -525,7 +525,6 @@ const INIT_STEPS = [
 function getSymbolFromHost(symbolName, callback) {
   // wait for the message
   window.addEventListener(`MyCustomEvent_${symbolName}`, function (e) {
-    console.log(`MyCustomEvent_${symbolName}`, e);
     callback(e.detail.passback);
   });
   // inject code into the page's context (unrestricted)
