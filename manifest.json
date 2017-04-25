@@ -19,5 +19,5 @@
    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
    "name": "Next Step for Trello",
    "short_name": "Next Step",
-   "version": "1.8.5"
+   "version": "1.8.6"
 }

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.5
+// @version 1.8.6
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -337,9 +337,11 @@ function updateCards(toRefresh) {
   fetchBoardChecklists().then((checklists) => {
     // 1. filter cards that contain checklists
     let cards = Object.values(checklists.reduce((cards, checklist) => {
-      const shortUrl = checklist.cards[0].shortUrl
-      cards[shortUrl] = cards[shortUrl] || { shortUrl: shortUrl, checklists: [] }
-      cards[shortUrl].checklists.push(checklist)
+      const shortUrl = (checklist.cards[0] || {}).shortUrl
+      if (shortUrl) {
+        cards[shortUrl] = cards[shortUrl] || { shortUrl: shortUrl, checklists: [] }
+        cards[shortUrl].checklists.push(checklist)
+      }
       return cards // TODO: rewrite this function
     }, {}))
     // 2. only refresh specified cards (e.g. when checking an item of a card)
