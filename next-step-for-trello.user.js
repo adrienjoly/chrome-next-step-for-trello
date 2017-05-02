@@ -28,7 +28,7 @@ const getFirstResult = (fct) => function() {
 
 // trello checklist processors
 
-const prefixChecklistName = (item) => 
+const prefixChecklistName = (item) =>
   Object.assign(item, {
     name: item.checklistName + ': ' + item.name
   });
@@ -256,18 +256,64 @@ function renderAtMention(userName) {
   return '<span class="atMention' + meClass + '">' + userName + '</span>';
 }
 
-const renderMarkdown = (text) => text
-  // 1) turn plain URLs (non-markdown links) into markdown links
-  .replace(/([^\]][^\(])(https?\:\/\/([^\/ ]+)[^ ]+)/g, '$1[$2]($2)')
-  // 2) turn markdown links into hyperlinks
-  .replace(/\[([^\]]*)\]\(([^\)]*)\)/g, '<a href="$2" class="aj-md-hyperlink">$1</a>')
+const renderMarkdownSymbols = (text) => text
   .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
   .replace(/__(.*)__/g, '<strong>$1</strong>')
   .replace(/\*(?!\*)(.*)\*(?!\*)/g, '<em>$1</em>')
   .replace(/_(?!_)(.*)_(?!_)/g, '<em>$1</em>')
-  .replace(/`{3}(.*)`{3}|`{1}(.*)`{1}/g, '<code>$1$2</code>')
   .replace(/~~(.*)~~/g, '<del>$1</del>')
   .replace(/@\w+/g, renderAtMention);
+
+function getMarkdownPlaceholders(text, regEx) {
+  var placeholders = {};
+  var matches = text.match(regEx);
+  if (matches) {
+    for (var i = 0; i < matches.length; i++) {
+      var name = 'next-step-for-trello-placholder-' + i;
+      placeholders[name] = matches[i];
+    }
+  }
+  return placeholders;
+}
+
+function replaceMarkdownWithPlaceholders(text, placeholders) {
+  for (var name in placeholders) {
+    var markdown = placeholders[name];
+    text = text.replace(markdown, name);
+  }
+  return text;
+}
+
+function renderMarkdownPlaceholders(text, placeholders, regEx, replacement) {
+  for (var name in placeholders) {
+    var html = placeholders[name].replace(regEx, replacement);
+    text = text.replace(name, html);
+  }
+  return text;
+}
+
+function renderMarkdown(text) {
+  // Code and links should not have Markdown formatting applied.  So remove
+  // them from the text and replace with placeholders for now.
+  const codeRegEx = /`{3}(.*)`{3}|`{1}(.*)`{1}/g;
+  var codePlaceholders = getMarkdownPlaceholders(text, codeRegEx);
+  text = replaceMarkdownWithPlaceholders(text, codePlaceholders);
+
+  // Turn plain URLs (non-markdown links) into markdown links
+  text = text.replace(/([^\]][^\(])(https?\:\/\/([^\/ ]+)[^ ]+)/g, '$1[$2]($2)')
+  const urlRegEx =/\[([^\]]*)\]\(([^\)]*)\)/g;
+  var urlPlaceholders = getMarkdownPlaceholders(text, urlRegEx);
+  text = replaceMarkdownWithPlaceholders(text, urlPlaceholders);
+
+  // Apply markdown rendering to the remaining text
+  text = renderMarkdownSymbols(text);
+
+  // Add back the placeholders with HTML code blocks/URLs
+  text = renderMarkdownPlaceholders(text, codePlaceholders, codeRegEx, '<code>$1$2</code>');
+  text = renderMarkdownPlaceholders(text, urlPlaceholders, urlRegEx,'<a href="$2" class="aj-md-hyperlink">$1</a>');
+
+  return text;
+}
 
 const renderItem = (item) => `
   <p class="aj-next-step"
@@ -386,7 +432,7 @@ MENU_ITEMS = MODES.map((mode, i) => {
 
 // extension initialization
 
-const isToolbarInstalled = () => document.getElementById('aj-nextstep-mode'); 
+const isToolbarInstalled = () => document.getElementById('aj-nextstep-mode');
 
 function installToolbar() {
   var headerElements = document.getElementsByClassName('board-header-btns');
@@ -465,7 +511,7 @@ function injectJs(jsString, options) {
   scr.id = options.id;
   scr.textContent = jsString;
   // (appending text to a function to convert it's src to string only works in Chrome)
-  // add to document to make it run, then hide it 
+  // add to document to make it run, then hide it
   (document.head || document.documentElement).appendChild(scr);
   if (options.thenRemove) {
     scr.parentNode.removeChild(scr);
@@ -496,7 +542,7 @@ const INIT_STEPS = [
     callback();
     // inject analytics
     /*
-    injectJs(` 
+    injectJs(`
       window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(r?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","removeEventProperty","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
         heap.load("3050518868");
     `);
@@ -528,8 +574,8 @@ function getSymbolFromHost(symbolName, callback) {
     callback(e.detail.passback);
   });
   // inject code into the page's context (unrestricted)
-  return ` 
-    var event = document.createEvent("CustomEvent");  
+  return `
+    var event = document.createEvent("CustomEvent");
     event.initCustomEvent("MyCustomEvent_${symbolName}", true, true, {"passback": ${symbolName}});
     window.dispatchEvent(event);`;
 }
