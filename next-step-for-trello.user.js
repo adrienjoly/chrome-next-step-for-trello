@@ -308,7 +308,7 @@ function renderMarkdown(text) {
   // Apply markdown rendering to the remaining text
   text = renderMarkdownSymbols(text);
 
-  // Add back the placeholders with HTML code blocks/URLs
+  // Replace the placeholders with HTML code blocks/URLs
   text = renderMarkdownPlaceholders(text, codePlaceholders, codeRegEx, '<code>$1$2</code>');
   text = renderMarkdownPlaceholders(text, urlPlaceholders, urlRegEx,'<a href="$2" class="aj-md-hyperlink">$1</a>');
 
