@@ -1,0 +1,28 @@
+{
+  "name": "chrome-next-step-for-trello",
+  "version": "1.8.5",
+  "description": "[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7ca1f64573ee434eb82159df9d7afc0f)](https://www.codacy.com/app/adrien-joly/chrome-next-step-for-trello?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adrienjoly/chrome-next-step-for-trello&amp;utm_campaign=Badge_Grade)",
+  "main": "next-step-for-trello.user.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrienjoly/chrome-next-step-for-trello.git"
+  },
+  "author": "Adrien Joly <contact@adrienjoly.com> (http://adrienjoly.com/)",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/adrienjoly/chrome-next-step-for-trello/issues"
+  },
+  "homepage": "https://github.com/adrienjoly/chrome-next-step-for-trello#readme",
+  "devDependencies": {
+    "mocha": "^3.3.0",
+    "mock-browser": "^0.92.14",
+    "sinon-chrome": "^2.2.1"
+  }
+}
