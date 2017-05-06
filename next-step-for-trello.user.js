@@ -355,40 +355,25 @@ const getMarkdownPatternsToReplace = () => [
   }
 ];
 
-function getMarkdownPlaceholders(text) {
-  var placeholders = []; // TODO: populate and return with reduce()
-  getMarkdownPatternsToReplace().forEach((pattern) => {
-    var matches = text.match(pattern.regEx);
-    if (matches) {
-      matches.forEach((match) => {
-        placeholders.push({
-          name: 'next-step-for-trello-placholder-' + placeholders.length,
-          text: match,
-          regEx: pattern.regEx,
-          replacement: pattern.replacement
-        });
-      });
-    }
-  });
-  return placeholders;
-}
+const getMarkdownPlaceholders = (text) =>
+  getMarkdownPatternsToReplace().reduce((placeholders, pattern) => 
+    placeholders.concat((text.match(pattern.regEx) || []).map((match, i) => ({
+      name: 'next-step-for-trello-placeholder-' + (placeholders.length + i),
+      text: match,
+      regEx: pattern.regEx,
+      replacement: pattern.replacement
+    }))), []);
 
-function replaceMarkdownWithPlaceholders(text, placeholders) {
-  placeholders.forEach((placeholder) => {
-    text = text.replace(placeholder.text, placeholder.name);
-  });
-  return text; // TODO: populate and return with reduce()
-}
+const replaceMarkdownWithPlaceholders = (text, placeholders) =>
+  placeholders.reduce((text, placeholder) =>
+    text.replace(placeholder.text, placeholder.name), text);
 
-function renderMarkdownPlaceholders(text, placeholders) {
-  placeholders.forEach((placeholder) => {
-    var renderedMarkdown = placeholder.text.replace(
-      placeholder.regEx,
-      placeholder.replacement);
-    text = text.replace(placeholder.name, renderedMarkdown);
-  });
-  return text; // TODO: populate and return with reduce()
-}
+const renderMdPlaceholder = (placeholder) =>
+  placeholder.text.replace(placeholder.regEx, placeholder.replacement);
+
+const renderMarkdownPlaceholders = (text, placeholders) =>
+  placeholders.reduce((text, placeholder) => 
+    text.replace(placeholder.name, renderMdPlaceholder(placeholder)), text);
 
 function renderMarkdown(text) {
   // Code and links should not have Markdown formatting applied.  So remove
@@ -399,7 +384,7 @@ function renderMarkdown(text) {
   text = renderMarkdownSymbols(text);
   // Replace the placeholders with HTML code blocks/URLs
   text = renderMarkdownPlaceholders(text, placeholders);
-  return text; // TODO: convert to fat-arrow function
+  return text;
 }
 
 // Next Step UI
