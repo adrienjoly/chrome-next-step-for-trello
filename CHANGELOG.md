@@ -1,3 +1,6 @@
+== v1.8.7 Markdown formatting fixes by @stevecshanks
+ * and first automated tests :-)
+
 == v1.8.6 bug fix: property 'shortUrl' of undefined
 
 == v1.8.5 removed console outputs
