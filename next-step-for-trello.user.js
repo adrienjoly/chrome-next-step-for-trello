@@ -84,14 +84,14 @@ function UserPrefs(COOKIE_NAME) {
 }
 
 // announcement helper
-const Announcement = (announcementId, userPrefs) => {
+function Announcement(announcementId, userPrefs) {
   const SEEN_PROP = 'seen-' + announcementId;
   const getCheckCount = () => userPrefs.getValue('checkCounter', 0);
   const shouldDisplay = () => !userPrefs.getValue(SEEN_PROP) && getCheckCount() > 5;
   const displayIfNecessary = () =>
     document.body.classList.toggle('aj-nextstep-display-ant', shouldDisplay());
   displayIfNecessary();
-  return {
+  return Object.assign(this, {
     incrementCheckCounter: () => {
       userPrefs.set({ checkCounter: getCheckCount() + 1 });
       displayIfNecessary();
@@ -100,8 +100,8 @@ const Announcement = (announcementId, userPrefs) => {
       userPrefs.setValue(SEEN_PROP, true);
       displayIfNecessary();
     }
-  };
-};
+  });
+}
 
 // analytics helper
 class Analytics {
@@ -119,10 +119,10 @@ class Analytics {
   };
   trackPage() {
     injectJs(`ga('nextstep.send', 'pageview');`, { thenRemove: true });
-  };
-  trackEvent(category, action, opt_label, opt_value, opt_noninteraction) {
+  }
+  trackEvent(category, action) {
     injectJs(`ga('nextstep.send', 'event', '${category}', '${action}');`, { thenRemove: true });
-  };
+  }
 };
 
 // trello checklist processors
@@ -260,7 +260,7 @@ function initToolbarButton() {
     + 'Next steps: <span id="aj-nextstep-mode">Loading...</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
-  announcement = Announcement('ant4', userPrefs);
+  announcement = new Announcement('ant4', userPrefs);
   return btn;
 }
 
@@ -487,7 +487,7 @@ function updateCards(toRefresh) {
     let cards = Object.values(checklists.reduce((cards, checklist) => {
       const shortUrl = (checklist.cards[0] || {}).shortUrl
       if (shortUrl) {
-        cards[shortUrl] = cards[shortUrl] || { shortUrl: shortUrl, checklists: [] }
+        cards[shortUrl] = cards[shortUrl] || { shortUrl, checklists: [] }
         cards[shortUrl].checklists.push(checklist)
       }
       return cards // TODO: rewrite this function
