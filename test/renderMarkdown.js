@@ -87,6 +87,16 @@ describe('renderMarkdown', function() {
         input: 'créer une landing page en suivant [ce guide](https://medium.com/@cliffordoravec/the-no-bs-approach-to-building-your-saas-startups-launch-list-part-2-of-the-epic-guide-to-8cc371be772c)',
         expected: 'créer une landing page en suivant <a href="https://medium.com/@cliffordoravec/the-no-bs-approach-to-building-your-saas-startups-launch-list-part-2-of-the-epic-guide-to-8cc371be772c" class="aj-md-hyperlink">ce guide</a>'
       }
+    ]},
+    {name: 'code and url', cases: [
+      {
+        input: '`wget http://test.com/`',
+        expected: `<code>wget http://test.com/</code>`
+      },
+      {
+        input: '[this site](http://test.com) not working with `wget`',
+        expected: '<a href="http://test.com" class="aj-md-hyperlink">this site</a> not working with <code>wget</code>'
+      }
     ]}
   ];
 

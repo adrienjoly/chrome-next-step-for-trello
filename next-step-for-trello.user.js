@@ -264,53 +264,69 @@ const renderMarkdownSymbols = (text) => text
   .replace(/~~(.*)~~/g, '<del>$1</del>')
   .replace(/@\w+/g, renderAtMention);
 
-function getMarkdownPlaceholders(text, regEx) {
-  var placeholders = {};
-  var matches = text.match(regEx);
-  if (matches) {
-    for (var i = 0; i < matches.length; i++) {
-      var name = 'next-step-for-trello-placholder-' + i;
-      placeholders[name] = matches[i];
-    }
+const getMarkdownPatternsToReplace = () => [
+  {
+    regEx: /`{3}(.*)`{3}|`{1}(.*)`{1}/g,
+    replacement: '<code>$1$2</code>'
+  },
+  {
+    regEx: /([^\]][^\(])(https?\:\/\/([^\/ ]+)[^ ]+)/g,
+    replacement: '$1<a href="$2" class="aj-md-hyperlink">$2</a>'
+  },
+  {
+    regEx: /\[([^\]]*)\]\(([^\)]*)\)/g,
+    replacement:  '<a href="$2" class="aj-md-hyperlink">$1</a>'
   }
+];
+
+function getMarkdownPlaceholders(text) {
+  var placeholders = [];
+
+  getMarkdownPatternsToReplace().forEach((pattern) => {
+    var matches = text.match(pattern.regEx);
+    if (matches) {
+      matches.forEach((match) => {
+        placeholders.push({
+          name: 'next-step-for-trello-placholder-' + placeholders.length,
+          text: match,
+          regEx: pattern.regEx,
+          replacement: pattern.replacement
+        });
+      });
+    }
+  });
+
   return placeholders;
 }
 
 function replaceMarkdownWithPlaceholders(text, placeholders) {
-  for (var name in placeholders) {
-    var markdown = placeholders[name];
-    text = text.replace(markdown, name);
-  }
+  placeholders.forEach((placeholder) => {
+    text = text.replace(placeholder.text, placeholder.name);
+  });
+
   return text;
 }
 
-function renderMarkdownPlaceholders(text, placeholders, regEx, replacement) {
-  for (var name in placeholders) {
-    var html = placeholders[name].replace(regEx, replacement);
-    text = text.replace(name, html);
-  }
+function renderMarkdownPlaceholders(text, placeholders) {
+  placeholders.forEach((placeholder) => {
+    var renderedMarkdown = placeholder.text.replace(
+      placeholder.regEx,
+      placeholder.replacement);
+    text = text.replace(placeholder.name, renderedMarkdown);
+  });
+
   return text;
 }
 
 function renderMarkdown(text) {
   // Code and links should not have Markdown formatting applied.  So remove
   // them from the text and replace with placeholders for now.
-  const codeRegEx = /`{3}(.*)`{3}|`{1}(.*)`{1}/g;
-  var codePlaceholders = getMarkdownPlaceholders(text, codeRegEx);
-  text = replaceMarkdownWithPlaceholders(text, codePlaceholders);
-
-  // Turn plain URLs (non-markdown links) into markdown links
-  text = text.replace(/([^\]][^\(])(https?\:\/\/([^\/ ]+)[^ ]+)/g, '$1[$2]($2)')
-  const urlRegEx =/\[([^\]]*)\]\(([^\)]*)\)/g;
-  var urlPlaceholders = getMarkdownPlaceholders(text, urlRegEx);
-  text = replaceMarkdownWithPlaceholders(text, urlPlaceholders);
-
+  var placeholders = getMarkdownPlaceholders(text);
+  text = replaceMarkdownWithPlaceholders(text, placeholders);
   // Apply markdown rendering to the remaining text
   text = renderMarkdownSymbols(text);
-
   // Replace the placeholders with HTML code blocks/URLs
-  text = renderMarkdownPlaceholders(text, codePlaceholders, codeRegEx, '<code>$1$2</code>');
-  text = renderMarkdownPlaceholders(text, urlPlaceholders, urlRegEx,'<a href="$2" class="aj-md-hyperlink">$1</a>');
+  text = renderMarkdownPlaceholders(text, placeholders);
 
   return text;
 }
