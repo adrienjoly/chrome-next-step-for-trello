@@ -1,4 +1,4 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7ca1f64573ee434eb82159df9d7afc0f)](https://www.codacy.com/app/adrien-joly/chrome-next-step-for-trello?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adrienjoly/chrome-next-step-for-trello&amp;utm_campaign=Badge_Grade)
+![](https://travis-ci.org/adrienjoly/chrome-next-step-for-trello.svg?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7ca1f64573ee434eb82159df9d7afc0f)](https://www.codacy.com/app/adrien-joly/chrome-next-step-for-trello?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adrienjoly/chrome-next-step-for-trello&amp;utm_campaign=Badge_Grade)
 
 # "Next Step" for Trello cards
 
