@@ -14,9 +14,9 @@ var setInterval = function () {}
 
 // This is the context our tests will run in
 var sandbox = {
-  chrome: chrome,
-  document: document,
-  setInterval: setInterval,
+  chrome,
+  document,
+  setInterval,
   returnValue: null
 };
 var context = vm.createContext(sandbox);
