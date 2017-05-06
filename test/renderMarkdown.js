@@ -37,12 +37,16 @@ describe('renderMarkdown', function() {
   var tests = [
     {name: 'url', cases: [
       {
-        input: 'see http://test.com',
-        expected: 'see <a href="http://test.com" class="aj-md-hyperlink">http://test.com</a>'
+        input: 'http://test.com',
+        expected: '<a href="http://test.com" class="aj-md-hyperlink">http://test.com</a>'
       },
       {
-        input: 'see https://test.com',
-        expected: 'see <a href="https://test.com" class="aj-md-hyperlink">https://test.com</a>'
+        input: 'See http://test.com',
+        expected: 'See <a href="http://test.com" class="aj-md-hyperlink">http://test.com</a>'
+      },
+      {
+        input: 'See https://test.com for details',
+        expected: 'See <a href="https://test.com" class="aj-md-hyperlink">https://test.com</a> for details'
       }
     ]},
     {name: 'markdown link', cases: [

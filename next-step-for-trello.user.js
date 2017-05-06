@@ -270,7 +270,7 @@ const getMarkdownPatternsToReplace = () => [
     replacement: '<code>$1$2</code>'
   },
   {
-    regEx: /([^\]][^\(])(https?\:\/\/([^\/ ]+)[^ ]+)/g,
+    regEx: /(^|[^\]][^\(])(https?\:\/\/([^\/ ]+)[^ ]+)/g,
     replacement: '$1<a href="$2" class="aj-md-hyperlink">$2</a>'
   },
   {
