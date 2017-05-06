@@ -12,6 +12,8 @@ const URL_PREFIX = 'https://adrienjoly.com/chrome-next-step-for-trello'
 
 const DEV_MODE = !('update_url' in chrome.runtime.getManifest())
 
+const EXT_VERSION = chrome.runtime.getManifest().version;
+
 const ANNOUNCEMENT_URL = DEV_MODE
   ? chrome.extension.getURL('/docs/assets/announcement.json') // load locally
   : `${URL_PREFIX}/assets/announcement.json` // load from official website
@@ -24,6 +26,103 @@ const byPos = (a, b) => a.pos > b.pos ? 1 : -1; // take order into account
 
 const getFirstResult = (fct) => function() {
   return fct.apply(this, arguments)[0];
+};
+
+// inject code into the page's context (unrestricted)
+function injectJs(jsString, options) {
+  options = options || {};
+  var scr = document.createElement('script');
+  scr.id = options.id;
+  scr.textContent = jsString;
+  // (appending text to a function to convert it's src to string only works in Chrome)
+  // add to document to make it run, then hide it
+  (document.head || document.documentElement).appendChild(scr);
+  if (options.thenRemove) {
+    scr.parentNode.removeChild(scr);
+  }
+}
+
+function getSymbolFromHost(symbolName, callback) {
+  // wait for the message
+  window.addEventListener(`MyCustomEvent_${symbolName}`, function (e) {
+    callback(e.detail.passback);
+  });
+  // inject code into the page's context (unrestricted)
+  return `
+    var event = document.createEvent("CustomEvent");
+    event.initCustomEvent("MyCustomEvent_${symbolName}", true, true, {"passback": ${symbolName}});
+    window.dispatchEvent(event);`;
+}
+
+// user preferences / cookie helper
+function UserPrefs(COOKIE_NAME) {
+  const setCookie = (name, value, days = 7, path = '/') => {
+    const expires = new Date(Date.now() + days * 864e5).toGMTString();
+    document.cookie = name + `=${encodeURIComponent(value)}; expires=${expires}; path=` + path;
+  };
+  const getCookie = (name) =>
+    document.cookie.split('; ').reduce((r, v) => {
+      const parts = v.split('=');
+      return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+    }, '');
+  const deleteCookie = (name, path) => {
+    setCookie(name, '', -1, path);
+  };
+  return Object.assign(this, {
+    get: () => JSON.parse(getCookie(COOKIE_NAME) || '{}'),
+    getValue: (key, defaultVal) => {
+      let val = this.get()[key];
+      return typeof val === 'undefined' ? defaultVal : val;
+    },
+    set: (obj) => setCookie(COOKIE_NAME, JSON.stringify(Object.assign(this.get(), obj))),
+    setValue: (key, val) => {
+      let obj = {};
+      obj[key] = val;
+      this.set(obj);
+    },
+  });
+}
+
+// announcement helper
+const Announcement = (announcementId, userPrefs) => {
+  const SEEN_PROP = 'seen-' + announcementId;
+  const getCheckCount = () => userPrefs.getValue('checkCounter', 0);
+  const shouldDisplay = () => !userPrefs.getValue(SEEN_PROP) && getCheckCount() > 5;
+  const displayIfNecessary = () =>
+    document.body.classList.toggle('aj-nextstep-display-ant', shouldDisplay());
+  displayIfNecessary();
+  return {
+    incrementCheckCounter: () => {
+      userPrefs.set({ checkCounter: getCheckCount() + 1 });
+      displayIfNecessary();
+    },
+    setAsSeen: () => {
+      userPrefs.setValue(SEEN_PROP, true);
+      displayIfNecessary();
+    }
+  };
+};
+
+// analytics helper
+class Analytics {
+  constructor(code = 'UA-XXXXXXXX-X') {
+    injectJs(`
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://ssl.google-analytics.com/analytics.js','ga');
+
+      ga('create', '${code}', 'auto', 'nextstep');
+      ga('nextstep.send', 'pageview');
+      //ga('nextstep.send', 'event', 'test', 'test');
+    `);
+  };
+  trackPage() {
+    injectJs(`ga('nextstep.send', 'pageview');`, { thenRemove: true });
+  };
+  trackEvent(category, action, opt_label, opt_value, opt_noninteraction) {
+    injectJs(`ga('nextstep.send', 'event', '${category}', '${action}');`, { thenRemove: true });
+  };
 };
 
 // trello checklist processors
@@ -66,93 +165,40 @@ const getNextStepsOfChecklists = (checklists) => checklists
 const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
     .filter(nonNull);
 
-// user preferences / cookie helper
+// extension modes
 
-const userPrefs = new (function UserPrefs(COOKIE_NAME) {
-  const setCookie = (name, value, days = 7, path = '/') => {
-    const expires = new Date(Date.now() + days * 864e5).toGMTString();
-    document.cookie = name + `=${encodeURIComponent(value)}; expires=${expires}; path=` + path;
-  };
-  const getCookie = (name) =>
-    document.cookie.split('; ').reduce((r, v) => {
-      const parts = v.split('=');
-      return parts[0] === name ? decodeURIComponent(parts[1]) : r;
-    }, '');
-  const deleteCookie = (name, path) => {
-    setCookie(name, '', -1, path);
-  };
-  return Object.assign(this, {
-    get: () => JSON.parse(getCookie(COOKIE_NAME) || '{}'),
-    getValue: (key, defaultVal) => {
-      let val = this.get()[key];
-      return typeof val === 'undefined' ? defaultVal : val;
-    },
-    set: (obj) => setCookie(COOKIE_NAME, JSON.stringify(Object.assign(this.get(), obj))),
-    setValue: (key, val) => {
-      let obj = {};
-      obj[key] = val;
-      this.set(obj);
-    },
-  });
-})('aj-nextstep-json');
-
-// announcement helper
-
-const Announcement = (announcementId) => {
-  const SEEN_PROP = 'seen-' + announcementId;
-  const getCheckCount = () => userPrefs.getValue('checkCounter', 0);
-  const shouldDisplay = () => !userPrefs.getValue(SEEN_PROP) && getCheckCount() > 5;
-  const displayIfNecessary = () =>
-    document.body.classList.toggle('aj-nextstep-display-ant', shouldDisplay());
-  displayIfNecessary();
-  return {
-    incrementCheckCounter: () => {
-      userPrefs.set({ checkCounter: getCheckCount() + 1 });
-      displayIfNecessary();
-    },
-    setAsSeen: () => {
-      userPrefs.setValue(SEEN_PROP, true);
-      displayIfNecessary();
-    }
-  };
-};
-
-// analytics helper
-
-class Analytics {
-  constructor(code = 'UA-XXXXXXXX-X') {
-    injectJs(`
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','https://ssl.google-analytics.com/analytics.js','ga');
-
-      ga('create', '${code}', 'auto', 'nextstep');
-      ga('nextstep.send', 'pageview');
-      //ga('nextstep.send', 'event', 'test', 'test');
-    `);
-  };
-  trackPage() {
-    injectJs(`ga('nextstep.send', 'pageview');`, { thenRemove: true });
-  };
-  trackEvent(category, action, opt_label, opt_value, opt_noninteraction) {
-    injectJs(`ga('nextstep.send', 'event', '${category}', '${action}');`, { thenRemove: true });
-  };
-};
-
-var analytics = new Analytics('UA-1858235-21');
+const MODES = [
+  {
+    label: 'Mode: Hidden',
+    description: 'Don\'t display next steps',
+    handler: (checklists) => ([]),
+  },
+  {
+    label: 'Mode: One per card',
+    description: 'Display first next step of each card',
+    handler: getNextStep,
+  },
+  {
+    label: 'Mode: One per checklist',
+    description: 'Display first next step of each checklist',
+    handler: getNextStepsOfChecklists,
+  },
+  {
+    label: 'Mode: All steps',
+    description: 'Display all unchecked checklist items',
+    handler: getAllNextStepsNamed,
+  },
+];
 
 // app state
 
-var MENU_ITEMS;
-var MODES;
+const userPrefs = new UserPrefs('aj-nextstep-json');
+var analytics = new Analytics('UA-1858235-21');
 var currentMode = userPrefs.getValue('defaultMode', 1);
 var needsRefresh = true; // true = all, or { cardUrls }
 var refreshing = false;
-var onCheckItem;
 var token; // needed by onCheckItem
 var announcement;
-var version;
 
 function setMode(modeIndex) {
   currentMode = modeIndex;
@@ -161,11 +207,46 @@ function setMode(modeIndex) {
   analytics.trackEvent(MODES[currentMode].label, 'click');
 }
 
-try {
-  version = chrome.runtime.getManifest().version;
-} catch(e) {}
+var MENU_ITEMS = MODES.map((mode, i) => {
+  return Object.assign(mode, {
+    modeIndex: i,
+    onClick: () => setMode(i)
+  });
+});
 
-// UI helpers
+// Trello helpers
+
+const extractId = (url = window.location.href) => url.split('/')[4] // ooooh! this is dirty!
+
+const shortUrl = (url) => url.split('/', 5).join('/')
+
+// extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
+const getCardElementByParent = (parentElement) =>
+  Array.from(parentElement.getElementsByClassName('list-card-title')).pop()
+
+const getCardElementByShortUrl = (shortUrl) =>
+  Array.from(document.querySelectorAll(`.list-card-title[href^="${shortUrl.split('.com')[1]}"]`)).pop()
+
+const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
+
+function getUserName() {
+  let userName = (document
+    .getElementsByClassName('header-user')[0]
+    .getElementsByClassName('member-avatar')[0] || {}).title || 'me';
+  return userName.slice(userName.indexOf('(') + 1, userName.indexOf(')'));
+}
+
+const fetchBoardChecklists = (boardId = extractId()) =>
+  fetch(`https://trello.com/1/boards/${boardId}/checklists?cards=all&card_fields=shortUrl`, {credentials: 'include'})
+    .then((res) => res.json())
+
+// Toolbar UI
+
+function toggleLoadingUI(state) {
+  refreshing = !!state
+  document.getElementById('aj-nextstep-loading').style.display
+    = state ? 'inline-block' : 'none'
+}
 
 function initToolbarButton() {
   var btn = document.createElement('a');
@@ -179,7 +260,7 @@ function initToolbarButton() {
     + 'Next steps: <span id="aj-nextstep-mode">Loading...</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
-  announcement = Announcement('ant4');
+  announcement = Announcement('ant4', userPrefs);
   return btn;
 }
 
@@ -198,7 +279,7 @@ const renderToolbarSelector = (selectorId, innerHTML) => `
     <a
       class="pop-over-header-title"
       href="${URL_PREFIX}/"
-      target="_blank">ℹ️ Next Step for Trello ${ version }</a>
+      target="_blank">ℹ️ Next Step for Trello ${ EXT_VERSION }</a>
     <a
       href="#"
       class="pop-over-header-close-btn icon-sm icon-close"
@@ -244,12 +325,7 @@ function initToolbarSelector(btn) {
   return node;
 }
 
-function getUserName() {
-  let userName = (document
-    .getElementsByClassName('header-user')[0]
-    .getElementsByClassName('member-avatar')[0] || {}).title || 'me';
-  return userName.slice(userName.indexOf('(') + 1, userName.indexOf(')'));
-}
+// Trello markdown rendering functions
 
 function renderAtMention(userName) {
   let meClass = userName === '@' + getUserName() ? ' me' : '';
@@ -280,8 +356,7 @@ const getMarkdownPatternsToReplace = () => [
 ];
 
 function getMarkdownPlaceholders(text) {
-  var placeholders = [];
-
+  var placeholders = []; // TODO: populate and return with reduce()
   getMarkdownPatternsToReplace().forEach((pattern) => {
     var matches = text.match(pattern.regEx);
     if (matches) {
@@ -295,7 +370,6 @@ function getMarkdownPlaceholders(text) {
       });
     }
   });
-
   return placeholders;
 }
 
@@ -303,8 +377,7 @@ function replaceMarkdownWithPlaceholders(text, placeholders) {
   placeholders.forEach((placeholder) => {
     text = text.replace(placeholder.text, placeholder.name);
   });
-
-  return text;
+  return text; // TODO: populate and return with reduce()
 }
 
 function renderMarkdownPlaceholders(text, placeholders) {
@@ -314,8 +387,7 @@ function renderMarkdownPlaceholders(text, placeholders) {
       placeholder.replacement);
     text = text.replace(placeholder.name, renderedMarkdown);
   });
-
-  return text;
+  return text; // TODO: populate and return with reduce()
 }
 
 function renderMarkdown(text) {
@@ -327,9 +399,10 @@ function renderMarkdown(text) {
   text = renderMarkdownSymbols(text);
   // Replace the placeholders with HTML code blocks/URLs
   text = renderMarkdownPlaceholders(text, placeholders);
-
-  return text;
+  return text; // TODO: convert to fat-arrow function
 }
+
+// Next Step UI
 
 const renderItem = (item) => `
   <p class="aj-next-step"
@@ -341,6 +414,40 @@ const renderItem = (item) => `
         <span class="aj-checkbox-tick"></span>
         <span class="aj-item-name"> ${renderMarkdown(item.name)} </span>
   </p>`;
+
+// check off a checklist item directly from the Trello board.
+function onCheckItem(evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+  // let's check that item
+  var item = evt.currentTarget.parentNode;
+  item.classList.add('aj-checking');
+  item.style.height = item.offsetHeight + 'px';
+  // let's tell trello
+  var url = 'https://trello.com/1/cards/' + item.getAttribute('data-card-id')
+    + '/checklist/' + item.getAttribute('data-checklist-id')
+    + '/checkItem/' + item.getAttribute('data-item-id');
+  var urlEncodedData = 'state=complete&' + token.trim();
+  fetch(url, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': urlEncodedData.length
+    },
+    body: urlEncodedData
+  }).then(function() {
+    // hide the task progressively
+    item.classList.add('aj-checked');
+    // will make the list of tasks refresh
+    needsRefresh = {
+      cardUrls: [ item.getAttribute('data-card-url') ],
+    }
+    // increment check counter
+    announcement.incrementCheckCounter();
+  });
+  analytics.trackEvent('Checklist item', 'tick');
+};
 
 function setCardContent(cardTitleElement, items) {
   var cardElement = cardTitleElement.parentNode;
@@ -363,13 +470,6 @@ function setCardContent(cardTitleElement, items) {
   }
 }
 
-// extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
-const getCardElementByParent = (parentElement) =>
-  Array.from(parentElement.getElementsByClassName('list-card-title')).pop()
-
-const getCardElementByShortUrl = (shortUrl) =>
-  Array.from(document.querySelectorAll(`.list-card-title[href^="${shortUrl.split('.com')[1]}"]`)).pop()
-
 const updateCardElements = (cards) => {
   const handler = MODES[currentMode].handler
   cards.forEach((card) => {
@@ -377,20 +477,6 @@ const updateCardElements = (cards) => {
     //console.log('-', card.shortUrl, cardElement)
     return cardElement && setCardContent(cardElement, handler(card.checklists))
   })
-}
-
-const extractId = (url = window.location.href) => url.split('/')[4] // ooooh! this is dirty!
-
-const shortUrl = (url) => url.split('/', 5).join('/')
-
-const fetchBoardChecklists = (boardId = extractId()) =>
-  fetch(`https://trello.com/1/boards/${boardId}/checklists?cards=all&card_fields=shortUrl`, {credentials: 'include'})
-    .then((res) => res.json())
-
-function toggleLoadingUI(state) {
-  refreshing = !!state
-  document.getElementById('aj-nextstep-loading').style.display
-    = state ? 'inline-block' : 'none'
 }
 
 function updateCards(toRefresh) {
@@ -415,38 +501,6 @@ function updateCards(toRefresh) {
     toggleLoadingUI(false)
   })
 }
-
-// extension modes
-
-MODES = [
-  {
-    label: 'Mode: Hidden',
-    description: 'Don\'t display next steps',
-    handler: (checklists) => ([]),
-  },
-  {
-    label: 'Mode: One per card',
-    description: 'Display first next step of each card',
-    handler: getNextStep,
-  },
-  {
-    label: 'Mode: One per checklist',
-    description: 'Display first next step of each checklist',
-    handler: getNextStepsOfChecklists,
-  },
-  {
-    label: 'Mode: All steps',
-    description: 'Display all unchecked checklist items',
-    handler: getAllNextStepsNamed,
-  },
-];
-
-MENU_ITEMS = MODES.map((mode, i) => {
-  return Object.assign(mode, {
-    modeIndex: i,
-    onClick: () => setMode(i)
-  });
-});
 
 // extension initialization
 
@@ -484,56 +538,6 @@ function watchForChanges() {
       updateCards({ cardUrls: [ cardLink.href ] })
     }
   }, false);
-}
-
-const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
-
-// define function to allow checking items directly from board.
-onCheckItem = function(evt) {
-  evt.preventDefault();
-  evt.stopPropagation();
-  // let's check that item
-  var item = evt.currentTarget.parentNode;
-  item.classList.add('aj-checking');
-  item.style.height = item.offsetHeight + 'px';
-  // let's tell trello
-  var url = 'https://trello.com/1/cards/' + item.getAttribute('data-card-id')
-    + '/checklist/' + item.getAttribute('data-checklist-id')
-    + '/checkItem/' + item.getAttribute('data-item-id');
-  var urlEncodedData = 'state=complete&' + token.trim();
-  fetch(url, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': urlEncodedData.length
-    },
-    body: urlEncodedData
-  }).then(function() {
-    // hide the task progressively
-    item.classList.add('aj-checked');
-    // will make the list of tasks refresh
-    needsRefresh = {
-      cardUrls: [ item.getAttribute('data-card-url') ],
-    }
-    // increment check counter
-    announcement.incrementCheckCounter();
-  });
-  analytics.trackEvent('Checklist item', 'tick');
-};
-
-// inject code into the page's context (unrestricted)
-function injectJs(jsString, options) {
-  options = options || {};
-  var scr = document.createElement('script');
-  scr.id = options.id;
-  scr.textContent = jsString;
-  // (appending text to a function to convert it's src to string only works in Chrome)
-  // add to document to make it run, then hide it
-  (document.head || document.documentElement).appendChild(scr);
-  if (options.thenRemove) {
-    scr.parentNode.removeChild(scr);
-  }
 }
 
 const INIT_STEPS = [
@@ -585,18 +589,6 @@ const INIT_STEPS = [
     }
   }
 ];
-
-function getSymbolFromHost(symbolName, callback) {
-  // wait for the message
-  window.addEventListener(`MyCustomEvent_${symbolName}`, function (e) {
-    callback(e.detail.passback);
-  });
-  // inject code into the page's context (unrestricted)
-  return `
-    var event = document.createEvent("CustomEvent");
-    event.initCustomEvent("MyCustomEvent_${symbolName}", true, true, {"passback": ${symbolName}});
-    window.dispatchEvent(event);`;
-}
 
 function init(){
   var currentStep = 0;
