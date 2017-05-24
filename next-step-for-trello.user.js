@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.7
+// @version 1.8.8
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -161,6 +161,12 @@ const getNextStepsOfChecklists = (checklists) => checklists
   .reduce((a, b) => a.concat(b), [])
   .map(prefixChecklistName);
 
+// display next steps of first checklist
+const getNextStepsOfFirstChecklist = (checklists) => checklists
+  .sort(byPos).slice(0, 1)
+  .map(sortedNextSteps)
+  .reduce((a, b) => a.concat(b), []);
+
 // display the first next step only
 const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
     .filter(nonNull);
@@ -177,6 +183,11 @@ const MODES = [
     label: 'Mode: One per card',
     description: 'Display first next step of each card',
     handler: getNextStep,
+  },
+  {
+    label: 'Mode: First checklist 🆕',
+    description: 'Display next steps of each card\'s 1st checklist',
+    handler: getNextStepsOfFirstChecklist,
   },
   {
     label: 'Mode: One per checklist',

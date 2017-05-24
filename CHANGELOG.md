@@ -1,3 +1,5 @@
+== v1.8.8 New mode: "First checklist"
+
 == v1.8.7 Markdown formatting fixes by @stevecshanks
  * and first automated tests :-)
 
