@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.9
+// @version 1.8.10
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -247,8 +247,18 @@ function getUserName() {
   return userName.slice(userName.indexOf('(') + 1, userName.indexOf(')'));
 }
 
+const fetchFromTrello = (path, opts = {}) => fetch(
+  `https://trello.com/1/${path}`,
+  Object.assign({}, opts, {
+    credentials: 'include',
+    headers: Object.assign({}, opts.headers, {
+      'x-trello-user-agent-extension': 'nextStepForTrello',
+    }),
+  }),
+)
+
 const fetchBoardChecklists = (boardId = extractId()) =>
-  fetch(`https://trello.com/1/boards/${boardId}/checklists?cards=all&card_fields=shortUrl`, {credentials: 'include'})
+  fetchFromTrello(`boards/${boardId}/checklists?cards=open&card_fields=shortUrl`)
     .then((res) => res.json())
 
 // Toolbar UI
@@ -420,13 +430,12 @@ function onCheckItem(evt) {
   item.classList.add('aj-checking');
   item.style.height = item.offsetHeight + 'px';
   // let's tell trello
-  var url = 'https://trello.com/1/cards/' + item.getAttribute('data-card-id')
+  var path = 'cards/' + item.getAttribute('data-card-id')
     + '/checklist/' + item.getAttribute('data-checklist-id')
     + '/checkItem/' + item.getAttribute('data-item-id');
   var urlEncodedData = 'state=complete&' + token.trim();
-  fetch(url, {
+  fetchFromTrello(path, {
     method: 'PUT',
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Content-Length': urlEncodedData.length

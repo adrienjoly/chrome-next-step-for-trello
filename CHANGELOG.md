@@ -1,3 +1,7 @@
+== v1.8.10 Reduce impact on Trello's API
+ * AJAX header: `'x-trello-user-agent-extension': 'nextStepForTrello'`
+ * use `cards=open` filter instead of `cards=all`
+
 == v1.8.9 Markdown formatting fixes by @stevecshanks
  * see https://github.com/adrienjoly/chrome-next-step-for-trello/pull/51 for more info
 
