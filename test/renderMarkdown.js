@@ -101,6 +101,18 @@ describe('renderMarkdown', function() {
         input: '[this site](http://test.com) not working with `wget`',
         expected: '<a href="http://test.com" class="aj-md-hyperlink">this site</a> not working with <code>wget</code>'
       }
+    ]},
+    {name: 'greedy matching', cases: [
+      {input: '*test1* and *test2*', expected: '<em>test1</em> and <em>test2</em>'},
+      {input: '_test1_ and _test2_', expected: '<em>test1</em> and <em>test2</em>'},
+      {input: '**test1** and **test2**', expected: '<strong>test1</strong> and <strong>test2</strong>'},
+      {input: '__test1__ and __test2__', expected: '<strong>test1</strong> and <strong>test2</strong>'},
+      {input: '~~test1~~ and ~~test2~~', expected: '<del>test1</del> and <del>test2</del>'},
+      {input: '`test1` and `test2`', expected: '<code>test1</code> and <code>test2</code>'},
+      {input: '```test1``` and ```test2```', expected: '<code>test1</code> and <code>test2</code>'},
+      {
+        input: '[url1](http://url1.com) and [url2](http://url2.com)',
+        expected: '<a href="http://url1.com" class="aj-md-hyperlink">url1</a> and <a href="http://url2.com" class="aj-md-hyperlink">url2</a>'}
     ]}
   ];
 
