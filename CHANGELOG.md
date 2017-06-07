@@ -1,3 +1,6 @@
+== v1.8.9 Markdown formatting fixes by @stevecshanks
+ * see https://github.com/adrienjoly/chrome-next-step-for-trello/pull/51 for more info
+
 == v1.8.8 New mode: "First checklist"
 
 == v1.8.7 Markdown formatting fixes by @stevecshanks
