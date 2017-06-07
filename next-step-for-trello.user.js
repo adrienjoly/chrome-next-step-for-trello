@@ -344,16 +344,16 @@ function renderAtMention(userName) {
 }
 
 const renderMarkdownSymbols = (text) => text
-  .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
-  .replace(/__(.*)__/g, '<strong>$1</strong>')
-  .replace(/\*(?!\*)(.*)\*(?!\*)/g, '<em>$1</em>')
-  .replace(/_(?!_)(.*)_(?!_)/g, '<em>$1</em>')
-  .replace(/~~(.*)~~/g, '<del>$1</del>')
+  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  .replace(/__(.*?)__/g, '<strong>$1</strong>')
+  .replace(/\*(?!\*)(.*?)\*(?!\*)/g, '<em>$1</em>')
+  .replace(/_(?!_)(.*?)_(?!_)/g, '<em>$1</em>')
+  .replace(/~~(.*?)~~/g, '<del>$1</del>')
   .replace(/@\w+/g, renderAtMention);
 
 const getMarkdownPatternsToReplace = () => [
   {
-    regEx: /`{3}(.*)`{3}|`{1}(.*)`{1}/g,
+    regEx: /`{3}(.*?)`{3}|`{1}(.*?)`{1}/g,
     replacement: '<code>$1$2</code>'
   },
   {
@@ -367,7 +367,7 @@ const getMarkdownPatternsToReplace = () => [
 ];
 
 const getMarkdownPlaceholders = (text) =>
-  getMarkdownPatternsToReplace().reduce((placeholders, pattern) => 
+  getMarkdownPatternsToReplace().reduce((placeholders, pattern) =>
     placeholders.concat((text.match(pattern.regEx) || []).map((match, i) => ({
       name: 'next-step-for-trello-placeholder-' + (placeholders.length + i),
       text: match,
@@ -383,7 +383,7 @@ const renderMdPlaceholder = (placeholder) =>
   placeholder.text.replace(placeholder.regEx, placeholder.replacement);
 
 const renderMarkdownPlaceholders = (text, placeholders) =>
-  placeholders.reduce((text, placeholder) => 
+  placeholders.reduce((text, placeholder) =>
     text.replace(placeholder.name, renderMdPlaceholder(placeholder)), text);
 
 function renderMarkdown(text) {
