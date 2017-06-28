@@ -1,3 +1,7 @@
+== v1.8.11 Fixes
+ * Trello DOM change: card URLs are now stored in a different element
+ * A trailing comma was preventing tests from running
+
 == v1.8.10 Reduce impact on Trello's API
  * AJAX header: `'x-trello-user-agent-extension': 'nextStepForTrello'`
  * use `cards=open` filter instead of `cards=all`

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.10
+// @version 1.8.11
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
