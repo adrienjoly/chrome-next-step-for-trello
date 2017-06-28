@@ -236,7 +236,7 @@ const getCardElementByParent = (parentElement) =>
   Array.from(parentElement.getElementsByClassName('list-card-title')).pop()
 
 const getCardElementByShortUrl = (shortUrl) =>
-  Array.from(document.querySelectorAll(`.list-card-title[href^="${shortUrl.split('.com')[1]}"]`)).pop()
+  Array.from(document.querySelectorAll(`.list-card[href^="${shortUrl.split('.com')[1]}"] .list-card-title`)).pop()
 
 const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0;
 
