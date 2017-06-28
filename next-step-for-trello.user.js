@@ -254,7 +254,7 @@ const fetchFromTrello = (path, opts = {}) => fetch(
     headers: Object.assign({}, opts.headers, {
       'x-trello-user-agent-extension': 'nextStepForTrello',
     }),
-  }),
+  })
 )
 
 const fetchBoardChecklists = (boardId = extractId()) =>
