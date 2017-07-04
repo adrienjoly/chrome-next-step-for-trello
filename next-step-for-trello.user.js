@@ -231,10 +231,6 @@ const extractId = (url = window.location.href) => url.split('/')[4] // ooooh! th
 
 const shortUrl = (url) => url.split('/', 5).join('/')
 
-// extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
-const getCardElementByParent = (parentElement) =>
-  Array.from(parentElement.getElementsByClassName('list-card-title')).pop()
-
 const getCardElementByShortUrl = (shortUrl) =>
   Array.from(document.querySelectorAll(`.list-card[href^="${shortUrl.split('.com')[1]}"] .list-card-title`)).pop()
 
@@ -466,13 +462,17 @@ function setCardContent(cardTitleElement, items) {
     // rely on the .badges element to avoid conflict with plus-for-trello
   }
   taskList.innerHTML = (items || [])
-    .map((item) => Object.assign(item, { cardUrl: cardTitleElement.href }))
+    .map((item) => Object.assign(item, { cardUrl: getCardUrlFromTitleElement(cardTitleElement) }))
     .map(renderItem).join('\n');
   // attach click handlers on checkboxes
   var checkboxes = taskList.getElementsByClassName('aj-checkbox-tick');
   for (var i=0; i<checkboxes.length; ++i) {
     checkboxes[i].addEventListener('click', onCheckItem);
   }
+}
+
+const getCardUrlFromTitleElement = (cardTitleElement) => {
+  return cardTitleElement.parentNode.parentNode.href
 }
 
 const updateCardElements = (cards) => {
@@ -539,8 +539,7 @@ function watchForChanges() {
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
     if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
-      var cardLink = getCardElementByParent(e.target)
-      updateCards({ cardUrls: [ cardLink.href ] })
+      updateCards({ cardUrls: [ e.target.href ] })
     }
   }, false);
 }
