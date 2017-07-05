@@ -34,7 +34,7 @@ mockGetUserNameScript.runInContext(context)
 
 // Load the mocked broswer document with the card HTML we expect to see
 var myDiv = document.createElement('div');
-myDiv.innerHTML = fs.readFileSync('test/expectedCard.html');
+myDiv.innerHTML = fs.readFileSync('test/expectedList.html');
 document.body.appendChild(myDiv);
 
 // Set up and run our test cases
@@ -49,7 +49,7 @@ describe('getCardElementByShortUrl', function() {
 
   it('returns card element if URL does exist', function() {
     var testScript = new vm.Script(
-      'returnValue = getCardElementByShortUrl("https://trello.com/c/1234abcd")'
+      'returnValue = getCardElementByShortUrl("https://trello.com/c/1234")'
     );
     testScript.runInContext(context);
     assert.equal(sandbox.returnValue instanceof window.HTMLSpanElement, true);
@@ -63,6 +63,43 @@ describe('getCardUrlFromTitleElement', function() {
       + 'returnValue = getCardUrlFromTitleElement(titleElement)'
     );
     testScript.runInContext(context);
-    assert.equal(sandbox.returnValue, '/c/1234abcd/1-tests');
+    assert.equal(sandbox.returnValue, '/c/1234/1-test-1');
+  });
+});
+
+describe('elementIsTrelloCard', function () {
+  it('returns false for non-card', function () {
+    var testScript = new vm.Script(
+      'returnValue = elementIsTrelloCard(document.body)'
+    );
+    testScript.runInContext(context);
+    assert.equal(sandbox.returnValue, false);
+  });
+
+  it('returns true for inactive card', function () {
+    var testScript = new vm.Script(
+      'var card = document.getElementsByClassName("list-card")[0];'
+      + 'returnValue = elementIsTrelloCard(card)'
+    );
+    testScript.runInContext(context);
+    assert.equal(sandbox.returnValue, true);
+  });
+
+  it('returns true for active card', function () {
+    var testScript = new vm.Script(
+      'var card = document.getElementsByClassName("list-card")[1];'
+      + 'returnValue = elementIsTrelloCard(card)'
+    );
+    testScript.runInContext(context);
+    assert.equal(sandbox.returnValue, true);
+  });
+
+  it('returns true for card with cover', function () {
+    var testScript = new vm.Script(
+      'var card = document.getElementsByClassName("list-card")[2];'
+      + 'returnValue = elementIsTrelloCard(card)'
+    );
+    testScript.runInContext(context);
+    assert.equal(sandbox.returnValue, true);
   });
 });

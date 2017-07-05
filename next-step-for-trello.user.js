@@ -538,11 +538,17 @@ function watchForChanges() {
   */
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
-    if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
+    if (elementIsTrelloCard(e.target)) {
       updateCards({ cardUrls: [ e.target.href ] })
     }
   }, false);
 }
+
+const elementIsTrelloCard = (element) =>
+  element.classList &&
+  element.classList.contains('list-card') &&
+  element.classList.contains('js-member-droppable') &&
+  element.classList.contains('ui-droppable');
 
 const INIT_STEPS = [
   // step 0: integrate the toolbar button (when page is ready)
