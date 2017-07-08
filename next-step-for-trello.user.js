@@ -450,6 +450,10 @@ function onCheckItem(evt) {
   analytics.trackEvent('Checklist item', 'tick');
 };
 
+const getCardUrlFromTitleElement = (cardTitleElement) => {
+  return cardTitleElement.parentNode.parentNode.href
+}
+
 function setCardContent(cardTitleElement, items) {
   var cardElement = cardTitleElement.parentNode;
   var taskList = cardElement.getElementsByClassName('aj-task-list')[0];
@@ -469,10 +473,6 @@ function setCardContent(cardTitleElement, items) {
   for (var i=0; i<checkboxes.length; ++i) {
     checkboxes[i].addEventListener('click', onCheckItem);
   }
-}
-
-const getCardUrlFromTitleElement = (cardTitleElement) => {
-  return cardTitleElement.parentNode.parentNode.href
 }
 
 const updateCardElements = (cards) => {
@@ -526,6 +526,12 @@ function installToolbar() {
   }
 }
 
+const elementIsTrelloCard = (element) =>
+  element.classList &&
+  element.classList.contains('list-card') &&
+  element.classList.contains('js-member-droppable') &&
+  element.classList.contains('ui-droppable');
+
 function watchForChanges() {
   /*
   // refresh on card name change
@@ -543,12 +549,6 @@ function watchForChanges() {
     }
   }, false);
 }
-
-const elementIsTrelloCard = (element) =>
-  element.classList &&
-  element.classList.contains('list-card') &&
-  element.classList.contains('js-member-droppable') &&
-  element.classList.contains('ui-droppable');
 
 const INIT_STEPS = [
   // step 0: integrate the toolbar button (when page is ready)

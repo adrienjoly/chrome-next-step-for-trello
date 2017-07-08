@@ -15,7 +15,7 @@ describe('getCardElementByShortUrl', function() {
       'returnValue = getCardElementByShortUrl("https://trello.com/c/invalid")'
     );
     testScript.runInContext(test.context);
-    assert.equal(test.sandbox.returnValue, undefined);
+    assert.equal(test.sandbox.returnValue, null);
   });
 
   it('returns card element if URL does exist', function() {

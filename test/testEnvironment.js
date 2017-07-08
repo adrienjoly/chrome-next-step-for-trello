@@ -27,8 +27,8 @@ const script = new vm.Script(code);
 script.runInContext(context)
 
 module.exports = {
-  document: document,
-  context: context,
-  sandbox: sandbox,
-  window: window
+  document,
+  context,
+  sandbox,
+  window
 }
