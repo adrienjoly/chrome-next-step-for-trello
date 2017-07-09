@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.11
+// @version 1.8.12
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -231,10 +231,6 @@ const extractId = (url = window.location.href) => url.split('/')[4] // ooooh! th
 
 const shortUrl = (url) => url.split('/', 5).join('/')
 
-// extract only one .list-card-title per .list-card (e.g. with Plus for Trello)
-const getCardElementByParent = (parentElement) =>
-  Array.from(parentElement.getElementsByClassName('list-card-title')).pop()
-
 const getCardElementByShortUrl = (shortUrl) =>
   Array.from(document.querySelectorAll(`.list-card[href^="${shortUrl.split('.com')[1]}"] .list-card-title`)).pop()
 
@@ -454,6 +450,10 @@ function onCheckItem(evt) {
   analytics.trackEvent('Checklist item', 'tick');
 };
 
+const getCardUrlFromTitleElement = (cardTitleElement) => {
+  return cardTitleElement.parentNode.parentNode.href
+}
+
 function setCardContent(cardTitleElement, items) {
   var cardElement = cardTitleElement.parentNode;
   var taskList = cardElement.getElementsByClassName('aj-task-list')[0];
@@ -466,7 +466,7 @@ function setCardContent(cardTitleElement, items) {
     // rely on the .badges element to avoid conflict with plus-for-trello
   }
   taskList.innerHTML = (items || [])
-    .map((item) => Object.assign(item, { cardUrl: cardTitleElement.href }))
+    .map((item) => Object.assign(item, { cardUrl: getCardUrlFromTitleElement(cardTitleElement) }))
     .map(renderItem).join('\n');
   // attach click handlers on checkboxes
   var checkboxes = taskList.getElementsByClassName('aj-checkbox-tick');
@@ -526,6 +526,12 @@ function installToolbar() {
   }
 }
 
+const elementIsTrelloCard = (element) =>
+  element.classList &&
+  element.classList.contains('list-card') &&
+  element.classList.contains('js-member-droppable') &&
+  element.classList.contains('ui-droppable');
+
 function watchForChanges() {
   /*
   // refresh on card name change
@@ -538,9 +544,8 @@ function watchForChanges() {
   */
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
-    if (e.target.className === 'list-card js-member-droppable active-card ui-droppable') {
-      var cardLink = getCardElementByParent(e.target)
-      updateCards({ cardUrls: [ cardLink.href ] })
+    if (elementIsTrelloCard(e.target)) {
+      updateCards({ cardUrls: [ e.target.href ] })
     }
   }, false);
 }

@@ -1,35 +1,12 @@
-var vm = require('vm');
 var fs = require('fs');
-var chrome = require('sinon-chrome');
+var vm = require('vm');
 var assert = require('assert');
-
-// Stop the DEV_MODE const from causing an error
-chrome.runtime.getManifest.returns([]);
-
-// Fake up a browser to stop calls that access the DOM from causing errors
-var MockBrowser = require('mock-browser').mocks.MockBrowser;
-var mock = new MockBrowser();
-var document = mock.getDocument();
-var setInterval = function () {}
-
-// This is the context our tests will run in
-var sandbox = {
-  chrome,
-  document,
-  setInterval,
-  returnValue: null
-};
-var context = vm.createContext(sandbox);
-
-// Load the next-step-for-trello code
-var code = fs.readFileSync('next-step-for-trello.user.js')
-const script = new vm.Script(code);
-script.runInContext(context)
+var test = require('./testEnvironment.js')
 
 // Mock the getUserName function
 var mockGetUserName = 'getUserName = function () { return "test"; }';
 const mockGetUserNameScript = new vm.Script(mockGetUserName);
-mockGetUserNameScript.runInContext(context)
+mockGetUserNameScript.runInContext(test.context)
 
 // Set up and run our test cases
 describe('renderMarkdown', function() {
@@ -118,16 +95,16 @@ describe('renderMarkdown', function() {
 
   tests.forEach(function(testCase) {
     describe(testCase.name, function() {
-      testCase.cases.forEach(function(test) {
+      testCase.cases.forEach(function(testCase) {
         // Reset this in case something goes wrong during the script run
-        sandbox.returnValue = null;
+        test.sandbox.returnValue = null;
 
-        it('correctly handles ' + test.input, function() {
+        it('correctly handles ' + testCase.input, function() {
           var testScript = new vm.Script(
-            'returnValue = renderMarkdown("' + test.input + '")'
+            'returnValue = renderMarkdown("' + testCase.input + '")'
           );
-          testScript.runInContext(context);
-          assert.equal(sandbox.returnValue, test.expected);
+          testScript.runInContext(test.context);
+          assert.equal(test.sandbox.returnValue, testCase.expected);
         });
       });
     });
