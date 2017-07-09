@@ -1,3 +1,5 @@
+== v1.8.12 Fix: cards were not updated after checking off a task
+
 == v1.8.11 Fixes
  * Trello DOM change: card URLs are now stored in a different element
  * A trailing comma was preventing tests from running

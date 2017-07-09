@@ -1,3 +1,8 @@
+Next Step for Trello is maintained thanks to the kind help from the following contributors:
+
+- [Steve Shanks](https://github.com/stevecshanks)
+- [Jean-François Dessureault](https://github.com/JeffDess)
+
 I would like to express my gratitude to people who helped me develop Next Track for Trello:
 
 - [Jean-François Dessureault](http://github.com/JeffDess) for contributing the [Win10 fix](https://github.com/adrienjoly/chrome-next-step-for-trello/pull/26).
