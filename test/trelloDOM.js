@@ -47,13 +47,13 @@ describe('elementIsTrelloCard', function () {
     assert.equal(test.sandbox.returnValue, false);
   });
 
-  it('returns true for inactive card', function () {
+  it('returns false for inactive card', function () {
     var testScript = new vm.Script(
       'var card = document.getElementsByClassName("list-card")[0];'
       + 'returnValue = elementIsTrelloCard(card)'
     );
     testScript.runInContext(test.context);
-    assert.equal(test.sandbox.returnValue, true);
+    assert.equal(test.sandbox.returnValue, false);
   });
 
   it('returns true for active card', function () {
@@ -65,7 +65,7 @@ describe('elementIsTrelloCard', function () {
     assert.equal(test.sandbox.returnValue, true);
   });
 
-  it('returns true for card with cover', function () {
+  it('returns true for active card with cover', function () {
     var testScript = new vm.Script(
       'var card = document.getElementsByClassName("list-card")[2];'
       + 'returnValue = elementIsTrelloCard(card)'
