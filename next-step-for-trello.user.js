@@ -529,6 +529,7 @@ function installToolbar() {
 const elementIsTrelloCard = (element) =>
   element.classList &&
   element.classList.contains('list-card') &&
+  element.classList.contains('active-card') &&
   element.classList.contains('js-member-droppable') &&
   element.classList.contains('ui-droppable');
 
