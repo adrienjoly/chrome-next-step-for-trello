@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.12
+// @version 1.8.13
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -530,6 +530,7 @@ const elementIsTrelloCard = (element) =>
   element.classList &&
   element.classList.contains('list-card') &&
   element.classList.contains('js-member-droppable') &&
+  element.classList.contains('active-card') &&
   element.classList.contains('ui-droppable');
 
 function watchForChanges() {
@@ -545,7 +546,7 @@ function watchForChanges() {
   // refresh after drag&dropping a card to another column
   document.body.addEventListener('DOMNodeInserted', function(e){
     if (elementIsTrelloCard(e.target)) {
-      updateCards({ cardUrls: [ e.target.href ] })
+      needsRefresh = true; // less aggressive than updateCards({ cardUrls: [ e.target.href ] })
     }
   }, false);
 }
