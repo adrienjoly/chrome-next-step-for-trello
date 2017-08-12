@@ -1,6 +1,4 @@
-![](https://travis-ci.org/adrienjoly/chrome-next-step-for-trello.svg?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7ca1f64573ee434eb82159df9d7afc0f)](https://www.codacy.com/app/adrien-joly/chrome-next-step-for-trello?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adrienjoly/chrome-next-step-for-trello&amp;utm_campaign=Badge_Grade)
-
-# "Next Step" for Trello cards
+# "Next Step" for Trello cards [![Chrome Web Store](https://img.shields.io/chrome-web-store/d/iajhmklhilkjgabejjemfbhmclgnmamf.svg)](https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf) ![](https://travis-ci.org/adrienjoly/chrome-next-step-for-trello.svg?branch=master) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7ca1f64573ee434eb82159df9d7afc0f)](https://www.codacy.com/app/adrien-joly/chrome-next-step-for-trello?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adrienjoly/chrome-next-step-for-trello&amp;utm_campaign=Badge_Grade)
 
 Google Chrome extension to check tasks directly from your Trello boards. ☑️🚀
 
