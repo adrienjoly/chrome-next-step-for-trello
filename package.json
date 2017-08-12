@@ -24,6 +24,7 @@
   "devDependencies": {
     "mocha": "^3.3.0",
     "mock-browser": "^0.92.14",
-    "sinon-chrome": "^2.2.1"
+    "sinon-chrome": "^2.2.1",
+    "standard": "^10.0.3"
   }
 }
