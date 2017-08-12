@@ -277,7 +277,7 @@ function initToolbarButton() {
     + 'Next steps: <span id="aj-nextstep-mode">Loading...</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
-  announcement = new Announcement('ant4', userPrefs);
+  announcement = new Announcement('ant5', userPrefs);
   return btn;
 }
 
