@@ -1,4 +1,5 @@
-var fs = require('fs')
+/* global describe, it */
+
 var vm = require('vm')
 var assert = require('assert')
 var test = require('./testEnvironment.js')

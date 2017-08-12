@@ -1,3 +1,5 @@
+/* global describe, it */
+
 var fs = require('fs')
 var vm = require('vm')
 var assert = require('assert')

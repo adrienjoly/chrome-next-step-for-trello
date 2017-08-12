@@ -10,12 +10,12 @@
 
 const URL_PREFIX = 'https://adrienjoly.com/chrome-next-step-for-trello'
 
-const DEV_MODE = !('update_url' in chrome.runtime.getManifest())
+const DEV_MODE = !('update_url' in window.chrome.runtime.getManifest())
 
-const EXT_VERSION = chrome.runtime.getManifest().version
+const EXT_VERSION = window.chrome.runtime.getManifest().version
 
 const ANNOUNCEMENT_URL = DEV_MODE
-  ? chrome.extension.getURL('/docs/assets/announcement.json') // load locally
+  ? window.chrome.extension.getURL('/docs/assets/announcement.json') // load locally
   : `${URL_PREFIX}/assets/announcement.json` // load from official website
 
 // basic helpers
@@ -65,9 +65,11 @@ function UserPrefs (COOKIE_NAME) {
       const parts = v.split('=')
       return parts[0] === name ? decodeURIComponent(parts[1]) : r
     }, '')
+  /*
   const deleteCookie = (name, path) => {
     setCookie(name, '', -1, path)
   }
+  */
   return Object.assign(this, {
     get: () => JSON.parse(getCookie(COOKIE_NAME) || '{}'),
     getValue: (key, defaultVal) => {
@@ -243,7 +245,7 @@ function getUserName () {
   return userName.slice(userName.indexOf('(') + 1, userName.indexOf(')'))
 }
 
-const fetchFromTrello = (path, opts = {}) => fetch(
+const fetchFromTrello = (path, opts = {}) => window.fetch(
   `https://trello.com/1/${path}`,
   Object.assign({}, opts, {
     credentials: 'include',
@@ -324,11 +326,12 @@ function initToolbarSelector (btn) {
   node.show = () => {
     node.innerHTML = renderToolbarSelector(node.id, MENU_ITEMS.map(renderSelectorOption).join('\n'))
     setTimeout(() => {
-      MENU_ITEMS.forEach((menuItem, i) =>
+      MENU_ITEMS.forEach((menuItem, i) => {
         document.getElementById('aj-nextstep-menuitem-' + i).onclick = function () {
           menuItem.onClick.apply(this, arguments)
           node.hide()
-        })
+        }
+      })
     }, 1)
     node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;'
     node.classList.add('is-shown')
@@ -363,11 +366,11 @@ const getMarkdownPatternsToReplace = () => [
     replacement: '<code>$1$2</code>'
   },
   {
-    regEx: /(^|[^\]][^\(])(https?\:\/\/([^\/ ]+)[^ ]+)/g,
+    regEx: /(^|[^\]][^(])(https?:\/\/([^/ ]+)[^ ]+)/g,
     replacement: '$1<a href="$2" class="aj-md-hyperlink">$2</a>'
   },
   {
-    regEx: /\[([^\]]*)\]\(([^\)]*)\)/g,
+    regEx: /\[([^\]]*)\]\(([^)]*)\)/g,
     replacement: '<a href="$2" class="aj-md-hyperlink">$1</a>'
   }
 ]
@@ -556,7 +559,7 @@ const INIT_STEPS = [
   function initToolbar (callback) {
     if (installToolbar()) {
       callback()
-      fetch(ANNOUNCEMENT_URL)
+      window.fetch(ANNOUNCEMENT_URL)
         .then((response) => response.json())
         .catch(() => ({
           label: '✍ Any feedback on Next Step for Trello?',

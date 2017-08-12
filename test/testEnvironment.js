@@ -12,9 +12,18 @@ var document = mock.getDocument()
 var window = mock.getWindow()
 var setInterval = function () {}
 
+window.chrome = {
+  extension: {
+    getURL: () => ''
+  },
+  runtime: {
+    getManifest: () => ({})
+  }
+}
+
 // This is the context our tests will run in
 var sandbox = {
-  chrome,
+  window,
   document,
   setInterval,
   returnValue: null
