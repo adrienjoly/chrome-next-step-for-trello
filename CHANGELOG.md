@@ -1,3 +1,5 @@
+==> see https://github.com/adrienjoly/chrome-next-step-for-trello/releases
+
 == v1.8.13 Fix: reduce number of API calls on DOM changes
 
 == v1.8.12 Fix: cards were not updated after checking off a task
