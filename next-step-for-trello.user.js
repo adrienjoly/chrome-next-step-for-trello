@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.14
+// @version 1.8.15
 // @homepage http://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -277,7 +277,7 @@ function initToolbarButton() {
     + 'Next steps: <span id="aj-nextstep-mode">Loading...</span>'
     + '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>'
     + '</span>';
-  announcement = new Announcement('ant5', userPrefs);
+  announcement = new Announcement('ant6', userPrefs);
   return btn;
 }
 
