@@ -157,6 +157,15 @@ body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
   background-size: cover;
 }
 
+.aj-nextstep-ant-pic2 {
+  position: absolute;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('https://fr.gravatar.com/userimage/19157316/3f0cd85f9f19d20059d989b073e5f045.jpg');
+  background-size: cover;
+}
+
 #aj-nextstep-selector {
   width: 320px;
 }
