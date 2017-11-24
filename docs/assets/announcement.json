@@ -1,6 +1,6 @@
 {
-  "label": "<div class=\"aj-nextstep-ant-pic2\"></div>🚀 Power-up your business!",
-  "description": "Ask me anything, I'll give you free advice! 👌",
-  "className": "aj-nextstep-ant-menuitem",
-  "href": "mailto:contact@adrienjoly.com?subject=I%20need%20a%20productivity%20boost!&body=Hi%20Adrien%2C%0AMy%20name%20is%20%3CENTER%20YOUR%20NAME%20HERE%3E%2C%20and%20I've%20been%20a%20user%20of%20Next%20Step%20for%20Trello%20since%20%3CYEAR%2FMONTH%3E.%0AI'd%20like%20to%20share%20a%20problem%20with%20you%3A%20while%20working%20towards%20%3CENTER%20YOUR%20BUSINESS%20OBJECTIVE%20HERE%3E%2C%20I've%20been%20wasting%20too%20much%20time%20doing%20%3CENTER%20INEFFICIENT%20PROCESS%20HERE%3E...%0ADo%20you%20have%20any%20tip%20for%20me%3F"
+  "label": "<div class=\"aj-nextstep-ant-pic\"></div>📈 Enjoying Next Step?",
+  "description": "You can thank me with a 🍺!",
+  "className": "aj-nextstep-ant-menuitem aj-nextstep-ant-donate",
+  "href": "https://donorbox.org/next-step-for-trello?ref=extension"
 }
