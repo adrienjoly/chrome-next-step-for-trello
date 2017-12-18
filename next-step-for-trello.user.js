@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name Next Step for Trello
 // @version 1.8.16
-// @homepage http://adrienjoly.com/chrome-next-step-for-trello
+// @homepage https://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
 // @match http://trello.com/*
@@ -267,7 +267,7 @@ function toggleLoadingUI(state) {
 
 function initToolbarButton() {
   var btn = document.createElement('a');
-  btn.href = 'http://adrienjoly.com/chrome-next-step-for-trello';
+  btn.href = 'https://adrienjoly.com/chrome-next-step-for-trello';
   btn.title = 'Click to toggle display of next task(s)';
   btn.id = 'aj-nextstep-btn';
   btn.className = 'board-header-btn board-header-btn-without-icon';
