@@ -135,15 +135,7 @@ const prefixChecklistName = (item) =>
 // this function is used by all modes, to flatten item lists
 const sortedNextSteps = (checklist) => checklist.checkItems
   .sort(byPos)
-  .filter((item) => item.state === 'incomplete')
-  .map((item) => Object.assign(item, {
-    cardId: checklist.idCard,
-    checklistId: checklist.id,
-    checklistName: checklist.name
-  }));
-
-const sortedNextStepsIncludingCompleted = (checklist) => checklist.checkItems
-  .sort(byPos)
+  .filter((item) => (showCompleted() || item.state === 'incomplete'))
   .map((item) => Object.assign(item, {
     cardId: checklist.idCard,
     checklistId: checklist.id,
@@ -155,19 +147,11 @@ const getAllNextSteps = (checklists) => checklists
   .map(sortedNextSteps)
   .reduce((a, b) => a.concat(b), []);
 
-const getAllNextStepsIncludingCompleted = (checklists) => checklists
-    .sort(byPos)
-    .map(sortedNextStepsIncludingCompleted)
-    .reduce((a, b) => a.concat(b), []);
-
 // functions called by differents modes:
 
 // display all next steps
 const getAllNextStepsNamed = (checklists) => getAllNextSteps(checklists)
   .map(prefixChecklistName);
-
-const getAllNextStepsNamedIncludingCompleted = (checklists) => getAllNextStepsIncludingCompleted(checklists)
-    .map(prefixChecklistName);
 
 // display one next step per checklist
 const getNextStepsOfChecklists = (checklists) => checklists
@@ -183,12 +167,6 @@ const getNextStepsOfFirstChecklist = (checklists) => checklists
   .map(sortedNextSteps)
   .reduce((a, b) => a.concat(b), []);
 
-// display next steps of first checklist (including the completed ones)
-const getNextStepsOfFirstChecklistIncludingCompleted = (checklists) => checklists
-    .sort(byPos).slice(0, 1)
-    .map(sortedNextStepsIncludingCompleted)
-    .reduce((a, b) => a.concat(b), []);
-
 // display the first next step only
 const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
     .filter(nonNull);
@@ -199,71 +177,65 @@ const MODES = [
   {
     label: 'Mode: Hidden',
     description: 'Don\'t display next steps',
-    handler: (checklists) => ([]),
-    showCompleted: false
+    handler: (checklists) => ([])
   },
   {
     label: 'Mode: One per card',
     description: 'Display first next step of each card',
-    handler: getNextStep,
-    showCompleted: false
+    handler: getNextStep
   },
   {
     label: 'Mode: First checklist',
     description: 'Display next steps of each card\'s 1st checklist',
-    handler: getNextStepsOfFirstChecklist,
-    showCompleted: false
+    handler: getNextStepsOfFirstChecklist
   },
   {
     label: 'Mode: First checklist (include completed)',
     description: 'Display next steps of each card\'s 1st checklist (including the completed ones)',
-    handler: getNextStepsOfFirstChecklistIncludingCompleted,
-    showCompleted: true
+    handler: getNextStepsOfFirstChecklist
   },
   {
     label: 'Mode: One per checklist',
     description: 'Display first next step of each checklist',
-    handler: getNextStepsOfChecklists,
-    showCompleted: false
+    handler: getNextStepsOfChecklists
   },
   {
     label: 'Mode: All steps',
     description: 'Display all unchecked checklist items',
-    handler: getAllNextStepsNamed,
-    showCompleted: false
+    handler: getAllNextStepsNamed
   },
   {
     label: 'Mode: All steps (include completed)',
     description: 'Display all checklist items',
-    handler: getAllNextStepsNamedIncludingCompleted,
-    showCompleted: true
-  },
+    handler: getAllNextStepsNamed
+  }
 ];
+
+function showCompleted() {
+  return ((currentMode === 3) || (currentMode === 6));
+}
 
 // app state
 
 const userPrefs = new UserPrefs('aj-nextstep-json');
 var analytics = new Analytics('UA-1858235-21');
 var currentMode = userPrefs.getValue('defaultMode', 1);
-var showCompleted = userPrefs.getValue('showCompleted', false);
 var needsRefresh = true; // true = all, or { cardUrls }
 var refreshing = false;
 var token; // needed by onCheckItem
 var announcement;
 
-function setMode(modeIndex, shouldShowCompleted) {
+function setMode(modeIndex) {
   currentMode = modeIndex;
-  showCompleted = shouldShowCompleted;
   needsRefresh = true;
   userPrefs.setValue('defaultMode', modeIndex);
-  userPrefs.setValue('showCompleted', shouldShowCompleted);
   analytics.trackEvent(MODES[currentMode].label, 'click');
 }
 
 var MENU_ITEMS = MODES.map((mode, i) => {
   return Object.assign(mode, {
     modeIndex: i,
-    onClick: () => setMode(i, mode.showCompleted)
+    onClick: () => setMode(i)
   });
 });
 
@@ -449,7 +421,7 @@ function renderMarkdown(text) {
 // Next Step UI
 
 const renderItem = (item) => `
-  <p class="aj-next-step ${(item.state==="complete" && showCompleted) && "aj-checking"}"
+  <p class="aj-next-step ${(item.state==='complete' && showCompleted()) && 'aj-checking'}"
      data-card-url="${item.cardUrl}"
      data-card-id="${item.cardId}"
      data-checklist-id="${item.checklistId}"
@@ -481,7 +453,7 @@ function onCheckItem(evt) {
     body: urlEncodedData
   }).then(function() {
     // hide the task progressively
-    if (!showCompleted) {
+    if (!showCompleted()) {
       item.classList.add('aj-checked');
     }
     // will make the list of tasks refresh
