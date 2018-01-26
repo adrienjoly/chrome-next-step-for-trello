@@ -171,37 +171,37 @@ const MODES = [
   {
     label: 'Mode: Hidden',
     description: 'Don\'t display next steps',
-    handler: (checklists) => ([])
+    handler: (checklists) => ([]),
   },
   {
     label: 'Mode: One per card',
     description: 'Display first next step of each card',
-    handler: getNextStep
+    handler: getNextStep,
   },
   {
     label: 'Mode: First checklist',
     description: 'Display next steps of each card\'s 1st checklist',
-    handler: getNextStepsOfFirstChecklist
+    handler: getNextStepsOfFirstChecklist,
   },
   {
     label: 'Mode: First checklist (include completed)',
     description: 'Display next steps of each card\'s 1st checklist (including the completed ones)',
-    handler: getNextStepsOfFirstChecklist
+    handler: getNextStepsOfFirstChecklist,
   },
   {
     label: 'Mode: One per checklist',
     description: 'Display first next step of each checklist',
-    handler: getNextStepsOfChecklists
+    handler: getNextStepsOfChecklists,
   },
   {
     label: 'Mode: All steps',
     description: 'Display all unchecked checklist items',
-    handler: getAllNextStepsNamed
+    handler: getAllNextStepsNamed,
   },
   {
     label: 'Mode: All steps (include completed)',
     description: 'Display all checklist items',
-    handler: getAllNextStepsNamed
+    handler: getAllNextStepsNamed,
   }
 ];
 
@@ -495,6 +495,7 @@ const updateCardElements = (cards) => {
   const handler = MODES[currentMode].handler
   cards.forEach((card) => {
     const cardElement = getCardElementByShortUrl(card.shortUrl)
+    //console.log('-', card.shortUrl, cardElement)
     return cardElement && setCardContent(cardElement, handler(card.checklists))
   })
 }
