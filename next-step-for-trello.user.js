@@ -83,26 +83,6 @@ function UserPrefs(COOKIE_NAME) {
   });
 }
 
-// announcement helper
-function Announcement(announcementId, userPrefs) {
-  const SEEN_PROP = 'seen-' + announcementId;
-  const getCheckCount = () => userPrefs.getValue('checkCounter', 0);
-  const shouldDisplay = () => !userPrefs.getValue(SEEN_PROP) && getCheckCount() > 5;
-  const displayIfNecessary = () =>
-    document.body.classList.toggle('aj-nextstep-display-ant', shouldDisplay());
-  displayIfNecessary();
-  return Object.assign(this, {
-    incrementCheckCounter: () => {
-      userPrefs.set({ checkCounter: getCheckCount() + 1 });
-      displayIfNecessary();
-    },
-    setAsSeen: () => {
-      userPrefs.setValue(SEEN_PROP, true);
-      displayIfNecessary();
-    }
-  });
-}
-
 // analytics helper
 class Analytics {
   constructor(code = 'UA-XXXXXXXX-X') {
@@ -124,6 +104,20 @@ class Analytics {
     injectJs(`ga('nextstep.send', 'event', '${category}', '${action}');`, { thenRemove: true });
   }
 };
+
+// app state
+
+const userPrefs = new UserPrefs('aj-nextstep-json');
+var analytics = new Analytics('UA-1858235-21');
+var currentMode = userPrefs.getValue('defaultMode', 1);
+var needsRefresh = true; // true = all, or { cardUrls }
+var refreshing = false;
+var token; // needed by onCheckItem
+var announcement;
+
+function showCompleted() {
+  return ((currentMode === 3) || (currentMode === 6));
+}
 
 // trello checklist processors
 
@@ -211,20 +205,6 @@ const MODES = [
   }
 ];
 
-function showCompleted() {
-  return ((currentMode === 3) || (currentMode === 6));
-}
-
-// app state
-
-const userPrefs = new UserPrefs('aj-nextstep-json');
-var analytics = new Analytics('UA-1858235-21');
-var currentMode = userPrefs.getValue('defaultMode', 1);
-var needsRefresh = true; // true = all, or { cardUrls }
-var refreshing = false;
-var token; // needed by onCheckItem
-var announcement;
-
 function setMode(modeIndex) {
   currentMode = modeIndex;
   needsRefresh = true;
@@ -238,6 +218,26 @@ var MENU_ITEMS = MODES.map((mode, i) => {
     onClick: () => setMode(i)
   });
 });
+
+// announcement helper
+function Announcement(announcementId, userPrefs) {
+  const SEEN_PROP = 'seen-' + announcementId;
+  const getCheckCount = () => userPrefs.getValue('checkCounter', 0);
+  const shouldDisplay = () => !userPrefs.getValue(SEEN_PROP) && getCheckCount() > 5;
+  const displayIfNecessary = () =>
+    document.body.classList.toggle('aj-nextstep-display-ant', shouldDisplay());
+  displayIfNecessary();
+  return Object.assign(this, {
+    incrementCheckCounter: () => {
+      userPrefs.set({ checkCounter: getCheckCount() + 1 });
+      displayIfNecessary();
+    },
+    setAsSeen: () => {
+      userPrefs.setValue(SEEN_PROP, true);
+      displayIfNecessary();
+    }
+  });
+}
 
 // Trello helpers
 
