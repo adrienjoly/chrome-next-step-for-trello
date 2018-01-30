@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.17
+// @version 1.8.18
 // @homepage https://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -421,6 +421,10 @@ const renderItem = (item) => `
 function onCheckItem(evt) {
   evt.preventDefault();
   evt.stopPropagation();
+  if (!token) {
+    alert('Oops! A recent change from Trello broke the ability to check off an item... If you want to help us fix this 👉 http://bit.ly/nextsteptoken');
+    return;
+  }
   // let's check that item
   var item = evt.currentTarget.parentNode;
   item.classList.add('aj-checking');
