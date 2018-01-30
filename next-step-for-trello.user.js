@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.18
+// @version 1.8.19
 // @homepage https://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
@@ -433,7 +433,7 @@ function onCheckItem(evt) {
   var path = 'cards/' + item.getAttribute('data-card-id')
     + '/checklist/' + item.getAttribute('data-checklist-id')
     + '/checkItem/' + item.getAttribute('data-item-id');
-  var urlEncodedData = 'state=complete&' + token.trim();
+  var urlEncodedData = 'state=complete&token=' + token.trim();
   fetchFromTrello(path, {
     method: 'PUT',
     headers: {
@@ -588,7 +588,11 @@ const INIT_STEPS = [
   // step 2: get global token from Trello
   function getToken(callback) {
     callback(); // calling it right away, in case the following code crashes
-    injectJs(getSymbolFromHost('token', (_token) => { token = _token; }), { thenRemove: true });
+    injectJs(
+      getSymbolFromHost(
+        'window.getAuthorization().token',
+        (_token) => { token = _token; }), { thenRemove: true }
+      );
   },
   // step 3: main loop
   function main() {
