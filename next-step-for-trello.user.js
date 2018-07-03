@@ -506,7 +506,7 @@ function onCheckItem (evt) {
     announcement.incrementCheckCounter()
   })
   analytics.trackEvent('Checklist item', 'tick')
-};
+}
 
 const getCardUrlFromTitleElement = (cardTitleElement) => {
   return cardTitleElement.parentNode.parentNode.href
