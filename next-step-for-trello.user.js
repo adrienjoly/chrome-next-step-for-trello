@@ -17,7 +17,7 @@ const DEV_MODE = !('update_url' in window.chrome.runtime.getManifest())
 const EXT_VERSION = window.chrome.runtime.getManifest().version
 
 const getAssetURL = assetFile => DEV_MODE
-  ? chrome.extension.getURL(`/docs/assets/${assetFile}`) // load locally
+  ? window.chrome.extension.getURL(`/docs/assets/${assetFile}`) // load locally
   : `${URL_PREFIX}/assets/${assetFile}` // load from official website
 
 const NATIVE_URL = DEV_MODE ? 'https://codepen.io/sayzlim/pen/geOONP.js' : getAssetURL('native.js')
@@ -329,9 +329,9 @@ function initToolbarSelector (btn) {
   }
   node.show = () => {
     // prepare carbonads sponsor message
-    const donateClass = 'aj-nextstep-ant-donate'; // will disappear when ad is shown
-    const adCode = 'CK7D65QL';
-    const adClass = 'native-js';
+    const donateClass = 'aj-nextstep-ant-donate' // will disappear when ad is shown
+    const adCode = 'CK7D65QL'
+    const adClass = 'native-js'
     const adHTML = `
     <div class="${adClass}">
       <a class="native-ad" href="#native_link#" target="_blank" rel="noopener noreferrer">
@@ -363,14 +363,15 @@ function initToolbarSelector (btn) {
       renderToolbarSelector(
         node.id,
         MENU_ITEMS.map(renderSelectorOption).join('\n')
-      ) + adHTML;
+      ) + adHTML
     setTimeout(() => {
       // make menu items clickable
-      MENU_ITEMS.forEach((menuItem, i) =>
-        document.getElementById('aj-nextstep-menuitem-' + i).onclick = function() {
-          menuItem.onClick.apply(this, arguments);
-          node.hide();
-        });
+      MENU_ITEMS.forEach((menuItem, i) => {
+        document.getElementById('aj-nextstep-menuitem-' + i).onclick = function () {
+          menuItem.onClick.apply(this, arguments)
+          node.hide()
+        }
+      })
       // sponsored message
       injectJs(`
         (function(){
@@ -380,19 +381,19 @@ function initToolbarSelector (btn) {
             // donate.parentNode.removeChild(donate);
           }
         })();
-      `);
-      announcement.setAsSeen();
-    }, 1);
-    node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;';
-    node.classList.add('is-shown');
-    //heap.track('Click on toolbar button', {});
-    analytics.trackEvent('Toolbar Button', 'show');
-  };
-  node.toggle = function(evt) {
-    evt.preventDefault();
-    this[ this.classList.contains('is-shown') ? 'hide' : 'show' ]();
-  };
-  return node;
+      `)
+      announcement.setAsSeen()
+    }, 1)
+    node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;'
+    node.classList.add('is-shown')
+    // heap.track('Click on toolbar button', {});
+    analytics.trackEvent('Toolbar Button', 'show')
+  }
+  node.toggle = function (evt) {
+    evt.preventDefault()
+    this[ this.classList.contains('is-shown') ? 'hide' : 'show' ]()
+  }
+  return node
 }
 
 // Trello markdown rendering functions
@@ -612,7 +613,7 @@ const INIT_STEPS = [
   // step 0: integrate the toolbar button (when page is ready)
   function initToolbar (callback) {
     if (installToolbar()) {
-      callback();
+      callback()
       /*
       fetch(getAssetURL('announcement.json'))
         .then((response) => response.json())
@@ -630,7 +631,7 @@ const INIT_STEPS = [
         var script = document.createElement('script');
         script.src = '${NATIVE_URL}';
         document.body.appendChild(script);
-      `);
+      `)
     }
   },
   // step 1: watch DOM changes (one shot init)
