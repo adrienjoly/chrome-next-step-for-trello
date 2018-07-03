@@ -85,7 +85,7 @@
   position: relative;
   display: inline-block;
   top: -9px;
-  margin-left: 5px;
+  margin: 0 5px;
   transform: scale(0.045);
 }
 .uil-reload-css > div {
@@ -98,6 +98,7 @@
   border-top: 20px solid rgba(0,0,0,0);
   border-right: 20px solid #ffffff;
   border-bottom: 20px solid #ffffff;
+  transform-origin: 50% 50% 0;  
 }
 .uil-reload-css > div:after {
   content: " ";
@@ -107,7 +108,6 @@
   border-width: 0 30px 30px 30px;
   border-color: transparent transparent #ffffff transparent;
   display: block;
-  transform: translate(-15px, 0) rotate(45deg);
 }
 
 /* next step toolbar button - announcements */
@@ -153,7 +153,16 @@ body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
   right: 10px;
   width: 40px;
   height: 40px;
-  background-image: url('http://i.imgur.com/CK4hCZq.jpg');
+  background-image: url('https://i.imgur.com/CK4hCZq.jpg');
+  background-size: cover;
+}
+
+.aj-nextstep-ant-pic2 {
+  position: absolute;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('https://fr.gravatar.com/userimage/19157316/3f0cd85f9f19d20059d989b073e5f045.jpg');
   background-size: cover;
 }
 

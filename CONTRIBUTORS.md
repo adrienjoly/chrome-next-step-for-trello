@@ -1,9 +1,6 @@
-Next Step for Trello is maintained thanks to the kind help from the following contributors:
+Next Step for Trello is maintained thanks to the kind help from the following contributors: https://github.com/adrienjoly/chrome-next-step-for-trello/graphs/contributors
 
-- [Steve Shanks](https://github.com/stevecshanks)
-- [Jean-François Dessureault](https://github.com/JeffDess)
-
-I would like to express my gratitude to people who helped me develop Next Track for Trello:
+I would like to express my gratitude to people who helped me develop and promote Next Track for Trello:
 
 - [Jean-François Dessureault](http://github.com/JeffDess) for contributing the [Win10 fix](https://github.com/adrienjoly/chrome-next-step-for-trello/pull/26).
 - [Adrien Montcoudiol](http://twitter.com/adrienm) and [Maxime Braud](http://twitter.com/mxbraud), for their help on the landing page and on the launch
@@ -18,6 +15,9 @@ Thanks a lot to the kind users who sent me a [donation](https://adrienjoly.com/d
 - Raffaele G.
 - Nicholas S.
 - Eric E.
+- Jonathan S.
+- Mark L.
+- Ichi K.
 
 I would like to thank the people who have been kindly supporting my efforts on [Patreon](https://www.patreon.com/adrienjoly):
 

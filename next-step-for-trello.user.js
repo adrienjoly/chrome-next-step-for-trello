@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name Next Step for Trello
-// @version 1.8.13
-// @homepage http://adrienjoly.com/chrome-next-step-for-trello
+// @version 1.8.19
+// @homepage https://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
 // @match https://trello.com/*
 // @match http://trello.com/*
@@ -187,7 +187,7 @@ const MODES = [
     handler: getNextStep
   },
   {
-    label: 'Mode: First checklist 🆕',
+    label: 'Mode: First checklist',
     description: 'Display next steps of each card\'s 1st checklist',
     handler: getNextStepsOfFirstChecklist
   },
@@ -279,7 +279,7 @@ function initToolbarButton () {
     'Next steps: <span id="aj-nextstep-mode">Loading...</span>' +
     '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>' +
     '</span>'
-  announcement = new Announcement('ant4', userPrefs)
+  announcement = new Announcement('ant7', userPrefs)
   return btn
 }
 
@@ -424,6 +424,10 @@ const renderItem = (item) => `
 function onCheckItem (evt) {
   evt.preventDefault()
   evt.stopPropagation()
+  if (!token) {
+    alert('Oops! A recent change from Trello broke the ability to check off an item... If you want to help us fix this 👉 http://bit.ly/nextsteptoken')
+    return
+  }
   // let's check that item
   var item = evt.currentTarget.parentNode
   item.classList.add('aj-checking')
@@ -432,7 +436,7 @@ function onCheckItem (evt) {
   var path = 'cards/' + item.getAttribute('data-card-id') +
     '/checklist/' + item.getAttribute('data-checklist-id') +
     '/checkItem/' + item.getAttribute('data-item-id')
-  var urlEncodedData = 'state=complete&' + token.trim()
+  var urlEncodedData = 'state=complete&token=' + token.trim()
   fetchFromTrello(path, {
     method: 'PUT',
     headers: {
@@ -587,7 +591,11 @@ const INIT_STEPS = [
   // step 2: get global token from Trello
   function getToken (callback) {
     callback() // calling it right away, in case the following code crashes
-    injectJs(getSymbolFromHost('token', (_token) => { token = _token }), { thenRemove: true })
+    injectJs(
+      getSymbolFromHost(
+        'window.getAuthorization().token',
+        (_token) => { token = _token; }), { thenRemove: true }
+      );
   },
   // step 3: main loop
   function main () {
