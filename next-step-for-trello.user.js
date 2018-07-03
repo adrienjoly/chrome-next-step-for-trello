@@ -153,7 +153,7 @@ const getAllNextSteps = (checklists) => checklists
   .map(sortedNextSteps)
   .reduce((a, b) => a.concat(b), [])
 
-// functions called by differents modes:
+// functions called by different modes:
 
 // display all next steps
 const getAllNextStepsNamed = (checklists) => getAllNextSteps(checklists)
