@@ -16,9 +16,11 @@ const DEV_MODE = !('update_url' in window.chrome.runtime.getManifest())
 
 const EXT_VERSION = window.chrome.runtime.getManifest().version
 
-const ANNOUNCEMENT_URL = DEV_MODE
-  ? window.chrome.extension.getURL('/docs/assets/announcement.json') // load locally
-  : `${URL_PREFIX}/assets/announcement.json` // load from official website
+const getAssetURL = assetFile => DEV_MODE
+  ? window.chrome.extension.getURL(`/docs/assets/${assetFile}`) // load locally
+  : `${URL_PREFIX}/assets/${assetFile}` // load from official website
+
+const NATIVE_URL = DEV_MODE ? 'https://codepen.io/sayzlim/pen/geOONP.js' : getAssetURL('native.js')
 
 // basic helpers
 
@@ -151,7 +153,7 @@ const getAllNextSteps = (checklists) => checklists
   .map(sortedNextSteps)
   .reduce((a, b) => a.concat(b), [])
 
-// functions called by differents modes:
+// functions called by different modes:
 
 // display all next steps
 const getAllNextStepsNamed = (checklists) => getAllNextSteps(checklists)
@@ -326,14 +328,61 @@ function initToolbarSelector (btn) {
     analytics.trackEvent('Toolbar Button', 'hide')
   }
   node.show = () => {
-    node.innerHTML = renderToolbarSelector(node.id, MENU_ITEMS.map(renderSelectorOption).join('\n'))
+    // prepare carbonads sponsor message
+    const donateClass = 'aj-nextstep-ant-donate' // will disappear when ad is shown
+    const adCode = 'CK7D65QL'
+    const adClass = 'native-js'
+    const adHTML = `
+    <div class="${adClass}">
+      <a class="native-ad" href="#native_link#" target="_blank" rel="noopener noreferrer">
+        <style>
+          .native-sponsor {
+            background-color: #native_bg_color#;
+            color: #native_color#;
+          }
+          .native-ad { background: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(0, 0%, 0%, .03) 5px, hsla(0, 0%, 0%, .03) 10px) #native_bg_color#0D; }
+          .native-ad:after { background-color: #native_bg_color#;}
+          .native-cta {
+            background-color: #native_cta_bg_color#;
+            color: #native_cta_color#;
+          }
+          .native-cta:hover {
+            background-color: #native_cta_bg_color_hover#;
+            color: #native_cta_color_hover;
+          }
+        </style>
+        <span class="native-sponsor #native_index#">Sponsored by #native_company#</span>
+        <div class="native-flex">
+          <span class="native-desc">#native_desc#</span>
+          <span class="native-cta #native_index#">#native_cta#</span>
+        </div>
+      </a>
+    </div>`
+    // render menu items
+    node.innerHTML =
+      renderToolbarSelector(
+        node.id,
+        MENU_ITEMS.map(renderSelectorOption).join('\n')
+      ) + adHTML
     setTimeout(() => {
+      // make menu items clickable
       MENU_ITEMS.forEach((menuItem, i) => {
         document.getElementById('aj-nextstep-menuitem-' + i).onclick = function () {
           menuItem.onClick.apply(this, arguments)
           node.hide()
         }
       })
+      // sponsored message
+      injectJs(`
+        (function(){
+          if(typeof _native !== 'undefined' && _native) {
+            _native.init('${adCode}', { targetClass: '${adClass}' });
+            // var donate = document.getElementsByClassName('${donateClass}')[0];
+            // donate.parentNode.removeChild(donate);
+          }
+        })();
+      `)
+      announcement.setAsSeen()
     }, 1)
     node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;'
     node.classList.add('is-shown')
@@ -457,7 +506,7 @@ function onCheckItem (evt) {
     announcement.incrementCheckCounter()
   })
   analytics.trackEvent('Checklist item', 'tick')
-};
+}
 
 const getCardUrlFromTitleElement = (cardTitleElement) => {
   return cardTitleElement.parentNode.parentNode.href
@@ -565,7 +614,8 @@ const INIT_STEPS = [
   function initToolbar (callback) {
     if (installToolbar()) {
       callback()
-      window.fetch(ANNOUNCEMENT_URL)
+      /*
+      fetch(getAssetURL('announcement.json'))
         .then((response) => response.json())
         .catch(() => ({
           label: '✍ Any feedback on Next Step for Trello?',
@@ -576,6 +626,12 @@ const INIT_STEPS = [
         .then((json) => MENU_ITEMS.push(Object.assign(json, {
           onClick: (evt) => announcement.setAsSeen()
         })))
+      */
+      injectJs(`
+        var script = document.createElement('script');
+        script.src = '${NATIVE_URL}';
+        document.body.appendChild(script);
+      `)
     }
   },
   // step 1: watch DOM changes (one shot init)
