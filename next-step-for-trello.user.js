@@ -8,6 +8,8 @@
 // @run-at document-start
 // ==/UserScript==
 
+/* global window, document */
+
 const URL_PREFIX = 'https://adrienjoly.com/chrome-next-step-for-trello'
 
 const DEV_MODE = !('update_url' in window.chrome.runtime.getManifest())
@@ -171,7 +173,7 @@ const getNextStepsOfFirstChecklist = (checklists) => checklists
 
 // display the first next step only
 const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
-    .filter(nonNull)
+  .filter(nonNull)
 
 // extension modes
 
@@ -425,7 +427,7 @@ function onCheckItem (evt) {
   evt.preventDefault()
   evt.stopPropagation()
   if (!token) {
-    alert('Oops! A recent change from Trello broke the ability to check off an item... If you want to help us fix this 👉 http://bit.ly/nextsteptoken')
+    window.alert('Oops! A recent change from Trello broke the ability to check off an item... If you want to help us fix this 👉 http://bit.ly/nextsteptoken')
     return
   }
   // let's check that item
@@ -594,8 +596,10 @@ const INIT_STEPS = [
     injectJs(
       getSymbolFromHost(
         'window.getAuthorization().token',
-        (_token) => { token = _token; }), { thenRemove: true }
-      );
+        (_token) => { token = _token }
+      ),
+      { thenRemove: true }
+    )
   },
   // step 3: main loop
   function main () {
