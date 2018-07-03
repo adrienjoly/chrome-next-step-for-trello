@@ -1,0 +1,17 @@
+{
+  "javascript.validate.enable": false,
+  "standard.enable": true,
+  "standard.autoFixOnSave": true,
+  "standard.options": {
+    "ignore": [
+      "node_modules/**"
+    ]
+  },
+  "cSpell.words": [
+    "Prefs",
+    "Trello",
+    "checkboxes",
+    "nextstep",
+    "passback"
+  ]
+}
