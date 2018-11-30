@@ -277,8 +277,9 @@ function initToolbarButton () {
   btn.title = 'Click to toggle display of next task(s)'
   btn.id = 'aj-nextstep-btn'
   btn.className = 'board-header-btn board-header-btn-without-icon'
+  var iconUrl = getAssetURL('../../icon.png')
   btn.innerHTML = '<span class="board-header-btn-text">' +
-    '<span class="aj-nextstep-icon">↑↓&nbsp;&nbsp;</span>' +
+    '<img class="aj-nextstep-icon" src="' + iconUrl + '" />' +
     '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' + // announcement
     'Next steps: <span id="aj-nextstep-mode">Loading...</span>' +
     '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>' +

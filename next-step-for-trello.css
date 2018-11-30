@@ -68,7 +68,10 @@
 }
 .aj-nextstep-icon {
   position: relative;
-  top: -1px;
+  top: 1px;
+  height: 12px;
+  width: 12px;
+  padding-right: 8px;
 }
 
 /* next step toolbar button - loading animation */
