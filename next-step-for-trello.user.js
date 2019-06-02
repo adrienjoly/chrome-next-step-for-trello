@@ -243,10 +243,9 @@ const getCardElementByShortUrl = (shortUrl) =>
 const isOnBoardPage = () => window.location.href.indexOf('https://trello.com/b/') === 0
 
 function getUserName () {
-  let userName = (document
-    .getElementsByClassName('header-user')[0]
-    .getElementsByClassName('member-avatar')[0] || {}).title || 'me'
-  return userName.slice(userName.indexOf('(') + 1, userName.indexOf(')'))
+  const user =
+    document.querySelector('button[data-test-id="header-member-menu-button"]') || document.getElementsByClassName('header-user')[0].getElementsByClassName('member-avatar')[0]
+  return user ? /\((.*)\)/.exec(user.title)[1] : undefined
 }
 
 const fetchFromTrello = (path, opts = {}) => window.fetch(
