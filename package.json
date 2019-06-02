@@ -24,10 +24,10 @@
   "devDependencies": {
     "@semantic-release/changelog": "^3.0.2",
     "@semantic-release/git": "^7.0.12",
-    "mocha": "^3.3.0",
+    "mocha": "^6.1.4",
     "mock-browser": "^0.92.14",
     "semantic-release": "^15.13.14",
-    "sinon-chrome": "^2.2.1",
-    "standard": "^10.0.3"
+    "sinon-chrome": "^3.0.1",
+    "standard": "^12.0.1"
   }
 }
