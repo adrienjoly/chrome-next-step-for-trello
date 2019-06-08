@@ -592,6 +592,10 @@ function installToolbar () {
   var headerElements = document.getElementsByClassName('board-header-btns')
   if (headerElements.length) {
     const btn = initToolbarButton() // creates #aj-nextstep-mode
+    const selector = document.getElementById('aj-nextstep-selector')
+    if (selector) {
+      selector.parentNode.removeChild(selector)
+    }
     const popover = initToolbarSelector(btn) // creates #aj-nextstep-selector
     headerElements[0].appendChild(btn)
     document.body.appendChild(popover)
