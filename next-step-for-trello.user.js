@@ -196,7 +196,7 @@ const MODES = [
     handler: getNextStepsOfFirstChecklist
   },
   {
-    label: 'Mode: First checklist (include completed)',
+    label: 'Mode: First checklist (incl. completed)',
     description: 'Display next steps of each card\'s 1st checklist (including the completed ones)',
     showCompleted: true,
     handler: getNextStepsOfFirstChecklist
@@ -212,7 +212,7 @@ const MODES = [
     handler: getAllNextStepsNamed
   },
   {
-    label: 'Mode: All steps (include completed)',
+    label: 'Mode: All steps (incl. completed)',
     description: 'Display all checklist items',
     showCompleted: true,
     handler: getAllNextStepsNamed
