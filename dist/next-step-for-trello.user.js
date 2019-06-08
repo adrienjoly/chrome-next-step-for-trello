@@ -225,7 +225,9 @@ var analytics = new Analytics('UA-1858235-21')
 var currentMode = userPrefs.getValue('defaultMode', 1)
 var needsRefresh = true // true = all, or { cardUrls }
 var refreshing = false
-var token // needed by onCheckItem
+var token // needed by onCheckItem, populated by getToken()
+var initialized = false // populated by init()
+var watching = false // populated by watchForChanges()
 var announcement
 
 function showCompleted () {
@@ -588,16 +590,14 @@ const isToolbarInstalled = () => document.getElementById('aj-nextstep-mode')
 
 function installToolbar () {
   var headerElements = document.getElementsByClassName('board-header-btns')
-  if (isToolbarInstalled() || !headerElements.length) {
-    return false
-  } else {
-    const btn = initToolbarButton()
-    const popover = initToolbarSelector(btn)
+  if (headerElements.length) {
+    const btn = initToolbarButton() // creates #aj-nextstep-mode
+    const popover = initToolbarSelector(btn) // creates #aj-nextstep-selector
     headerElements[0].appendChild(btn)
     document.body.appendChild(popover)
     btn.onclick = popover.toggle.bind(popover)
+    needsRefresh = true
     analytics.trackEvent('Board', 'install-toolbar')
-    return true
   }
 }
 
@@ -624,61 +624,58 @@ function watchForChanges () {
       needsRefresh = true // less aggressive than updateCards({ cardUrls: [ e.target.href ] })
     }
   }, false)
+  watching = true
 }
 
-const INIT_STEPS = [
-  // step 0: integrate the toolbar button (when page is ready)
-  function initToolbar (callback) {
-    if (installToolbar()) {
-      callback()
-      /*
-      fetch(getAssetURL('announcement.json'))
-        .then((response) => response.json())
-        .catch(() => ({
-          label: '✍ Any feedback on Next Step for Trello?',
-          description: 'Let me know how I can help, or give us some stars!',
-          className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-feedback',
-          href: 'https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf'
-        }))
-        .then((json) => MENU_ITEMS.push(Object.assign(json, {
-          onClick: (evt) => announcement.setAsSeen()
-        })))
-      */
-      injectJs(`
-        var script = document.createElement('script');
-        script.src = '${NATIVE_URL}';
-        document.body.appendChild(script);
-      `)
+/*
+const loadAnnouncement = () => fetch(getAssetURL('announcement.json'))
+  .then((response) => response.json())
+  .catch(() => ({
+    label: '✍ Any feedback on Next Step for Trello?',
+    description: 'Let me know how I can help, or give us some stars!',
+    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-feedback',
+    href: 'https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf'
+  }))
+  .then((json) => MENU_ITEMS.push(Object.assign(json, {
+    onClick: (evt) => announcement.setAsSeen()
+  })))
+
+const injectAnalytics = () => injectJs(`
+  window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(r?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","removeEventProperty","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
+  heap.load("3050518868");
+`)
+*/
+
+const getToken = () => injectJs(
+  getSymbolFromHost(
+    'window.getAuthorization().token',
+    (_token) => { token = _token }
+  ),
+  { thenRemove: true }
+)
+
+function init () {
+  injectJs(`
+  var script = document.createElement('script');
+  script.src = '${NATIVE_URL}';
+  document.body.appendChild(script);
+  `)
+  initialized = true
+}
+
+function regularUpdate () {
+  if (isOnBoardPage()) {
+    if (!initialized) {
+      return init()
     }
-  },
-  // step 1: watch DOM changes (one shot init)
-  function initWatchers (callback) {
-    watchForChanges()
-    callback()
-    // inject analytics
-    /*
-    injectJs(`
-      window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(r?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","removeEventProperty","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
-        heap.load("3050518868");
-    `);
-    */
-  },
-  // step 2: get global token from Trello
-  function getToken (callback) {
-    callback() // calling it right away, in case the following code crashes
-    injectJs(
-      getSymbolFromHost(
-        'window.getAuthorization().token',
-        (_token) => { token = _token }
-      ),
-      { thenRemove: true }
-    )
-  },
-  // step 3: main loop
-  function main () {
+    if (!token) {
+      return getToken()
+    }
     if (!isToolbarInstalled()) {
-      installToolbar()
-      needsRefresh = true
+      return installToolbar()
+    }
+    if (!watching) {
+      return watchForChanges()
     }
     if (needsRefresh && !refreshing) {
       updateCards(needsRefresh)
@@ -686,20 +683,11 @@ const INIT_STEPS = [
       analytics.trackPage()
       analytics.trackEvent('Board', 'refresh')
     }
+  } else if (!needsRefresh) {
+    needsRefresh = true
+    analytics.trackPage()
   }
-]
-
-function init () {
-  var currentStep = 0
-  setInterval(() => {
-    if (isOnBoardPage()) {
-      INIT_STEPS[currentStep](() => { ++currentStep })
-    } else if (!needsRefresh) {
-      needsRefresh = true
-      analytics.trackPage()
-    }
-  }, 500)
-  // TODO: get rid of this interval
 }
 
-init()
+// Main loop
+setInterval(regularUpdate, 500)
