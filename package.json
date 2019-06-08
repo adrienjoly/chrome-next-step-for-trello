@@ -9,8 +9,9 @@
     "test": "test"
   },
   "scripts": {
+    "lint": "./node_modules/.bin/standard ./*.js",
     "publish": "./build.sh",
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "./node_modules/.bin/mocha && npm run lint"
   },
   "repository": {
     "type": "git",
