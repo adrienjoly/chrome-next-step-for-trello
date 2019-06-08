@@ -198,6 +198,7 @@ const MODES = [
   {
     label: 'Mode: First checklist (include completed)',
     description: 'Display next steps of each card\'s 1st checklist (including the completed ones)',
+    showCompleted: true,
     handler: getNextStepsOfFirstChecklist
   },
   {
@@ -213,6 +214,7 @@ const MODES = [
   {
     label: 'Mode: All steps (include completed)',
     description: 'Display all checklist items',
+    showCompleted: true,
     handler: getAllNextStepsNamed
   }
 ]
@@ -228,7 +230,7 @@ var token // needed by onCheckItem
 var announcement
 
 function showCompleted () {
-  return ((currentMode === 3) || (currentMode === 6))
+  return MODES[currentMode].showCompleted
 }
 
 function setMode (modeIndex) {
