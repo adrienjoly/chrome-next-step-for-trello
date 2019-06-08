@@ -9,8 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/standard ./*.js",
-    "publish": "./build.sh",
+    "lint": "./node_modules/.bin/standard dist/*.js",
     "test": "./node_modules/.bin/mocha && npm run lint"
   },
   "repository": {

@@ -31,7 +31,7 @@ var sandbox = {
 var context = vm.createContext(sandbox)
 
 // Load the next-step-for-trello code
-var code = fs.readFileSync('next-step-for-trello.user.js')
+var code = fs.readFileSync('dist/next-step-for-trello.user.js')
 const script = new vm.Script(code)
 script.runInContext(context)
 

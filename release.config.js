@@ -9,6 +9,8 @@ module.exports = {
   prepare: [
     {
       path: 'semantic-release-chrome',
+      distFolder: 'dist',
+      manifestPath: 'dist/manifest.json',
       asset: 'chrome-extension-dist.zip'
     }
   ],
