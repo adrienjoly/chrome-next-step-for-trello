@@ -141,7 +141,7 @@ const prefixChecklistName = (item) =>
 // this function is used by all modes, to flatten item lists
 const sortedNextSteps = (checklist) => checklist.checkItems
   .sort(byPos)
-  .filter((item) => item.state === 'incomplete')
+  .filter((item) => (showCompleted() || item.state === 'incomplete'))
   .map((item) => Object.assign(item, {
     cardId: checklist.idCard,
     checklistId: checklist.id,
@@ -196,6 +196,11 @@ const MODES = [
     handler: getNextStepsOfFirstChecklist
   },
   {
+    label: 'Mode: First checklist (include completed)',
+    description: 'Display next steps of each card\'s 1st checklist (including the completed ones)',
+    handler: getNextStepsOfFirstChecklist
+  },
+  {
     label: 'Mode: One per checklist',
     description: 'Display first next step of each checklist',
     handler: getNextStepsOfChecklists
@@ -203,6 +208,11 @@ const MODES = [
   {
     label: 'Mode: All steps',
     description: 'Display all unchecked checklist items',
+    handler: getAllNextStepsNamed
+  },
+  {
+    label: 'Mode: All steps (include completed)',
+    description: 'Display all checklist items',
     handler: getAllNextStepsNamed
   }
 ]
@@ -216,6 +226,10 @@ var needsRefresh = true // true = all, or { cardUrls }
 var refreshing = false
 var token // needed by onCheckItem
 var announcement
+
+function showCompleted () {
+  return ((currentMode === 3) || (currentMode === 6))
+}
 
 function setMode (modeIndex) {
   currentMode = modeIndex
@@ -461,7 +475,7 @@ function renderMarkdown (text) {
 // Next Step UI
 
 const renderItem = (item) => `
-  <p class="aj-next-step"
+  <p class="aj-next-step ${(item.state === 'complete' && showCompleted()) && 'aj-checking'}"
      data-card-url="${item.cardUrl}"
      data-card-id="${item.cardId}"
      data-checklist-id="${item.checklistId}"
@@ -497,7 +511,9 @@ function onCheckItem (evt) {
     body: urlEncodedData
   }).then(function () {
     // hide the task progressively
-    item.classList.add('aj-checked')
+    if (!showCompleted()) {
+      item.classList.add('aj-checked')
+    }
     // will make the list of tasks refresh
     needsRefresh = {
       cardUrls: [ item.getAttribute('data-card-url') ]
