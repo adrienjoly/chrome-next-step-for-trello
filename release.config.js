@@ -12,13 +12,6 @@ module.exports = {
       distFolder: 'dist',
       manifestPath: 'dist/manifest.json',
       asset: 'chrome-extension-dist.zip'
-    }
-  ],
-  publish: [
-    {
-      path: 'semantic-release-chrome',
-      asset: 'chrome-extension-dist.zip',
-      extensionId: 'iajhmklhilkjgabejjemfbhmclgnmamf'
     },
     {
       path: '@semantic-release/git',
@@ -32,6 +25,13 @@ module.exports = {
         '${nextRelease.notes}'
         /* eslint-enable no-template-curly-in-string */
       ].join('\n\n')
+    }
+  ],
+  publish: [
+    {
+      path: 'semantic-release-chrome',
+      asset: 'chrome-extension-dist.zip',
+      extensionId: 'iajhmklhilkjgabejjemfbhmclgnmamf'
     },
     {
       path: '@semantic-release/github',
