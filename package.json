@@ -10,6 +10,7 @@
   },
   "scripts": {
     "lint": "./node_modules/.bin/standard dist/*.js",
+    "lint:semantic-release": "./node_modules/.bin/semantic-release --dry-run",
     "test": "./node_modules/.bin/mocha && npm run lint"
   },
   "repository": {
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@semantic-release/changelog": "^3.0.2",
     "@semantic-release/git": "^7.0.12",
+    "@semantic-release/npm": "^5.1.7",
     "mocha": "^6.1.4",
     "mock-browser": "^0.92.14",
     "semantic-release": "^15.13.14",
