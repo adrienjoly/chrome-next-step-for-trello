@@ -9,3 +9,5 @@ Google Chrome extension to check tasks directly from your Trello boards. ☑️�
 ## Developers
 
 📺🛠 You can watch on YouTube how I developed this Chrome Extension: [Livecoding Sessions](https://www.youtube.com/playlist?list=PLmzn1C-VN6G7FLdUJM3G82cG-Q69xJ2AY).
+
+Note: Version number is bumped and the extension is published to Chrome Web Store automatically by `semantic-release`, run on CI after each commit on the `master` branch. Read `release.config.js` for more information.
