@@ -21,6 +21,19 @@ module.exports = {
       extensionId: 'iajhmklhilkjgabejjemfbhmclgnmamf'
     },
     {
+      path: '@semantic-release/git',
+      assets: [
+        'dist/manifest.json',
+        'package.json'
+      ],
+      message: [
+        /* eslint-disable no-template-curly-in-string */
+        'chore(release): ${nextRelease.version} [skip ci]',
+        '${nextRelease.notes}'
+        /* eslint-enable no-template-curly-in-string */
+      ].join('\n\n')
+    },
+    {
       path: '@semantic-release/github',
       assets: [
         {
