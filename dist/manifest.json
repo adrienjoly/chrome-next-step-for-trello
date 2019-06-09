@@ -1,28 +1,39 @@
 {
-   "manifest_version": 2,
-   "browser_action": {
-     "default_popup": "popup.html",
-     "default_icon": "icon.png"
-   },
-   "content_scripts": [ {
-      "exclude_globs": [  ],
-      "exclude_matches": [  ],
-      "include_globs": [  ],
-      "js": [ "next-step-for-trello.user.js" ],
-      "css": [ "next-step-for-trello.css" ],
-      "matches": [ "http://trello.com/*", "https://trello.com/*" ],
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [
+    {
+      "exclude_globs": [],
+      "exclude_matches": [],
+      "include_globs": [],
+      "js": [
+        "next-step-for-trello.user.js"
+      ],
+      "css": [
+        "next-step-for-trello.css"
+      ],
+      "matches": [
+        "http://trello.com/*",
+        "https://trello.com/*"
+      ],
       "run_at": "document_start"
-   } ],
-   "converted_from_user_script": true,
-   "description": "Check tasks directly from your Trello boards",
-   "icons": { "128": "icon-128.png" },
-   "web_accessible_resources": [
-     "icon.png",
-     "next-step-for-trello.css",
-     "/docs/assets/announcement.json"
-   ],
-   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
-   "name": "Next Step for Trello",
-   "short_name": "Next Step",
-   "version": "1.12.0"
+    }
+  ],
+  "converted_from_user_script": true,
+  "description": "Check tasks directly from your Trello boards",
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "web_accessible_resources": [
+    "icon.png",
+    "next-step-for-trello.css",
+    "/docs/assets/announcement.json"
+  ],
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+  "name": "Next Step for Trello",
+  "short_name": "Next Step",
+  "version": "1.15.0"
 }
