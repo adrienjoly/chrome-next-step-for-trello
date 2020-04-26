@@ -482,6 +482,11 @@ footer ul li a {
   min-height: 80px;
   text-align: center;
 }
+#also-avail {
+  margin-top: 2.5em;
+  color: #adadad;
+  font-size: smaller;
+}
 .twitter-tweet-rendered {
   position: static;
   visibility: visible;
