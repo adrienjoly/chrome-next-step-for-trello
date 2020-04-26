@@ -2,6 +2,7 @@
 // @name Next Step for Trello
 // @homepage https://adrienjoly.com/chrome-next-step-for-trello
 // @description Check tasks directly from your Trello boards.
+// @license CC-BY-NC-ND-4.0; https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
 // @match https://trello.com/*
 // @match http://trello.com/*
 // @run-at document-start
