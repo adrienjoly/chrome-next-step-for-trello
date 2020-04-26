@@ -30,7 +30,7 @@
   "web_accessible_resources": [
     "icon.png",
     "next-step-for-trello.css",
-    "/docs/assets/announcement.json"
+    "native.js"
   ],
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
   "name": "Next Step for Trello",

@@ -9,7 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/standard dist/*.js",
+    "lint": "./node_modules/.bin/standard dist/next-step-for-trello.user.js",
     "lint:semantic-release": "./node_modules/.bin/semantic-release --dry-run",
     "test": "./node_modules/.bin/mocha && npm run lint"
   },
