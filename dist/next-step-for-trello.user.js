@@ -660,6 +660,15 @@ function init () {
   script.src = '${getAssetURL('native.js')}';
   document.body.appendChild(script);
   `)
+  if (!window.chrome) {
+    // in a user-script context (e.g. using tampermonkey), we need to load the css manually
+    injectJs(`
+    var nextStepTrelloStyle = document.createElement('link');
+    nextStepTrelloStyle.rel = 'stylesheet';
+    nextStepTrelloStyle.href = '${getAssetURL('next-step-for-trello.css')}';
+    document.head.appendChild(nextStepTrelloStyle);
+    `)
+  }
   initialized = true
 }
 
