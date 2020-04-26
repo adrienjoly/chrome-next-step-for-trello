@@ -15,7 +15,7 @@ const EXT_VERSION = window.chrome ? window.chrome.runtime.getManifest().version 
 
 const getAssetURL = assetFile => window.chrome
   ? window.chrome.runtime.getURL(assetFile) // load from installed extension
-  : `${URL_PREFIX}/${assetFile}` // load from github pages
+  : `${URL_PREFIX}/dist/${assetFile}` // load from github pages
 
 // basic helpers
 
@@ -289,7 +289,7 @@ function initToolbarButton () {
   btn.title = 'Click to toggle display of next task(s)'
   btn.id = 'aj-nextstep-btn'
   btn.className = 'board-header-btn board-header-btn-without-icon'
-  var iconUrl = getAssetURL('/icon.png')
+  var iconUrl = getAssetURL('icon.png')
   btn.innerHTML = '<span class="board-header-btn-text">' +
     '<img class="aj-nextstep-icon" src="' + iconUrl + '" />' +
     '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' + // announcement
@@ -657,7 +657,7 @@ const getToken = () => injectJs(
 function init () {
   injectJs(`
   var script = document.createElement('script');
-  script.src = '${getAssetURL('/native.js')}';
+  script.src = '${getAssetURL('native.js')}';
   document.body.appendChild(script);
   `)
   initialized = true
