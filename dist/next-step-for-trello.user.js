@@ -8,6 +8,12 @@
 // @run-at document-start
 // ==/UserScript==
 
+// ℹ️ To install Next Step for Trello as a user-script in your favorite browser:
+// 1. Install the "Tampermonkey" extension
+// 2. Open https://github.com/adrienjoly/chrome-next-step-for-trello/blob/master/dist/next-step-for-trello.user.js
+// 3. Click the "raw" button => Tampermonkey should allow you to install it
+// 4. Go to a Trello board that contains checklists => refresh the page to see the checklist items appear
+
 /* global window, document */
 
 const URL_PREFIX = 'https://adrienjoly.com/chrome-next-step-for-trello'
