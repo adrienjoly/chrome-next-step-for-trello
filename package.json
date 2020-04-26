@@ -1,6 +1,6 @@
 {
   "name": "chrome-next-step-for-trello",
-  "version": "1.16.2",
+  "version": "1.17.0",
   "private": true,
   "description": "Google Chrome extension to check tasks directly from your Trello boards.",
   "main": "next-step-for-trello.user.js",
