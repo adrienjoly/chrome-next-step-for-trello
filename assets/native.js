@@ -1,4 +1,6 @@
-// we're keeping this file here for older versions of the chrome extension that load from https://adrienjoly.com/chrome-next-step-for-trello/assets/native.js
+// initially downloaded from https://codepen.io/sayzlim/pen/geOONP.js,
+// this file is loaded by the extension (or user-script),
+// thru this URL: https://adrienjoly.com/chrome-next-step-for-trello/assets/native.js
 var _native = {
   construct: function(e) {
     var default_options = {

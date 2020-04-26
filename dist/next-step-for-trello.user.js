@@ -657,7 +657,7 @@ const getToken = () => injectJs(
 function init () {
   injectJs(`
   var script = document.createElement('script');
-  script.src = '${getAssetURL('native.js')}';
+  script.src = '${URL_PREFIX}/assets/native.js';
   document.body.appendChild(script);
   `)
   if (!window.chrome) {
