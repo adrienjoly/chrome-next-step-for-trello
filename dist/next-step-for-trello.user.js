@@ -286,8 +286,7 @@ const fetchBoardChecklists = (boardId = extractId()) =>
 
 function toggleLoadingUI (state) {
   refreshing = !!state
-  document.getElementById('aj-nextstep-loading').style.display =
-    state ? 'inline-block' : 'none'
+  document.getElementById('aj-nextstep-btn').classList.toggle('is-loading', state || false)
 }
 
 function initToolbarButton () {
@@ -298,10 +297,10 @@ function initToolbarButton () {
   btn.className = 'board-header-btn board-header-btn-without-icon'
   var iconUrl = getAssetURL('icon.png')
   btn.innerHTML = '<span class="board-header-btn-text">' +
+    '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>' +
     '<img class="aj-nextstep-icon" src="' + iconUrl + '" />' +
     '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' + // announcement
-    'Next steps: <span id="aj-nextstep-mode">Loading...</span>' +
-    '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>' +
+    '<span id="aj-nextstep-mode">Next steps</span>' +
     '</span>'
   announcement = new Announcement('ant7', userPrefs)
   return btn
@@ -403,7 +402,8 @@ function showToolbarSelector (btn) {
     `)
     announcement.setAsSeen()
   }, 1)
-  node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;'
+  const rect = btn.getBoundingClientRect()
+  node.style = `top: ${rect.top + rect.height + window.scrollY}px; left: ${rect.left + window.scrollX}px;`
   node.classList.add('is-shown')
   // heap.track('Click on toolbar button', {});
   analytics.trackEvent('Toolbar Button', 'show')
@@ -559,7 +559,6 @@ const updateCardElements = (cards) => {
 }
 
 function updateCards (toRefresh) {
-  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label.replace('Mode: ', '')
   toggleLoadingUI(true)
   fetchBoardChecklists().then((checklists) => {
     // 1. filter cards that contain checklists

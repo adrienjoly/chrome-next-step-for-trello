@@ -6,9 +6,6 @@
   },
   "content_scripts": [
     {
-      "exclude_globs": [],
-      "exclude_matches": [],
-      "include_globs": [],
       "js": [
         "next-step-for-trello.user.js"
       ],

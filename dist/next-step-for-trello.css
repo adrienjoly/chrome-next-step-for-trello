@@ -51,9 +51,6 @@
 
 /* next step toolbar button */
 
-#aj-nextstep-mode {
-  font-weight: 100;
-}
 #aj-nextstep-btn {
   transform: translate3d(0, 0, 0);
   animation: highlight 2s ease-out;
@@ -73,11 +70,17 @@
   width: 12px;
   padding-right: 8px;
 }
+#aj-nextstep-btn.is-loading .aj-nextstep-icon {
+  display: none;
+}
 
 /* next step toolbar button - loading animation */
 
 #aj-nextstep-loading {
   display: none;
+}
+#aj-nextstep-btn.is-loading #aj-nextstep-loading {
+  display: inline-block;
 }
 @keyframes uil-reload-css {
   0% { transform: rotate(0deg); }
@@ -88,7 +91,9 @@
   position: relative;
   display: inline-block;
   top: -9px;
-  margin: 0 5px;
+  margin: 0;
+  margin-left: 2px;
+  margin-right: 18px;
   transform: scale(0.045);
 }
 .uil-reload-css > div {
@@ -170,6 +175,7 @@ body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
 }
 
 #aj-nextstep-selector {
+  margin-top: 6px;
   width: 320px;
 }
 
@@ -273,13 +279,4 @@ body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
   white-space: nowrap;
   letter-spacing: .5px;
   font-size: 12px;
-}
-
-@keyframes "fadein" {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
