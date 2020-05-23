@@ -300,7 +300,7 @@ function initToolbarButton () {
   btn.innerHTML = '<span class="board-header-btn-text">' +
     '<img class="aj-nextstep-icon" src="' + iconUrl + '" />' +
     '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' + // announcement
-    'Next steps: <span id="aj-nextstep-mode">Loading...</span>' +
+    '<span id="aj-nextstep-mode">Next steps</span>' +
     '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>' +
     '</span>'
   announcement = new Announcement('ant7', userPrefs)
@@ -560,7 +560,6 @@ const updateCardElements = (cards) => {
 }
 
 function updateCards (toRefresh) {
-  document.getElementById('aj-nextstep-mode').innerHTML = MODES[currentMode].label.replace('Mode: ', '')
   toggleLoadingUI(true)
   fetchBoardChecklists().then((checklists) => {
     // 1. filter cards that contain checklists

@@ -51,9 +51,6 @@
 
 /* next step toolbar button */
 
-#aj-nextstep-mode {
-  font-weight: 100;
-}
 #aj-nextstep-btn {
   transform: translate3d(0, 0, 0);
   animation: highlight 2s ease-out;
