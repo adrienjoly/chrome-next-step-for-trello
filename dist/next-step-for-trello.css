@@ -170,6 +170,7 @@ body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
 }
 
 #aj-nextstep-selector {
+  margin-top: 6px;
   width: 320px;
 }
 

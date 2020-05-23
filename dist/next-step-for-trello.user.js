@@ -403,7 +403,8 @@ function showToolbarSelector (btn) {
     `)
     announcement.setAsSeen()
   }, 1)
-  node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;'
+  const rect = btn.getBoundingClientRect()
+  node.style = `top: ${rect.top + rect.height + window.scrollY}px; left: ${rect.left + window.scrollX}px;`
   node.classList.add('is-shown')
   // heap.track('Click on toolbar button', {});
   analytics.trackEvent('Toolbar Button', 'show')
