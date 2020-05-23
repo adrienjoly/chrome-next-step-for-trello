@@ -326,7 +326,7 @@ const renderToolbarSelector = (selectorId, innerHTML) => `
     <a
       href="#"
       class="pop-over-header-close-btn icon-sm icon-close"
-      onclick="document.getElementById('${selectorId}').classList.remove('is-shown');">
+      onclick="document.getElementById('${selectorId}').parentNode.removeChild(document.getElementById('${selectorId}'))">
     </a>
   </div>
   <div>
@@ -339,80 +339,74 @@ const renderToolbarSelector = (selectorId, innerHTML) => `
     </div>
   </div>`
 
-function initToolbarSelector (btn) {
+function showToolbarSelector (btn) {
   const node = document.createElement('div')
   node.id = 'aj-nextstep-selector'
   node.className = 'pop-over'
   node.hide = () => {
-    node.classList.remove('is-shown')
+    node.parentNode.removeChild(node)
     analytics.trackEvent('Toolbar Button', 'hide')
   }
-  node.show = () => {
-    // prepare carbonads sponsor message
-    const donateClass = 'aj-nextstep-ant-donate' // will disappear when ad is shown
-    const adCode = 'CK7D65QL'
-    const adClass = 'native-js'
-    const adHTML = `
-    <div class="${adClass}">
-      <a class="native-ad" href="#native_link#" target="_blank" rel="noopener noreferrer">
-        <style>
-          .native-sponsor {
-            background-color: #native_bg_color#;
-            color: #native_color#;
-          }
-          .native-ad { background: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(0, 0%, 0%, .03) 5px, hsla(0, 0%, 0%, .03) 10px) #native_bg_color#0D; }
-          .native-ad:after { background-color: #native_bg_color#;}
-          .native-cta {
-            background-color: #native_cta_bg_color#;
-            color: #native_cta_color#;
-          }
-          .native-cta:hover {
-            background-color: #native_cta_bg_color_hover#;
-            color: #native_cta_color_hover;
-          }
-        </style>
-        <span class="native-sponsor #native_index#">Sponsored by #native_company#</span>
-        <div class="native-flex">
-          <span class="native-desc">#native_desc#</span>
-          <span class="native-cta #native_index#">#native_cta#</span>
-        </div>
-      </a>
-    </div>`
-    // render menu items
-    node.innerHTML =
-      renderToolbarSelector(
-        node.id,
-        MENU_ITEMS.map(renderSelectorOption).join('\n')
-      ) + adHTML
-    setTimeout(() => {
-      // make menu items clickable
-      MENU_ITEMS.forEach((menuItem, i) => {
-        document.getElementById('aj-nextstep-menuitem-' + i).onclick = function () {
-          menuItem.onClick.apply(this, arguments)
-          node.hide()
+  // prepare carbonads sponsor message
+  const donateClass = 'aj-nextstep-ant-donate' // will disappear when ad is shown
+  const adCode = 'CK7D65QL'
+  const adClass = 'native-js'
+  const adHTML = `
+  <div class="${adClass}">
+    <a class="native-ad" href="#native_link#" target="_blank" rel="noopener noreferrer">
+      <style>
+        .native-sponsor {
+          background-color: #native_bg_color#;
+          color: #native_color#;
         }
-      })
-      // sponsored message
-      injectJs(`
-        (function(){
-          if(typeof _native !== 'undefined' && _native) {
-            _native.init('${adCode}', { targetClass: '${adClass}' });
-            // var donate = document.getElementsByClassName('${donateClass}')[0];
-            // donate.parentNode.removeChild(donate);
-          }
-        })();
-      `)
-      announcement.setAsSeen()
-    }, 1)
-    node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;'
-    node.classList.add('is-shown')
-    // heap.track('Click on toolbar button', {});
-    analytics.trackEvent('Toolbar Button', 'show')
-  }
-  node.toggle = function (evt) {
-    evt.preventDefault()
-    this[ this.classList.contains('is-shown') ? 'hide' : 'show' ]()
-  }
+        .native-ad { background: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(0, 0%, 0%, .03) 5px, hsla(0, 0%, 0%, .03) 10px) #native_bg_color#0D; }
+        .native-ad:after { background-color: #native_bg_color#;}
+        .native-cta {
+          background-color: #native_cta_bg_color#;
+          color: #native_cta_color#;
+        }
+        .native-cta:hover {
+          background-color: #native_cta_bg_color_hover#;
+          color: #native_cta_color_hover;
+        }
+      </style>
+      <span class="native-sponsor #native_index#">Sponsored by #native_company#</span>
+      <div class="native-flex">
+        <span class="native-desc">#native_desc#</span>
+        <span class="native-cta #native_index#">#native_cta#</span>
+      </div>
+    </a>
+  </div>`
+  // render menu items
+  node.innerHTML =
+    renderToolbarSelector(
+      node.id,
+      MENU_ITEMS.map(renderSelectorOption).join('\n')
+    ) + adHTML
+  setTimeout(() => {
+    // make menu items clickable
+    MENU_ITEMS.forEach((menuItem, i) => {
+      document.getElementById('aj-nextstep-menuitem-' + i).onclick = function () {
+        menuItem.onClick.apply(this, arguments)
+        node.hide()
+      }
+    })
+    // sponsored message
+    injectJs(`
+      (function(){
+        if(typeof _native !== 'undefined' && _native) {
+          _native.init('${adCode}', { targetClass: '${adClass}' });
+          // var donate = document.getElementsByClassName('${donateClass}')[0];
+          // donate.parentNode.removeChild(donate);
+        }
+      })();
+    `)
+    announcement.setAsSeen()
+  }, 1)
+  node.style = 'top: 84px; left: ' + (btn.offsetLeft + btn.parentNode.offsetLeft) + 'px;'
+  node.classList.add('is-shown')
+  // heap.track('Click on toolbar button', {});
+  analytics.trackEvent('Toolbar Button', 'show')
   return node
 }
 
@@ -595,14 +589,16 @@ function installToolbar () {
   var headerElements = document.getElementsByClassName('board-header-btns')
   if (headerElements.length) {
     const btn = initToolbarButton() // creates #aj-nextstep-mode
-    const selector = document.getElementById('aj-nextstep-selector')
-    if (selector) {
-      selector.parentNode.removeChild(selector)
-    }
-    const popover = initToolbarSelector(btn) // creates #aj-nextstep-selector
     headerElements[0].appendChild(btn)
-    document.body.appendChild(popover)
-    btn.onclick = popover.toggle.bind(popover)
+    btn.onclick = (evt) => {
+      evt.preventDefault()
+      const popover = document.getElementById('aj-nextstep-selector')
+      if (popover) {
+        popover.hide()
+      } else {
+        document.body.appendChild(showToolbarSelector(btn)) // creates #aj-nextstep-selector
+      }
+    }
     needsRefresh = true
     analytics.trackEvent('Board', 'install-toolbar')
   }
