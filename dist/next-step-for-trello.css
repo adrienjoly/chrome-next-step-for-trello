@@ -70,11 +70,17 @@
   width: 12px;
   padding-right: 8px;
 }
+#aj-nextstep-btn.is-loading .aj-nextstep-icon {
+  display: none;
+}
 
 /* next step toolbar button - loading animation */
 
 #aj-nextstep-loading {
   display: none;
+}
+#aj-nextstep-btn.is-loading #aj-nextstep-loading {
+  display: inline-block;
 }
 @keyframes uil-reload-css {
   0% { transform: rotate(0deg); }
@@ -85,7 +91,9 @@
   position: relative;
   display: inline-block;
   top: -9px;
-  margin: 0 5px;
+  margin: 0;
+  margin-left: 2px;
+  margin-right: 18px;
   transform: scale(0.045);
 }
 .uil-reload-css > div {
