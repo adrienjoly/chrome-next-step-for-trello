@@ -275,12 +275,3 @@ body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
   letter-spacing: .5px;
   font-size: 12px;
 }
-
-@keyframes "fadein" {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
