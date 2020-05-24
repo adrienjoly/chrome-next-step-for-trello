@@ -71,11 +71,6 @@ function UserPrefs (COOKIE_NAME) {
       const parts = v.split('=')
       return parts[0] === name ? decodeURIComponent(parts[1]) : r
     }, '')
-  /*
-  const deleteCookie = (name, path) => {
-    setCookie(name, '', -1, path)
-  }
-  */
   return Object.assign(this, {
     get: () => JSON.parse(getCookie(COOKIE_NAME) || '{}'),
     getValue: (key, defaultVal) => {
