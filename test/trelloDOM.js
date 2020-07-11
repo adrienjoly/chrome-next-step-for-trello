@@ -17,7 +17,7 @@ describe('getCardElementByShortUrl', function () {
       'returnValue = getCardElementByShortUrl("https://trello.com/c/invalid")'
     )
     testScript.runInContext(test.context)
-    assert.equal(test.sandbox.returnValue, null)
+    assert.strictEqual(test.sandbox.returnValue, undefined)
   })
 
   it('returns card element if URL does exist', function () {
@@ -25,7 +25,7 @@ describe('getCardElementByShortUrl', function () {
       'returnValue = getCardElementByShortUrl("https://trello.com/c/1234")'
     )
     testScript.runInContext(test.context)
-    assert.equal(test.sandbox.returnValue instanceof test.window.HTMLSpanElement, true)
+    assert.strictEqual(test.sandbox.returnValue instanceof test.window.HTMLSpanElement, true)
   })
 })
 
@@ -36,7 +36,7 @@ describe('getCardUrlFromTitleElement', function () {
       'returnValue = getCardUrlFromTitleElement(titleElement)'
     )
     testScript.runInContext(test.context)
-    assert.equal(test.sandbox.returnValue, '/c/1234/1-test-1')
+    assert.strictEqual(test.sandbox.returnValue, '/c/1234/1-test-1')
   })
 })
 
@@ -46,7 +46,7 @@ describe('elementIsTrelloCard', function () {
       'returnValue = elementIsTrelloCard(document.body)'
     )
     testScript.runInContext(test.context)
-    assert.equal(test.sandbox.returnValue, false)
+    assert.strictEqual(test.sandbox.returnValue, false)
   })
 
   it('returns false for inactive card', function () {
@@ -55,7 +55,7 @@ describe('elementIsTrelloCard', function () {
       'returnValue = elementIsTrelloCard(card)'
     )
     testScript.runInContext(test.context)
-    assert.equal(test.sandbox.returnValue, false)
+    assert.strictEqual(test.sandbox.returnValue, false)
   })
 
   it('returns true for active card', function () {
@@ -64,7 +64,7 @@ describe('elementIsTrelloCard', function () {
       'returnValue = elementIsTrelloCard(card)'
     )
     testScript.runInContext(test.context)
-    assert.equal(test.sandbox.returnValue, true)
+    assert.strictEqual(test.sandbox.returnValue, true)
   })
 
   it('returns true for active card with cover', function () {
@@ -73,6 +73,6 @@ describe('elementIsTrelloCard', function () {
       'returnValue = elementIsTrelloCard(card)'
     )
     testScript.runInContext(test.context)
-    assert.equal(test.sandbox.returnValue, true)
+    assert.strictEqual(test.sandbox.returnValue, true)
   })
 })

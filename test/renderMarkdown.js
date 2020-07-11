@@ -116,7 +116,7 @@ describe('renderMarkdown', function () {
             'returnValue = renderMarkdown("' + testCase.input + '")'
           )
           testScript.runInContext(test.context)
-          assert.equal(test.sandbox.returnValue, testCase.expected)
+          assert.strictEqual(test.sandbox.returnValue, testCase.expected)
         })
       })
     })
