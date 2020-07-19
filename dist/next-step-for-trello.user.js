@@ -391,7 +391,7 @@ function showToolbarSelector (btn) {
     })
     // sponsored message
     const visibleClass = 'aj-native-show'
-    const donateDiv = `<a class="aj-donate" href="https://adrienjoly.com/donate?ref=ns4tad" target="_blank" rel="noopener noreferrer">Donate!</a>`
+    const donateDiv = '<a class="aj-donate" href="https://adrienjoly.com/donate?ref=ns4tad" target="_blank" rel="noopener noreferrer">Donate!</a>'
     injectJs(`
       (function(){
         if(typeof _native !== 'undefined' && _native) {
