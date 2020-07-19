@@ -16,22 +16,22 @@ describe('renderMarkdown', function () {
       cases: [
         {
           input: 'http://test.com',
-          expected: '<a href="http://test.com" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">http://test.com</a>'
+          expected: '<a href="http://test.com" class="aj-md-hyperlink">http://test.com</a>'
         },
         {
           input: 'See http://test.com',
-          expected: 'See <a href="http://test.com" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">http://test.com</a>'
+          expected: 'See <a href="http://test.com" class="aj-md-hyperlink">http://test.com</a>'
         },
         {
           input: 'See https://test.com for details',
-          expected: 'See <a href="https://test.com" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">https://test.com</a> for details'
+          expected: 'See <a href="https://test.com" class="aj-md-hyperlink">https://test.com</a> for details'
         }
       ]},
     {name: 'markdown link',
       cases: [
         {
           input: '[test](http://test.com)',
-          expected: '<a href="http://test.com" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">test</a>'
+          expected: '<a href="http://test.com" class="aj-md-hyperlink">test</a>'
         }
       ]},
     {name: 'strong',
@@ -62,7 +62,7 @@ describe('renderMarkdown', function () {
       cases: [
         {
           input: "implementer [l'algo combineEventsWithTasks](https://gist.github.com/adrienjoly/96493349571e2d7166c558ac56fd4d8a) en différenciel => input: tableau d'events (CRUD sur un item), output: tableau d'ordres TableView (deletes, puis updates, puis inserts), cf [Calendar class](https://developer.apple.com/reference/foundation/calendar)",
-          expected: "implementer <a href=\"https://gist.github.com/adrienjoly/96493349571e2d7166c558ac56fd4d8a\" class=\"aj-md-hyperlink\" target=\"_blank\" rel=\"noopener noreferrer\">l'algo combineEventsWithTasks</a> en différenciel => input: tableau d'events (CRUD sur un item), output: tableau d'ordres TableView (deletes, puis updates, puis inserts), cf <a href=\"https://developer.apple.com/reference/foundation/calendar\" class=\"aj-md-hyperlink\" target=\"_blank\" rel=\"noopener noreferrer\">Calendar class</a>"
+          expected: "implementer <a href=\"https://gist.github.com/adrienjoly/96493349571e2d7166c558ac56fd4d8a\" class=\"aj-md-hyperlink\">l'algo combineEventsWithTasks</a> en différenciel => input: tableau d'events (CRUD sur un item), output: tableau d'ordres TableView (deletes, puis updates, puis inserts), cf <a href=\"https://developer.apple.com/reference/foundation/calendar\" class=\"aj-md-hyperlink\">Calendar class</a>"
         }
       ]},
     {name: 'issue 41',
@@ -76,7 +76,7 @@ describe('renderMarkdown', function () {
       cases: [
         {
           input: 'créer une landing page en suivant [ce guide](https://medium.com/@cliffordoravec/the-no-bs-approach-to-building-your-saas-startups-launch-list-part-2-of-the-epic-guide-to-8cc371be772c)',
-          expected: 'créer une landing page en suivant <a href="https://medium.com/@cliffordoravec/the-no-bs-approach-to-building-your-saas-startups-launch-list-part-2-of-the-epic-guide-to-8cc371be772c" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">ce guide</a>'
+          expected: 'créer une landing page en suivant <a href="https://medium.com/@cliffordoravec/the-no-bs-approach-to-building-your-saas-startups-launch-list-part-2-of-the-epic-guide-to-8cc371be772c" class="aj-md-hyperlink">ce guide</a>'
         }
       ]},
     {name: 'code and url',
@@ -87,7 +87,7 @@ describe('renderMarkdown', function () {
         },
         {
           input: '[this site](http://test.com) not working with `wget`',
-          expected: '<a href="http://test.com" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">this site</a> not working with <code>wget</code>'
+          expected: '<a href="http://test.com" class="aj-md-hyperlink">this site</a> not working with <code>wget</code>'
         }
       ]},
     {name: 'greedy matching',
@@ -101,7 +101,7 @@ describe('renderMarkdown', function () {
       {input: '```test1``` and ```test2```', expected: '<code>test1</code> and <code>test2</code>'},
         {
           input: '[url1](http://url1.com) and [url2](http://url2.com)',
-          expected: '<a href="http://url1.com" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">url1</a> and <a href="http://url2.com" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">url2</a>'}
+          expected: '<a href="http://url1.com" class="aj-md-hyperlink">url1</a> and <a href="http://url2.com" class="aj-md-hyperlink">url2</a>'}
       ]}
   ]
 
