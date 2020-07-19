@@ -74,12 +74,12 @@ function UserPrefs (COOKIE_NAME) {
   return Object.assign(this, {
     get: () => JSON.parse(getCookie(COOKIE_NAME) || '{}'),
     getValue: (key, defaultVal) => {
-      let val = this.get()[key]
+      const val = this.get()[key]
       return typeof val === 'undefined' ? defaultVal : val
     },
     set: (obj) => setCookie(COOKIE_NAME, JSON.stringify(Object.assign(this.get(), obj))),
     setValue: (key, val) => {
-      let obj = {}
+      const obj = {}
       obj[key] = val
       this.set(obj)
     }
@@ -120,9 +120,11 @@ class Analytics {
       //ga('nextstep.send', 'event', 'test', 'test');
     `)
   };
+
   trackPage () {
-    injectJs(`ga('nextstep.send', 'pageview');`, { thenRemove: true })
+    injectJs('ga(\'nextstep.send\', \'pageview\');', { thenRemove: true })
   }
+
   trackEvent (category, action) {
     injectJs(`ga('nextstep.send', 'event', '${category}', '${action}');`, { thenRemove: true })
   }
@@ -171,7 +173,7 @@ const getNextStepsOfFirstChecklist = (checklists) => checklists
   .reduce((a, b) => a.concat(b), [])
 
 // display the first next step only
-const getNextStep = (checklists) => [ getAllNextSteps(checklists)[0] ]
+const getNextStep = (checklists) => [getAllNextSteps(checklists)[0]]
   .filter(nonNull)
 
 // extension modes
@@ -407,7 +409,7 @@ function showToolbarSelector (btn) {
 // Trello markdown rendering functions
 
 function renderAtMention (userName) {
-  let meClass = userName === '@' + getUserName() ? ' me' : ''
+  const meClass = userName === '@' + getUserName() ? ' me' : ''
   return '<span class="atMention' + meClass + '">' + userName + '</span>'
 }
 
@@ -510,7 +512,7 @@ function onCheckItem (evt) {
     }
     // will make the list of tasks refresh
     needsRefresh = {
-      cardUrls: [ item.getAttribute('data-card-url') ]
+      cardUrls: [item.getAttribute('data-card-url')]
     }
     // increment check counter
     announcement.incrementCheckCounter()
