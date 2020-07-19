@@ -428,11 +428,11 @@ const getMarkdownPatternsToReplace = () => [
   },
   {
     regEx: /(^|[^\]][^(])(https?:\/\/([^/ ]+)[^ ]+)/g,
-    replacement: '$1<a href="$2" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">$2</a>'
+    replacement: '$1<a href="$2" class="aj-md-hyperlink">$2</a>'
   },
   {
     regEx: /\[([^\]]*)\]\(([^)]*)\)/g,
-    replacement: '<a href="$2" class="aj-md-hyperlink" target="_blank" rel="noopener noreferrer">$1</a>'
+    replacement: '<a href="$2" class="aj-md-hyperlink">$1</a>'
   }
 ]
 
