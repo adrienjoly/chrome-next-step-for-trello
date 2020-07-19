@@ -347,7 +347,6 @@ function showToolbarSelector (btn) {
     analytics.trackEvent('Toolbar Button', 'hide')
   }
   // prepare carbonads sponsor message
-  const donateClass = 'aj-nextstep-ant-donate' // will disappear when ad is shown
   const adCode = 'CK7D65QL'
   const adClass = 'native-js'
   const adHTML = `
@@ -391,13 +390,20 @@ function showToolbarSelector (btn) {
       }
     })
     // sponsored message
+    const visibleClass = 'aj-native-show'
+    const donateDiv = '<a class="aj-donate" href="https://adrienjoly.com/donate?ref=ns4tad" target="_blank" rel="noopener noreferrer">Donate!</a>'
     injectJs(`
       (function(){
         if(typeof _native !== 'undefined' && _native) {
-          _native.init('${adCode}', { targetClass: '${adClass}' });
-          // var donate = document.getElementsByClassName('${donateClass}')[0];
-          // donate.parentNode.removeChild(donate);
+          _native.init('${adCode}', { targetClass: '${adClass}', visibleClass: "${visibleClass}" });
         }
+        setTimeout(() => {
+          const adDiv = document.getElementsByClassName('${adClass}')[0];
+          if (!adDiv.classList.contains('${visibleClass}')) {
+            adDiv.innerHTML = '${donateDiv.replace(/[\r\n]+/g, ' ')}';
+            adDiv.classList.add('${visibleClass}');
+          }
+        }, 2000);
       })();
     `)
     announcement.setAsSeen()

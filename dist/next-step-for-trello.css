@@ -202,7 +202,7 @@ body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
   transition: all .25s ease-in-out;
 }
 
-.native-show {
+.aj-native-show {
   opacity: 1;
 }
 
@@ -279,4 +279,15 @@ body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
   white-space: nowrap;
   letter-spacing: .5px;
   font-size: 12px;
+}
+
+.aj-donate {
+  display: block;
+  padding: 12px;
+  text-align: center;
+  color: #5e6c84;
+}
+
+.aj-donate:hover {
+  color: #091e42;
 }
