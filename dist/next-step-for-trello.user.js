@@ -264,7 +264,7 @@ const isOnBoardPage = () => {
 
 function getUserName () {
   const user =
-    document.querySelector('button[data-test-id="header-member-menu-button"]') || document.getElementsByClassName('header-user')[0].getElementsByClassName('member-avatar')[0]
+    document.querySelector('button[data-test-id="header-member-menu-button"]') || document.getElementsByClassName('member')[0]?.getElementsByClassName('member-avatar')[0]
   return user ? /\((.*)\)/.exec(user.title)[1] : undefined
 }
 
