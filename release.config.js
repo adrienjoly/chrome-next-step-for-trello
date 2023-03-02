@@ -2,6 +2,10 @@
 // see https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration-file
 
 module.exports = {
+  branch: "main",
+  branches: [
+    'main'
+  ],
   verifyConditions: [
     'semantic-release-chrome', // will check that Chrome Web Store env vars are set in travis-ci, cf https://github.com/GabrielDuarteM/semantic-release-chrome/blob/master/Authentication.md
     '@semantic-release/github' // will check that the GITHUB_TOKEN env var is also set
