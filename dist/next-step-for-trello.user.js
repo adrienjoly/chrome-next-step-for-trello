@@ -37,7 +37,7 @@ const getFirstResult = (fct) => function () {
 // inject code into the page's context (unrestricted)
 function injectJs (jsString, options) {
   options = options || {}
-  var scr = document.createElement('script')
+  const scr = document.createElement('script')
   scr.id = options.id
   scr.textContent = jsString;
   // (appending text to a function to convert it's src to string only works in Chrome)
@@ -221,14 +221,14 @@ const MODES = [
 // app state
 
 const userPrefs = new UserPrefs('aj-nextstep-json')
-var analytics = new Analytics('UA-1858235-21')
-var currentMode = userPrefs.getValue('defaultMode', 1)
-var needsRefresh = true // true = all, or { cardUrls }
-var refreshing = false
-var token // needed by onCheckItem, populated by getToken()
-var initialized = false // populated by init()
-var watching = false // populated by watchForChanges()
-var announcement
+const analytics = new Analytics('UA-1858235-21')
+let currentMode = userPrefs.getValue('defaultMode', 1)
+let needsRefresh = true // true = all, or { cardUrls }
+let refreshing = false
+let token // needed by onCheckItem, populated by getToken()
+let initialized = false // populated by init()
+let watching = false // populated by watchForChanges()
+let announcement
 
 function showCompleted () {
   return MODES[currentMode].showCompleted
@@ -241,7 +241,7 @@ function setMode (modeIndex) {
   analytics.trackEvent(MODES[currentMode].label, 'click')
 }
 
-var MENU_ITEMS = MODES.map((mode, i) => {
+const MENU_ITEMS = MODES.map((mode, i) => {
   return Object.assign(mode, {
     modeIndex: i,
     onClick: () => setMode(i)
@@ -290,12 +290,12 @@ function toggleLoadingUI (state) {
 }
 
 function initToolbarButton () {
-  var btn = document.createElement('a')
+  const btn = document.createElement('a')
   btn.href = 'http://adrienjoly.com/chrome-next-step-for-trello'
   btn.title = 'Click to toggle display of next task(s)'
   btn.id = 'aj-nextstep-btn'
   btn.className = 'board-header-btn board-header-btn-without-icon'
-  var iconUrl = getAssetURL('icon.png')
+  const iconUrl = getAssetURL('icon.png')
   btn.innerHTML = '<span class="board-header-btn-text">' +
     '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>' +
     '<img class="aj-nextstep-icon" src="' + iconUrl + '" />' +
@@ -468,7 +468,7 @@ const renderMarkdownPlaceholders = (text, placeholders) =>
 function renderMarkdown (text) {
   // Code and links should not have Markdown formatting applied.  So remove
   // them from the text and replace with placeholders for now.
-  var placeholders = getMarkdownPlaceholders(text)
+  const placeholders = getMarkdownPlaceholders(text)
   text = replaceMarkdownWithPlaceholders(text, placeholders)
   // Apply markdown rendering to the remaining text
   text = renderMarkdownSymbols(text)
@@ -499,14 +499,14 @@ function onCheckItem (evt) {
     return
   }
   // let's check that item
-  var item = evt.currentTarget.parentNode
+  const item = evt.currentTarget.parentNode
   item.classList.add('aj-checking')
   item.style.height = item.offsetHeight + 'px'
   // let's tell trello
-  var path = 'cards/' + item.getAttribute('data-card-id') +
+  const path = 'cards/' + item.getAttribute('data-card-id') +
     '/checklist/' + item.getAttribute('data-checklist-id') +
     '/checkItem/' + item.getAttribute('data-item-id')
-  var urlEncodedData = 'state=complete&token=' + token.trim()
+  const urlEncodedData = 'state=complete&token=' + token.trim()
   fetchFromTrello(path, {
     method: 'PUT',
     headers: {
@@ -534,8 +534,8 @@ const getCardUrlFromTitleElement = (cardTitleElement) => {
 }
 
 function setCardContent (cardTitleElement, items) {
-  var cardElement = cardTitleElement.parentNode
-  var taskList = cardElement.getElementsByClassName('aj-task-list')[0]
+  const cardElement = cardTitleElement.parentNode
+  let taskList = cardElement.getElementsByClassName('aj-task-list')[0]
   // if task list div does not exist => create it
   if (!taskList) {
     taskList = document.createElement('div')
@@ -548,8 +548,8 @@ function setCardContent (cardTitleElement, items) {
     .map((item) => Object.assign(item, { cardUrl: getCardUrlFromTitleElement(cardTitleElement) }))
     .map(renderItem).join('\n')
   // attach click handlers on checkboxes
-  var checkboxes = taskList.getElementsByClassName('aj-checkbox-tick')
-  for (var i = 0; i < checkboxes.length; ++i) {
+  const checkboxes = taskList.getElementsByClassName('aj-checkbox-tick')
+  for (let i = 0; i < checkboxes.length; ++i) {
     checkboxes[i].addEventListener('click', onCheckItem)
   }
 }
@@ -590,7 +590,7 @@ function updateCards (toRefresh) {
 const isToolbarInstalled = () => document.getElementById('aj-nextstep-mode')
 
 function installToolbar () {
-  var headerElements = document.getElementsByClassName('board-header-btns')
+  const headerElements = document.getElementsByClassName('board-header-btns')
   if (headerElements.length) {
     const btn = initToolbarButton() // creates #aj-nextstep-mode
     headerElements[0].appendChild(btn)
