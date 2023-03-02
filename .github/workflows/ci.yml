@@ -17,6 +17,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
+          cache: 'npm'
       - name: install deps
         run: npm ci
         env:
@@ -27,3 +28,23 @@ jobs:
       - run: npm run lint
         env:
           CI: true
+  release:
+    needs:
+      - build
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # to prevent "You're not authorized to push to this branch"
+          persist-credentials: false
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm install --prefer-offline --no-audit
+        if: github.event_name == 'push'
+      - run: npx semantic-release
+        env:
+          CI: true
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
