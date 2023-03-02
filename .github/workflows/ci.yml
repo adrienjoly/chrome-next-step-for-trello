@@ -12,17 +12,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
-
-    strategy:
-      matrix:
-        node-version: [10.x]
-
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
+          cache: 'npm'
       - name: install deps
         run: npm ci
         env:
@@ -33,3 +28,22 @@ jobs:
       - run: npm run lint
         env:
           CI: true
+  release:
+    needs:
+      - build
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # to prevent "You're not authorized to push to this branch"
+          persist-credentials: false
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm install --prefer-offline --no-audit
+      - run: npx semantic-release
+        env:
+          CI: true
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
