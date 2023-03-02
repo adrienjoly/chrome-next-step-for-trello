@@ -43,7 +43,6 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm install --prefer-offline --no-audit
-        if: github.event_name == 'push'
       - run: npx semantic-release
         env:
           CI: true
