@@ -2,7 +2,7 @@
 // see https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration-file
 
 module.exports = {
-  branch: "main",
+  branch: 'main',
   branches: [
     'main'
   ],
@@ -47,7 +47,7 @@ module.exports = {
       path: '@semantic-release/github',
       assets: [
         {
-          'path': 'chrome-extension-dist.zip'
+          path: 'chrome-extension-dist.zip'
         }
       ]
     }
