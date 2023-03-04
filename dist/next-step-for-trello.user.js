@@ -282,6 +282,10 @@ const fetchBoardChecklists = (boardId = extractId()) =>
   fetchFromTrello(`boards/${boardId}/checklists?cards=open&card_fields=shortUrl`)
     .then((res) => res.json())
 
+const fetchBoardCards = (boardId = extractId()) =>
+  fetchFromTrello(`boards/${boardId}/cards`)
+    .then((res) => res.json())
+
 // Toolbar UI
 
 function toggleLoadingUI (state) {
@@ -563,12 +567,16 @@ const updateCardElements = (cards) => {
   })
 }
 
-function updateCards (toRefresh) {
+async function updateCards (toRefresh) {
   toggleLoadingUI(true)
+  /** @type {{ id: string, shortUrl: string }[]} */
+  const allCards = await fetchBoardCards()
   fetchBoardChecklists().then((checklists) => {
     // 1. filter cards that contain checklists
     let cards = Object.values(checklists.reduce((cards, checklist) => {
-      const shortUrl = (checklist.cards[0] || {}).shortUrl
+      const cardId = checklist?.idCard
+      const card = allCards.find(card => card.id === cardId)
+      const shortUrl = card?.shortUrl
       if (shortUrl) {
         cards[shortUrl] = cards[shortUrl] || { shortUrl, checklists: [] }
         cards[shortUrl].checklists.push(checklist)
@@ -576,8 +584,8 @@ function updateCards (toRefresh) {
       return cards // TODO: rewrite this function
     }, {}))
     // 2. only refresh specified cards (e.g. when checking an item of a card)
-    if ((toRefresh || {}).cardUrls) {
-      const shortUrls = toRefresh.cardUrls.map(shortUrl)
+    const shortUrls = toRefresh?.cardUrls?.map(shortUrl)
+    if (shortUrls) {
       cards = cards.filter((card) => shortUrls.includes(card.shortUrl))
     }
     updateCardElements(cards)
