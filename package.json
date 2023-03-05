@@ -9,11 +9,13 @@
     "test": "test"
   },
   "scripts": {
+    "verify": "npm run typecheck && npm run test && npm run lint",
     "lint": "./node_modules/.bin/standard dist/next-step-for-trello.user.js",
     "lint:fix": "./node_modules/.bin/standard --fix dist/next-step-for-trello.user.js",
     "lint:semantic-release": "./node_modules/.bin/semantic-release --dry-run",
     "start": "npx http-server --port 3000",
-    "test": "./node_modules/.bin/mocha && npm run lint"
+    "typecheck": "tsc",
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -34,6 +36,7 @@
     "semantic-release": "^17.4.2",
     "semantic-release-chrome": "^1.1.3",
     "sinon-chrome": "^3.0.1",
-    "standard": "^16.0.3"
+    "standard": "^16.0.3",
+    "typescript": "^4.9.5"
   }
 }
