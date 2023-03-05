@@ -395,6 +395,7 @@ function showToolbarSelector (btn) {
   setTimeout(() => {
     // make menu items clickable
     MENU_ITEMS.forEach((menuItem, i) => {
+      // @ts-ignore
       document.getElementById('aj-nextstep-menuitem-' + i).onclick = function () {
         menuItem.onClick.apply(this, arguments)
         node.hide && node.hide()
