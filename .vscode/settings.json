@@ -2,11 +2,6 @@
   "javascript.validate.enable": true,
   "standard.enable": true,
   "standard.autoFixOnSave": true,
-  "standard.options": {
-    "ignore": [
-      "node_modules/**"
-    ]
-  },
   "cSpell.words": [
     "Prefs",
     "Trello",

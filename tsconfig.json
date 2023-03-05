@@ -4,6 +4,7 @@
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
+    "strictNullChecks": true
   },
-  "include": ["dist/*.js"]
+  "include": ["types.d.ts", "dist/*.js"]
 }
