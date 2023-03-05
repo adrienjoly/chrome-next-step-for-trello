@@ -1,5 +1,5 @@
 {
-  "javascript.validate.enable": false,
+  "javascript.validate.enable": true,
   "standard.enable": true,
   "standard.autoFixOnSave": true,
   "standard.options": {
