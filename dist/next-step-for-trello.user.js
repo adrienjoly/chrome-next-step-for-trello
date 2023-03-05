@@ -349,7 +349,7 @@ const renderToolbarSelector = (selectorId, innerHTML) => `
   </div>`
 
 function showToolbarSelector (btn) {
-  /** @type {HTMLDivElement} */
+  /** @type { HTMLDivElement & Partial<{ hide: () => void }> } */
   const node = document.createElement('div')
   node.id = 'aj-nextstep-selector'
   node.className = 'pop-over'
@@ -397,7 +397,7 @@ function showToolbarSelector (btn) {
     MENU_ITEMS.forEach((menuItem, i) => {
       document.getElementById('aj-nextstep-menuitem-' + i).onclick = function () {
         menuItem.onClick.apply(this, arguments)
-        node.hide()
+        node.hide && node.hide()
       }
     })
     // sponsored message
@@ -611,8 +611,9 @@ function installToolbar () {
     headerElements[0].appendChild(btn)
     btn.onclick = (evt) => {
       evt.preventDefault()
+      /** @type { null | HTMLElement & Partial<{ hide: () => void }> } */
       const popover = document.getElementById('aj-nextstep-selector')
-      if (popover) {
+      if (popover?.hide) {
         popover.hide()
       } else {
         document.body.appendChild(showToolbarSelector(btn)) // creates #aj-nextstep-selector
