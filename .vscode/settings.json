@@ -1,6 +1,9 @@
 {
   "javascript.validate.enable": true,
   "standard.enable": true,
+  "standard.engine": "ts-standard",
+  "standard.usePackageJson": true,
+  "standard.treatErrorsAsWarnings": true,
   "standard.autoFixOnSave": true,
   "cSpell.words": [
     "Prefs",
