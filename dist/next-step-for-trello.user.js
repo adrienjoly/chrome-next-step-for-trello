@@ -44,13 +44,14 @@ function injectJs (jsString, options) {
   // add to document to make it run, then hide it
   (document.head || document.documentElement).appendChild(scr)
   if (options.thenRemove) {
-    scr.parentNode.removeChild(scr)
+    scr.parentNode?.removeChild(scr)
   }
 }
 
 function getSymbolFromHost (symbolName, callback) {
   // wait for the message
   window.addEventListener(`MyCustomEvent_${symbolName}`, function (e) {
+    // @ts-ignore: detail is a non-standard property passed by Trello
     callback(e.detail.passback)
   })
   // inject code into the page's context (unrestricted)
@@ -61,9 +62,9 @@ function getSymbolFromHost (symbolName, callback) {
 }
 
 // user preferences / cookie helper
-function UserPrefs (COOKIE_NAME) {
+function makeUserPrefs (COOKIE_NAME) {
   const setCookie = (name, value, days = 7, path = '/') => {
-    const expires = new Date(Date.now() + days * 864e5).toGMTString()
+    const expires = new Date(Date.now() + days * 864e5).toUTCString()
     document.cookie = name + `=${encodeURIComponent(value)}; expires=${expires}; path=` + path
   }
   const getCookie = (name) =>
@@ -87,7 +88,7 @@ function UserPrefs (COOKIE_NAME) {
 }
 
 // announcement helper
-function Announcement (announcementId, userPrefs) {
+function makeAnnouncement (announcementId, userPrefs) {
   const SEEN_PROP = 'seen-' + announcementId
   const getCheckCount = () => userPrefs.getValue('checkCounter', 0)
   const shouldDisplay = () => !userPrefs.getValue(SEEN_PROP) && getCheckCount() > 5
@@ -220,9 +221,10 @@ const MODES = [
 
 // app state
 
-const userPrefs = new UserPrefs('aj-nextstep-json')
+const userPrefs = makeUserPrefs('aj-nextstep-json')
 const analytics = new Analytics('UA-1858235-21')
 let currentMode = userPrefs.getValue('defaultMode', 1)
+/** @type { boolean | { cardUrls: string[] } } */
 let needsRefresh = true // true = all, or { cardUrls }
 let refreshing = false
 let token // needed by onCheckItem, populated by getToken()
@@ -265,17 +267,21 @@ const isOnBoardPage = () => {
 function getUserName () {
   const user =
     document.querySelector('button[data-test-id="header-member-menu-button"]') || document.getElementsByClassName('header-user')[0].getElementsByClassName('member-avatar')[0]
-  return user ? /\((.*)\)/.exec(user.title)[1] : undefined
+  // @ts-ignore: title is a non-standard property provided by Trello
+  const userName = user?.title
+  return userName ? /\((.*)\)/.exec(userName)?.[1] : undefined
 }
 
 const fetchFromTrello = (path, opts = {}) => window.fetch(
   `https://trello.com/1/${path}`,
-  Object.assign({}, opts, {
+  {
+    ...opts,
     credentials: 'include',
-    headers: Object.assign({}, opts.headers, {
+    headers: {
+      ...opts.headers,
       'x-trello-user-agent-extension': 'nextStepForTrello'
-    })
-  })
+    }
+  }
 )
 
 const fetchBoardChecklists = (boardId = extractId()) =>
@@ -290,7 +296,7 @@ const fetchBoardCards = (boardId = extractId()) =>
 
 function toggleLoadingUI (state) {
   refreshing = !!state
-  document.getElementById('aj-nextstep-btn').classList.toggle('is-loading', state || false)
+  document.getElementById('aj-nextstep-btn')?.classList.toggle('is-loading', state || false)
 }
 
 function initToolbarButton () {
@@ -306,7 +312,7 @@ function initToolbarButton () {
     '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' + // announcement
     '<span id="aj-nextstep-mode">Next steps</span>' +
     '</span>'
-  announcement = new Announcement('ant7', userPrefs)
+  announcement = makeAnnouncement('ant7', userPrefs)
   return btn
 }
 
@@ -343,11 +349,12 @@ const renderToolbarSelector = (selectorId, innerHTML) => `
   </div>`
 
 function showToolbarSelector (btn) {
+  /** @type { HTMLDivElement & Partial<{ hide: () => void }> } */
   const node = document.createElement('div')
   node.id = 'aj-nextstep-selector'
   node.className = 'pop-over'
   node.hide = () => {
-    node.parentNode.removeChild(node)
+    node.parentNode?.removeChild(node)
     analytics.trackEvent('Toolbar Button', 'hide')
   }
   // prepare carbonads sponsor message
@@ -388,9 +395,10 @@ function showToolbarSelector (btn) {
   setTimeout(() => {
     // make menu items clickable
     MENU_ITEMS.forEach((menuItem, i) => {
+      // @ts-ignore
       document.getElementById('aj-nextstep-menuitem-' + i).onclick = function () {
         menuItem.onClick.apply(this, arguments)
-        node.hide()
+        node.hide && node.hide()
       }
     })
     // sponsored message
@@ -413,7 +421,7 @@ function showToolbarSelector (btn) {
     announcement.setAsSeen()
   }, 1)
   const rect = btn.getBoundingClientRect()
-  node.style = `top: ${rect.top + rect.height + window.scrollY}px; left: ${rect.left + window.scrollX}px;`
+  node.style.cssText = `top: ${rect.top + rect.height + window.scrollY}px; left: ${rect.left + window.scrollX}px;`
   node.classList.add('is-shown')
   analytics.trackEvent('Toolbar Button', 'show')
   return node
@@ -604,8 +612,9 @@ function installToolbar () {
     headerElements[0].appendChild(btn)
     btn.onclick = (evt) => {
       evt.preventDefault()
+      /** @type { null | HTMLElement & Partial<{ hide: () => void }> } */
       const popover = document.getElementById('aj-nextstep-selector')
-      if (popover) {
+      if (popover?.hide) {
         popover.hide()
       } else {
         document.body.appendChild(showToolbarSelector(btn)) // creates #aj-nextstep-selector

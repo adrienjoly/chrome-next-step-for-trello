@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strictNullChecks": true
+  },
+  "lib": ["DOM"],
+  "include": ["types.d.ts", "dist/*.js"]
+}

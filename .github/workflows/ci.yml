@@ -12,6 +12,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    env:
+      CI: true
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -20,14 +22,9 @@ jobs:
           cache: 'npm'
       - name: install deps
         run: npm ci
-        env:
-          CI: true
+      - run: npm run typecheck
       - run: npm test
-        env:
-          CI: true
       - run: npm run lint
-        env:
-          CI: true
   release:
     needs:
       - build
