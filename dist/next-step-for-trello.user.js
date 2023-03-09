@@ -421,7 +421,8 @@ function showToolbarSelector (btn) {
     announcement.setAsSeen()
   }, 1)
   const rect = btn.getBoundingClientRect()
-  node.style.cssText = `top: ${rect.top + rect.height + window.scrollY}px; left: ${rect.left + window.scrollX}px;`
+  const width = 320
+  node.style.cssText = `top: ${rect.top + rect.height + window.scrollY}px; left: ${Math.min(rect.left, window.innerWidth - width - 8) + window.scrollX}px; width: ${width}px;`
   node.classList.add('is-shown')
   analytics.trackEvent('Toolbar Button', 'show')
   return node
