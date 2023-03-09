@@ -16,4 +16,4 @@ Note: Version number is bumped and the extension is published to Chrome Web Stor
 
 This Chrome Extension is open source and free to use. It includes features and fixes proposed by several [contributors](https://github.com/adrienjoly/chrome-next-step-for-trello/graphs/contributors). Pull requests are welcome, especially on prioritized [bugs and feature requests](https://github.com/adrienjoly/chrome-next-step-for-trello/projects/1). Please don't forget to read [CONTRIBUTING.md](CONTRIBUTING.md) first.
 
-Note: The author is supported by native ads that are visible when opening the "mode selection" menu. If you want to give a little extra, [donations](https://adrienjoly.com/donate) are not expected but always appreciated. 🤗
+[Donations](https://adrienjoly.com/donate) are not expected but always appreciated. 🤗
