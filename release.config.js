@@ -7,7 +7,10 @@ module.exports = {
     'main'
   ],
   verifyConditions: [
-    'semantic-release-chrome', // will check that Chrome Web Store env vars are set in travis-ci, cf https://github.com/GabrielDuarteM/semantic-release-chrome/blob/master/Authentication.md
+    {
+      path: 'semantic-release-chrome', // will check that Chrome Web Store env vars are set in travis-ci, cf https://github.com/GabrielDuarteM/semantic-release-chrome/blob/master/Authentication.md
+      extensionId: 'iajhmklhilkjgabejjemfbhmclgnmamf'
+    },
     '@semantic-release/github' // will check that the GITHUB_TOKEN env var is also set
   ],
   prepare: [
