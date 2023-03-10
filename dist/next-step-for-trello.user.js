@@ -357,34 +357,9 @@ function showToolbarSelector (btn) {
     node.parentNode?.removeChild(node)
     analytics.trackEvent('Toolbar Button', 'hide')
   }
-  // prepare carbonads sponsor message
-  const adCode = 'CK7D65QL'
-  const adClass = 'native-js'
   const adHTML = `
-  <div class="${adClass}">
-    <a class="native-ad" href="#native_link#" target="_blank" rel="noopener noreferrer">
-      <style>
-        .native-sponsor {
-          background-color: #native_bg_color#;
-          color: #native_color#;
-        }
-        .native-ad { background: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(0, 0%, 0%, .03) 5px, hsla(0, 0%, 0%, .03) 10px) #native_bg_color#0D; }
-        .native-ad:after { background-color: #native_bg_color#;}
-        .native-cta {
-          background-color: #native_cta_bg_color#;
-          color: #native_cta_color#;
-        }
-        .native-cta:hover {
-          background-color: #native_cta_bg_color_hover#;
-          color: #native_cta_color_hover;
-        }
-      </style>
-      <span class="native-sponsor #native_index#">Sponsored by #native_company#</span>
-      <div class="native-flex">
-        <span class="native-desc">#native_desc#</span>
-        <span class="native-cta #native_index#">#native_cta#</span>
-      </div>
-    </a>
+  <div>
+    <a class="aj-donate" href="https://adrienjoly.com/donate?ref=ns4tad" target="_blank" rel="noopener noreferrer">Donate!</a>
   </div>`
   // render menu items
   node.innerHTML =
@@ -401,27 +376,11 @@ function showToolbarSelector (btn) {
         node.hide && node.hide()
       }
     })
-    // sponsored message
-    const visibleClass = 'aj-native-show'
-    const donateDiv = '<a class="aj-donate" href="https://adrienjoly.com/donate?ref=ns4tad" target="_blank" rel="noopener noreferrer">Donate!</a>'
-    injectJs(`
-      (function(){
-        if(typeof _native !== 'undefined' && _native) {
-          _native.init('${adCode}', { targetClass: '${adClass}', visibleClass: "${visibleClass}" });
-        }
-        setTimeout(() => {
-          const adDiv = document.getElementsByClassName('${adClass}')[0];
-          if (!adDiv.classList.contains('${visibleClass}')) {
-            adDiv.innerHTML = '${donateDiv.replace(/[\r\n]+/g, ' ')}';
-            adDiv.classList.add('${visibleClass}');
-          }
-        }, 2000);
-      })();
-    `)
     announcement.setAsSeen()
   }, 1)
   const rect = btn.getBoundingClientRect()
-  node.style.cssText = `top: ${rect.top + rect.height + window.scrollY}px; left: ${rect.left + window.scrollX}px;`
+  const width = 320
+  node.style.cssText = `top: ${rect.top + rect.height + window.scrollY}px; left: ${Math.min(rect.left, window.innerWidth - width - 8) + window.scrollX}px; width: ${width}px;`
   node.classList.add('is-shown')
   analytics.trackEvent('Toolbar Button', 'show')
   return node
@@ -674,11 +633,6 @@ const getToken = () => injectJs(
 )
 
 function init () {
-  injectJs(`
-  var script = document.createElement('script');
-  script.src = '${URL_PREFIX}/assets/native.js';
-  document.body.appendChild(script);
-  `)
   if (!window.chrome) {
     // in a user-script context (e.g. using tampermonkey), we need to load the css manually
     injectJs(`
