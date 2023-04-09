@@ -293,6 +293,7 @@ function initToolbarButton () {
   return btn
 }
 
+/** @param menuItem {{className?:string, href?:string, label:string, modeIndex:number, description:string}} */
 const renderSelectorOption = (menuItem, i) => `
   <li>
     <a id="aj-nextstep-menuitem-${i}" class="js-select light-hover ${menuItem.className || ''}"
