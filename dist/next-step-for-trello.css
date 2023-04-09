@@ -146,13 +146,13 @@
   padding-bottom: 0;
 }
 
-.aj-donate {
-  display: block;
-  padding: 12px;
+.aj-donate.js-select {
   text-align: center;
   color: #5e6c84;
+  text-decoration: underline;
+  padding: 16px 0;
 }
 
-.aj-donate:hover {
+.aj-donate.js-select:hover {
   color: #091e42;
 }
