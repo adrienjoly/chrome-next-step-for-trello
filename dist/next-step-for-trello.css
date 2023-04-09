@@ -118,7 +118,7 @@
   display: block;
 }
 
-/* next step toolbar button - announcements */
+/* next step toolbar button */
 
 @keyframes pulse {
   0% {
@@ -127,51 +127,6 @@
   100% {
     opacity: 1.0;
   }
-}
-
-.aj-nextstep-ant-icon {
-  display: none;
-  transform: translate3d(0, 0, 0);
-  /* animation: pulse 1s linear infinite; */
-}
-
-body.aj-nextstep-display-ant .aj-nextstep-ant-icon {
-  display: inline !important;
-  background: red;
-  color: white;
-  font-weight: bold;
-  padding: 0 3px 0 3px;
-  border: 1px solid white;
-  font-size: 12px;
-  position: relative;
-  top: -1px;
-  margin-right: 4px;
-}
-
-body.aj-nextstep-display-ant .aj-nextstep-icon {
-  display: none;
-}
-
-body.aj-nextstep-display-ant .aj-nextstep-ant-menuitem {
-  background-color: rgba(255, 0, 0, 0.1);
-}
-
-.aj-nextstep-ant-pic {
-  position: absolute;
-  right: 10px;
-  width: 40px;
-  height: 40px;
-  background-image: url('https://i.imgur.com/CK4hCZq.jpg');
-  background-size: cover;
-}
-
-.aj-nextstep-ant-pic2 {
-  position: absolute;
-  right: 10px;
-  width: 40px;
-  height: 40px;
-  background-image: url('https://fr.gravatar.com/userimage/19157316/3f0cd85f9f19d20059d989b073e5f045.jpg');
-  background-size: cover;
 }
 
 #aj-nextstep-selector {

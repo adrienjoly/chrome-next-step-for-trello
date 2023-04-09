@@ -87,26 +87,6 @@ function makeUserPrefs (COOKIE_NAME) {
   })
 }
 
-// announcement helper
-function makeAnnouncement (announcementId, userPrefs) {
-  const SEEN_PROP = 'seen-' + announcementId
-  const getCheckCount = () => userPrefs.getValue('checkCounter', 0)
-  const shouldDisplay = () => !userPrefs.getValue(SEEN_PROP) && getCheckCount() > 5
-  const displayIfNecessary = () =>
-    document.body.classList.toggle('aj-nextstep-display-ant', shouldDisplay())
-  displayIfNecessary()
-  return Object.assign(this, {
-    incrementCheckCounter: () => {
-      userPrefs.set({ checkCounter: getCheckCount() + 1 })
-      displayIfNecessary()
-    },
-    setAsSeen: () => {
-      userPrefs.setValue(SEEN_PROP, true)
-      displayIfNecessary()
-    }
-  })
-}
-
 // analytics helper
 class Analytics {
   constructor (code = 'UA-XXXXXXXX-X') {
@@ -230,7 +210,6 @@ let refreshing = false
 let token // needed by onCheckItem, populated by getToken()
 let initialized = false // populated by init()
 let watching = false // populated by watchForChanges()
-let announcement
 
 function showCompleted () {
   return MODES[currentMode].showCompleted
@@ -309,10 +288,8 @@ function initToolbarButton () {
   btn.innerHTML = '<span class="board-header-btn-text">' +
     '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>' +
     '<img class="aj-nextstep-icon" src="' + iconUrl + '" />' +
-    '<span class="aj-nextstep-ant-icon" style="display: none;">1</span>' + // announcement
     '<span id="aj-nextstep-mode">Next steps</span>' +
     '</span>'
-  announcement = makeAnnouncement('ant7', userPrefs)
   return btn
 }
 
@@ -376,7 +353,6 @@ function showToolbarSelector (btn) {
         node.hide && node.hide()
       }
     })
-    announcement.setAsSeen()
   }, 1)
   const rect = btn.getBoundingClientRect()
   const width = 320
@@ -494,8 +470,6 @@ function onCheckItem (evt) {
     needsRefresh = {
       cardUrls: [item.getAttribute('data-card-url')]
     }
-    // increment check counter
-    announcement.incrementCheckCounter()
   })
   analytics.trackEvent('Checklist item', 'tick')
 }
@@ -609,20 +583,6 @@ function watchForChanges () {
   }, false)
   watching = true
 }
-
-/*
-const loadAnnouncement = () => fetch(getAssetURL('announcement.json'))
-  .then((response) => response.json())
-  .catch(() => ({
-    label: '✍ Any feedback on Next Step for Trello?',
-    description: 'Let me know how I can help, or give us some stars!',
-    className: 'aj-nextstep-ant-menuitem aj-nextstep-ant-feedback',
-    href: 'https://chrome.google.com/webstore/detail/next-step-for-trello/iajhmklhilkjgabejjemfbhmclgnmamf'
-  }))
-  .then((json) => MENU_ITEMS.push(Object.assign(json, {
-    onClick: (evt) => announcement.setAsSeen()
-  })))
-*/
 
 const getToken = () => injectJs(
   getSymbolFromHost(
