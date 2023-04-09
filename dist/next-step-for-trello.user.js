@@ -293,14 +293,14 @@ function initToolbarButton () {
   return btn
 }
 
-/** @param menuItem {{className?:string, href?:string, label:string, modeIndex:number, description:string}} */
+/** @param menuItem {{className?:string, href?:string, label:string, modeIndex?:number, description?:string}} */
 const renderSelectorOption = (menuItem, i) => `
   <li>
     <a id="aj-nextstep-menuitem-${i}" class="js-select light-hover ${menuItem.className || ''}"
        href="${menuItem.href || '#'}" ${menuItem.href ? 'target="_blank"' : ''} name="org">
       ${menuItem.label}
       ${currentMode === menuItem.modeIndex ? '<span class="icon-sm icon-check"></span>' : ''}
-      <span class="sub-name">${menuItem.description}</span>
+      ${menuItem.description ? `<span class="sub-name">${menuItem.description}</span>` : ''}
     </a>
   </li>`
 
@@ -335,16 +335,23 @@ function showToolbarSelector (btn) {
     node.parentNode?.removeChild(node)
     analytics.trackEvent('Toolbar Button', 'hide')
   }
-  const adHTML = `
-  <div>
-    <a class="aj-donate" href="https://adrienjoly.com/donate?ref=ns4tad" target="_blank" rel="noopener noreferrer">Donate!</a>
-  </div>`
+  const DONATE_ITEM = {
+    className: 'aj-donate',
+    label: 'Donate!',
+    href: 'https://adrienjoly.com/donate?ref=ns4tad'
+  }
+  const AD_ITEM = {
+    className: 'aj-partner',
+    label: '✨ UseChatGPT.AI - Free ChatGPT Copilot on Chrome (GPT-4 ✓).',
+    description: 'Use ChatGPT on any website without copy-pasting.',
+    href: 'https://www.usechatgpt.ai/install?ref=nextstepfortrello'
+  }
   // render menu items
   node.innerHTML =
     renderToolbarSelector(
       node.id,
-      MENU_ITEMS.map(renderSelectorOption).join('\n')
-    ) + adHTML
+      [...MENU_ITEMS, DONATE_ITEM, AD_ITEM].map(renderSelectorOption).join('\n')
+    )
   setTimeout(() => {
     // make menu items clickable
     MENU_ITEMS.forEach((menuItem, i) => {
