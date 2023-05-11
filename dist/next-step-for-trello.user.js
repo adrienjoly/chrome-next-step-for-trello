@@ -335,22 +335,27 @@ function showToolbarSelector (btn) {
     node.parentNode?.removeChild(node)
     analytics.trackEvent('Toolbar Button', 'hide')
   }
-  const DONATE_ITEM = {
+  /** @type {Parameters<typeof renderSelectorOption>[0][]} */
+  const menuItems = [...MENU_ITEMS]
+  menuItems.push({
     className: 'aj-donate',
-    label: 'Donate!',
+    label: '☕️ Enjoying Next Step for Trello?',
+    description: 'Donate to its author',
     href: 'https://adrienjoly.com/donate?ref=ns4tad'
-  }
-  const AD_ITEM = {
+  })
+  /*
+  menuItems.push({
     className: 'aj-partner',
     label: '✨ UseChatGPT.AI - Free ChatGPT Copilot on Chrome (GPT-4 ✓).',
     description: 'Use ChatGPT on any website without copy-pasting.',
     href: 'https://www.usechatgpt.ai/install?ref=nextstepfortrello'
-  }
+  })
+  */
   // render menu items
   node.innerHTML =
     renderToolbarSelector(
       node.id,
-      [...MENU_ITEMS, DONATE_ITEM, AD_ITEM].map(renderSelectorOption).join('\n')
+      menuItems.map(renderSelectorOption).join('\n')
     )
   setTimeout(() => {
     // make menu items clickable
