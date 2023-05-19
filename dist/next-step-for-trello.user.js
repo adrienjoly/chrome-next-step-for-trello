@@ -343,14 +343,6 @@ function showToolbarSelector (btn) {
     description: 'Donate to its author',
     href: 'https://adrienjoly.com/donate?ref=ns4tad'
   })
-  /*
-  menuItems.push({
-    className: 'aj-partner',
-    label: '✨ UseChatGPT.AI - Free ChatGPT Copilot on Chrome (GPT-4 ✓).',
-    description: 'Use ChatGPT on any website without copy-pasting.',
-    href: 'https://www.usechatgpt.ai/install?ref=nextstepfortrello'
-  })
-  */
   // render menu items
   node.innerHTML =
     renderToolbarSelector(
