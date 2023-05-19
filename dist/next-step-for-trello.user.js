@@ -288,7 +288,7 @@ function initToolbarButton () {
   btn.innerHTML = '<span class="board-header-btn-text">' +
     '<div id="aj-nextstep-loading" class="uil-reload-css"><div></div></div>' +
     '<img class="aj-nextstep-icon" src="' + iconUrl + '" />' +
-    '<span id="aj-nextstep-mode">Next steps</span>' +
+    '<span id="aj-nextstep-mode">Next steps [ℹ]</span>' +
     '</span>'
   return btn
 }
@@ -309,7 +309,7 @@ const renderToolbarSelector = (selectorId, innerHTML) => `
     <a
       class="pop-over-header-title"
       href="${URL_PREFIX}/"
-      target="_blank">ℹ️ Next Step for Trello ${EXT_VERSION}</a>
+      target="_blank">Next Step for Trello ${EXT_VERSION}</a>
     <a
       href="#"
       class="pop-over-header-close-btn icon-sm icon-close"
@@ -337,20 +337,17 @@ function showToolbarSelector (btn) {
   }
   /** @type {Parameters<typeof renderSelectorOption>[0][]} */
   const menuItems = [...MENU_ITEMS]
+  // menuItems.push({
+  //   className: 'aj-donate',
+  //   label: '☕️ Enjoying Next Step for Trello?',
+  //   description: 'Donate to its author',
+  //   href: 'https://adrienjoly.com/donate?ref=ns4tad'
+  // })
   menuItems.push({
     className: 'aj-donate',
-    label: '☕️ Enjoying Next Step for Trello?',
-    description: 'Donate to its author',
-    href: 'https://adrienjoly.com/donate?ref=ns4tad'
+    label: 'ℹ️ Upcoming change of owner',
+    description: 'Adrien Joly (author of Next Step for Trello) doesn\'t have enough time to maintain this extension properly for the long term. He is considering to sell it to another developer in the coming days. Whenever that happens, feel free to check out the extension\'s vision and privacy policy, as they may evolve.'
   })
-  /*
-  menuItems.push({
-    className: 'aj-partner',
-    label: '✨ UseChatGPT.AI - Free ChatGPT Copilot on Chrome (GPT-4 ✓).',
-    description: 'Use ChatGPT on any website without copy-pasting.',
-    href: 'https://www.usechatgpt.ai/install?ref=nextstepfortrello'
-  })
-  */
   // render menu items
   node.innerHTML =
     renderToolbarSelector(
