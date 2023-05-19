@@ -149,10 +149,10 @@
 .aj-donate.js-select {
   text-align: center;
   color: #5e6c84;
-  text-decoration: underline;
-  padding: 16px 0;
+  padding: 16px 8px;
+  background-color: #fffcd5
 }
 
 .aj-donate.js-select:hover {
-  color: #091e42;
+  background-color: #fffcd5
 }
