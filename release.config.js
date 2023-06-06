@@ -7,10 +7,10 @@ module.exports = {
     'main'
   ],
   verifyConditions: [
-    {
-      path: 'semantic-release-chrome', // will check that Chrome Web Store env vars are set in travis-ci, cf https://github.com/GabrielDuarteM/semantic-release-chrome/blob/master/Authentication.md
-      extensionId: 'iajhmklhilkjgabejjemfbhmclgnmamf'
-    },
+    // {
+    //   path: 'semantic-release-chrome', // will check that Chrome Web Store env vars are set in travis-ci, cf https://github.com/GabrielDuarteM/semantic-release-chrome/blob/master/Authentication.md
+    //   extensionId: 'iajhmklhilkjgabejjemfbhmclgnmamf'
+    // },
     '@semantic-release/github' // will check that the GITHUB_TOKEN env var is also set
   ],
   prepare: [
@@ -40,11 +40,11 @@ module.exports = {
   ],
   publish: [
     // 1. Publish the extension to Chrome Web Store
-    {
-      path: 'semantic-release-chrome',
-      asset: 'chrome-extension-dist.zip',
-      extensionId: 'iajhmklhilkjgabejjemfbhmclgnmamf'
-    },
+    // {
+    //   path: 'semantic-release-chrome',
+    //   asset: 'chrome-extension-dist.zip',
+    //   extensionId: 'iajhmklhilkjgabejjemfbhmclgnmamf'
+    // },
     // 2. Create a git tag and release on GitHub
     {
       path: '@semantic-release/github',
