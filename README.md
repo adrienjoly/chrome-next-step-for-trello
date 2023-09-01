@@ -4,8 +4,6 @@ Browser extension to check tasks directly from your Trello boards. ☑️🚀
 
 > 🔴 Note: [The corresponding extension on Chrome Web Store](https://chrome.google.com/webstore/detail/next-step-for-trello-card/iajhmklhilkjgabejjemfbhmclgnmamf) was acquired on June 5th, 2023. It's now maintained by a different developer, in a different repository.
 
-🌟 Install it from there: [Next Step for Trello](https://adrienjoly.com/chrome-next-step-for-trello/)
-
 You can still [install the previous version as a a user-script](https://github.com/adrienjoly/chrome-next-step-for-trello/blob/main/dist/next-step-for-trello.user.js#L11), in your favorite browser.
 
 ![Next step for trello screenshot](assets/next-step-check-anim.gif)
